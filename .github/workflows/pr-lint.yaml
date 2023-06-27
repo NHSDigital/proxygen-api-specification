@@ -1,0 +1,31 @@
+name: PR Quality Check
+run-name: PR Quality Check for ${{ github.event.pull_request.head.ref }} opened by @${{ github.actor }}
+on: [pull_request]
+jobs:
+  link-ticket:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the branch name references a Jira ticket
+        env:
+          REF: ${{ github.event.pull_request.head.ref }}
+        run: echo "$REF" | grep -i -E -q "(apm-[0-9]+)|(apmspii-[0-9]+)|(adz-[0-9]+)|(amb-[0-9]+)|(dependabot\/)"
+
+      - name: Set TICKET_NAME environment variable
+        env:
+          REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          TICKET_NAME=$(echo "$REF" | grep -i -o '\(apm-[0-9]\+\)\|\(apmspii-[0-9]\+\)\|\(adz-[0-9]\+\)|\(amb-[0-9]\+\)' | tr '[:lower:]' '[:upper:]')
+          echo "TICKET_NAME=$TICKET_NAME" >> "$GITHUB_ENV"
+
+      - name: Comment on PR with link to JIRA ticket
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            This branch is work on a ticket in the NHS England's API Management JIRA Project:
+            # [${{ env.TICKET_NAME }}](https://nhsd-jira.digital.nhs.uk/browse/${{ env.TICKET_NAME}})
+
+      - name: Add UAT Portal Deployment Instructions to PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Run the TODO pipeline to deploy the specification to the TODO: Add url UAT Developer Portal.
