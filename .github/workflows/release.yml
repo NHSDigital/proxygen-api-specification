@@ -1,5 +1,5 @@
 name: Create Release and Publish to Live API Catalogue
-run-name: Publish ${{ github.ref_name }}-${{ github.sha }} to Live (${{ github.actor }})
+run-name: Publish ${{ github.ref_name }} to Live by @${{ github.actor }} (${{ github.sha }} - ${{ github.event.head_commit.message }})
 on:
   push:
     branches:

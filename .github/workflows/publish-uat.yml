@@ -1,5 +1,5 @@
 name: Publish Spec to Bloomreach UAT Portal
-run-name: Publish ${{ github.ref_name }}-${{ github.sha }} to UAT (${{ github.actor }})
+run-name: Publish ${{ github.ref_name }} to UAT by @${{ github.actor }} (${{ github.sha }} - ${{ github.event.head_commit.message }})
 on: workflow_dispatch
 
 jobs:
