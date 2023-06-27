@@ -1,20 +1,13 @@
 name: Publish Spec to Bloomreach UAT Portal
+run-name: Publish ${{ github.ref_name }} (${{ github.actor }})
+on: workflow_dispatch
 
-on:
-  workflow_dispatch:
-    inputs:
-      ref:
-        required: true
-        type: string
-        default: 'refs/heads/main'
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.ref }}
 
       - name: Install poetry
         run: pipx install poetry
@@ -24,8 +17,11 @@ jobs:
         with:
           cache: 'poetry'
 
-      - name: poetry install
+      - name: Setup Python environment and dependencies
         run: poetry install
+
+      - name: Set OAS info.version to ${{ github.ref_name}}-${{github.sha}}
+        run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/proxygen.yaml
 
       - name: Lint spec
         run: poetry run openapi-spec-validator specification/proxygen.yaml

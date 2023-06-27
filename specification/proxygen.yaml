@@ -17,7 +17,7 @@ x-nhsd-apim:
     $ref: x-nhsd-apim/target.yaml
 
 info:
-  version: 0.0.1
+  version: "__VERSION__" # Automatic versioning based on commit messages. See README.md
   title: GP Registrations Management Information API
   description: |
     ## Overview

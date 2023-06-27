@@ -1,0 +1,42 @@
+name: Create Release and Publish to API Catalogue (Production)
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release_and_publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Required for calculate_version.py script
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          cache: 'poetry'
+
+      - name: Setup Python environment and dependencies
+        run: poetry install
+
+      - name: Lint spec
+        run: poetry run openapi-spec-validator specification/proxygen.yaml
+
+      - name: Calculate version
+        run: echo "VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
+
+      - name: Set OAS info.version to ${{ env.VERSION }}
+        run: sed -i 's/__VERSION__/${{ env.VERSION }}/g' specification/proxygen.yaml
+
+      - name: Create Release ${{ env.VERSION }}
+        uses: softprops/action-gh-release@v1
+        with:
+          tag: ${{ env.VERSION }}
+
+      - name: Publish to UAT Bloomreach
+        run: poetry run proxygen spec publish

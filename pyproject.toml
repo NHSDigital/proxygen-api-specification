@@ -12,6 +12,8 @@ python = "^3.9"
 [tool.poetry.group.dev.dependencies]
 openapi-spec-validator = "^0.5.7"
 proxygen-cli = "^2.0.13"
+gitpython = "^3.1.31"
+semver = "^3.0.1"
 
 [build-system]
 requires = ["poetry-core"]
