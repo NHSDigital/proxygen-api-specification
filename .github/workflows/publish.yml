@@ -1,0 +1,33 @@
+name: Publish Spec to Bloomreach UAT Portal
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        required: true
+        type: string
+        default: 'refs/heads/main'
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          cache: 'poetry'
+
+      - name: poetry install
+        run: poetry install
+
+      - name: Lint spec
+        run: poetry run openapi-spec-validator specification/proxygen.yaml
+
+      - name: Publish to UAT Bloomreach
+        run: poetry run proxygen spec publish
+
+
