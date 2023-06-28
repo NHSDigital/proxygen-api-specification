@@ -2,7 +2,7 @@ name: PR Quality Check
 run-name: PR Quality Check for ${{ github.event.pull_request.head.ref }} opened by @${{ github.actor }}
 on: [pull_request]
 jobs:
-  link-ticket:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Check the branch name references a Jira ticket
