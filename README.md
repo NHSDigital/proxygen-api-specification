@@ -1,6 +1,7 @@
 # Proxygen API Specification
 
-TODO: Pipeline status badges
+[![Create Release and Publish to Live API Catalogue](https://github.com/NHSDigital/proxygen-api-specification/actions/workflows/release.yml/badge.svg)](https://github.com/NHSDigital/proxygen-api-specification/actions/workflows/release.yml)
+
 
 This is a RESTful API Specification for the Proxygen service in [OAS v3.0](https://swagger.io/specification/v3/) format. It is published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue).
 
@@ -29,27 +30,55 @@ The contents of this repository are protected by Crown Copyright (C).
 The SDLC is driven by a number of GitHub Actions workflows defined in `.github/workflows/`:
 
 - `pr-lint.yml` [PR Quality Check](https://github.com/NHSDigital/proxygen-api-specification/actions/workflows/release.yml)
-**When a PR is opened** the branch name is checked for conformity to agreed format. Helpful information is added to the PR.
-- `lint-specification.yml` Lint Specification
-**When pushing to a branch with an open PR** runs a linter on the specification to check it is a valid OAS v3.0 specification.
+**When a PR is opened:** branch name is checked for conformity to agreed format; helpful information is added to the PR; OAS spec is linted.
 - `publish-to-uat.yml` [Publish Spec to Bloomreach UAT Portal](https://github.com/NHSDigital/proxygen-api-specification/actions/workflows/publish-uat.yml)
-**Run manually** to publish a specification from any branch to the Bloomreach UAT Portal for previewing.
+**Run manually** to publish a specification from any branch to the UAT Portal for previewing.
 - `release.yml` [Create Release and Publish to Live API Catalogue](https://github.com/NHSDigital/proxygen-api-specification/actions/workflows/release.yml)
-**On merging to `main`** this publishes the updated specification to the live API Catalogue
+**On merging to `main`** a new release is created and the specification is updated on the API Catalogue.
 
 ### Workflow
 
-1. Create a branch. The name must include
+1. Create a branch. The name must include a JIRA ticket reference.
+2. Make changes to the specification (see [OAS Authoring](#oas-authoring), below)
+3. Open a Pull Request for a colleague to review.
+4. On successful review, and successful completion of the [PR Quality Check](https://github.com/NHSDigital/proxygen-api-specification/actions/workflows/release.yml) pipeline, merge to `main`
+5. Specification is published to the API Catalogue
+
+### Previewing on the UAT Environment
+
+Manually run the [Publish Spec to Bloomreach UAT Portal](https://github.com/NHSDigital/proxygen-api-specification/actions/workflows/publish-uat.yml) against any branch to publish a preview to the UAT Portal. Only one preview can be published at a time.
 
 ## OAS Authoring
+
+The specification is a collection of YAML files and can be modified with any text editor. However a number of tools are available to make the process easier.
+
+The [openapi.tools](http://openapi.tools) website lists a number of [GUI Editors](https://openapi.tools/#gui-editors). Or you can find a plugin for your favourite text editor. Some suggestions below.
+
+### VS Code Plugins
+
+- [openapi-lint](https://marketplace.visualstudio.com/items?itemName=mermade.openapi-lint)
+- [OpenAPI (Swagger) Editor](https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi)
+- [ReDocly OpenAPI](https://marketplace.visualstudio.com/items?itemName=Redocly.openapi-vs-code)
+
+### Emacs Plugins
+
+- [openapi-yaml-mode](https://github.com/esc-emacs/openapi-yaml-mode) provides syntax highlighting, completion, and path help
+
+## OAS File Versioning
+
+OAS Specifications have a mandatory `info.version` property indicating the version of the specification. In the repository it is set to `__VERSION__` and is populated during deployment.
+
+On merge to `main` a release is created and the version is calculated from commits using the `scripts/calculate_version.py` script.
+
+When publishing a preview using the [Publish Spec to Bloomreach UAT Portal](https://github.com/NHSDigital/proxygen-api-specification/actions/workflows/publish-uat.yml) Workflow the `info.version` is set to `<branch_name>-<commit_SHA>`
 
 ## Key Dependencies
 
 This repo is for an OAS specification file. As such there are no dependencies ******per se****** however the following utilities are used by the GitHub actions workflows:
 
 - [openapi-spec-validator](https://github.com/python-openapi/openapi-spec-validator)
-For checking the OAS specification conforms to valid OAS v3.0 specification.
+Validates conformity to OAS v3.0 specification.
 - [proxygen-cli](https://github.com/NHSDigital/proxygen-cli)
-For managing the deployment of the specification.
+Deploys the specification
 
 These are installed and managed by `poetry`✨
