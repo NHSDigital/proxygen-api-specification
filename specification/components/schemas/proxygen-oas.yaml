@@ -1,5 +1,9 @@
 # id: https://spec.openapis.org/oas/3.0/schema/2019-04-02
 # yaml-language-server: $schema=http://json-schema.org/draft-04/schema#
+# TODO:
+# * Look at using "inheritance" on the OAS v3.0.3 schema from https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.3/schemas/v3.0/schema.json
+#   As described here https://github.com/json-schema-org/json-schema-spec/issues/348. Need to first determine whether we can 'override' the 
+#   certain properties (eg Security, path.security, etc)
 $schema: http://json-schema.org/draft-04/schema#
 description: Validation schema for OpenAPI Specification accepted by the Proxygen service
 type: object
@@ -1112,6 +1116,11 @@ definitions:
 
   PaasSecurityRequirement:
     type: object
+    allOf:
+     - $ref: '#/definitions/_PaasSecurity'
+
+  _PaasSecurity:
+    type: object
     properties:
       oneOf:
         - app_level0:
@@ -1148,13 +1157,16 @@ definitions:
       monitoring:
         type: boolean
         default: true
+      temporary:
+        type: boolean
+        default: false
 
   Target:
     allOf:
       - $ref: '#/definitions/BaseTarget'
     oneOf:
      - $ref: '#/definitions/HostedTarget'
-     - $ref: '#/defintitions/ExternalTarget'
+     - $ref: '#/definitions/ExternalTarget'
 
   BaseTarget:
     type: object
@@ -1192,6 +1204,17 @@ definitions:
       primary:
         type: boolean
 
+  Image:
+    type: object
+    required:
+     - name
+     - tag
+    properties:
+      name:
+        type: string
+      tag:
+        type: string
+
   ExternalTarget:
     type: object
     required:
@@ -1203,3 +1226,63 @@ definitions:
         format: uri
      - security:
         $ref: '#/definitions/APIKeyBackendSecurity'
+  
+  APIKeyBackendSecurity:
+    type: object
+    required:
+    #  - type is required...
+     - header
+     - secret
+    properties:
+      header:
+        type: string
+      secret:
+        type: string
+      patternProperties:
+        "^type$":
+          type: string
+          enum:
+           - 'apikey'
+
+  Access:
+    type: object
+    required:
+      - title
+      - grants
+    parameters:
+      title:
+        type: string
+      grants:
+        $ref: '#/definitions/PaasSecurityAccess'
+      visible:
+        type: boolean
+        default: true
+
+  PaasSecurityAccess:
+    type: object
+    allOf:
+     - $ref: '#/definitions/_PaasSecurity'
+
+  RateLimiting:
+    type: object
+    parameters:
+      proxy:
+        $ref: '#/definitions/RateLimit'
+      app_default:
+        $ref: '#/definitions/RateLimit'
+  
+  RateLimit:
+    type: object
+    required:
+     - timeunit
+     - limit
+    parameters:
+      timeunit:
+        type: string
+        enum:
+          - 'second'
+          - 'minute'
+          - 'hour'
+      limit:
+        type: integer
+        minimum: 0
