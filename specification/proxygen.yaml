@@ -23,11 +23,14 @@ info:
     This API is intended for NHS England internal product teams to make services available over the internet.
 
     You can:
-    * Do a thing..
-    * And another thing..
+    * Register new API definitions
+    * Publish API specifications
+    * Manage containers and secrets
+    * Use your OAS specification to manage API proxies, products and security patterns
 
     In the future, you will be able to:
-    * Do this thing
+    * Secure the connection to your target service (back end) with MTLS. (Currently only API Key security is supported.)
+    * Manage preview and live versions of your API's specification
 
     ## Who can use this API
     This API is currently for internal NHS England use only.
@@ -84,6 +87,7 @@ info:
   contact:
     name: API Management Support
     email: api.management@nhs.net
+    url: 'https://digital.nhs.uk/developer/help-and-support'
 x-spec-publication:
   operation-order: null
   try-this-api:
@@ -94,19 +98,17 @@ servers:
   - url: 'https://proxygen.ptl.api.platform.nhs.uk'
     description: Development environment.
 tags:
-  - name: Instances
-    description: Endpoints to manage instances of your API
-  - name: Secrets
-    description: Endpoints to manage sensitive information (secrets) such as API keys
+  - name: APIs
   - name: Container Registry
-    description: Get access details to use the Elastic Container Registry associated with your API
+  - name: Instances
+  - name: Secrets
   - name: Specifications
-    description: Endpoints to manage
 paths:
   /apis:
     get:
       summary: Get list of APIs deployed through proxygen.
-      tags: []
+      tags:
+        - APIs
       responses:
         '200':
           description: OK
@@ -117,7 +119,11 @@ paths:
                 items:
                   type: string
                   example: hello-world
-              examples: {}
+              examples:
+                Example 1:
+                  value:
+                    - hello-world
+                    - personal-demographics
       operationId: get-apis
     post:
       summary: Create pre-requisite resources for your API.
@@ -145,7 +151,8 @@ paths:
         required: true
     get:
       summary: Get an APIs deployed resources (secrets and instances)
-      tags: []
+      tags:
+        - APIs
       responses:
         '200':
           description: OK
@@ -190,6 +197,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Api'
+      tags:
+        - APIs
     delete:
       summary: Delete the pre-requisite resources for an API with no deployed resources
       operationId: delete-apis-api_name
@@ -210,6 +219,8 @@ paths:
                 Example 1:
                   value:
                     detail: Cannot delete API with deployed resources.
+      tags:
+        - APIs
   '/apis/{api_name}/docker-token':
     parameters:
       - schema:
@@ -219,7 +230,8 @@ paths:
         required: true
     get:
       summary: Get an access token for our ECR
-      tags: []
+      tags:
+        - Container Registry
       responses:
         '200':
           description: OK
@@ -254,7 +266,8 @@ paths:
         required: true
     get:
       summary: Get an API's spec
-      tags: []
+      tags:
+        - Specifications
       responses:
         '200':
           description: OK
@@ -290,12 +303,16 @@ paths:
           application/json:
             schema:
               $ref: ./components/schemas/proxygen-oas.yaml
+      tags:
+        - Specifications
     delete:
       summary: Delete an API's spec
       operationId: delete-apis-api_name-spec
       responses:
         '204':
           description: No Content
+      tags:
+        - Specifications
   '/apis/{api_name}/environments':
     parameters:
       - schema:
@@ -305,7 +322,9 @@ paths:
         required: true
     get:
       summary: Get everything deployed in environments for an API
-      tags: []
+      tags:
+        - Instances
+        - Secrets
       responses:
         '200':
           description: OK
@@ -347,7 +366,9 @@ paths:
         required: true
     get:
       summary: Get an API's resources deployed to a specific environment
-      tags: []
+      tags:
+        - Instances
+        - Secrets
       responses:
         '200':
           description: OK
@@ -370,7 +391,8 @@ paths:
         required: true
     get:
       summary: Get the secrets for an API in a specific environment
-      tags: []
+      tags:
+        - Secrets
       responses:
         '200':
           description: OK
@@ -449,6 +471,8 @@ paths:
               - apikey
           in: query
           name: _type
+      tags:
+        - Secrets
     delete:
       summary: Delete a secret or API key
       operationId: delete-apis-api_name-environments-environment-secrets-secret_name
@@ -459,6 +483,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SecretDescription'
+      tags:
+        - Secrets
   '/apis/{api_name}/environments/{environment}/instances':
     parameters:
       - schema:
@@ -473,7 +499,8 @@ paths:
         required: true
     get:
       summary: Get an API's instances for a specific environment
-      tags: []
+      tags:
+        - Instances
       responses:
         '200':
           description: OK
@@ -519,6 +546,8 @@ paths:
           application/json:
             schema:
               $ref: ./components/schemas/proxygen-oas.yaml
+      tags:
+        - Instances
   '/apis/{api_name}/environments/{environment}/instances/{instance_name}':
     parameters:
       - schema:
@@ -538,7 +567,8 @@ paths:
         required: true
     get:
       summary: Get a specific API instance
-      tags: []
+      tags:
+        - Instances
       responses:
         '200':
           description: OK
@@ -563,6 +593,8 @@ paths:
           application/json:
             schema:
               $ref: ./components/schemas/proxygen-oas.yaml
+      tags:
+        - Instances
     delete:
       summary: Delete a specific API instance
       operationId: delete-apis-api_name-environments-environment-instances-instance_name
@@ -579,6 +611,56 @@ paths:
                 Example 1:
                   value:
                     detail: No instance hello-world-123 in environment internal-dev
+      tags:
+        - Instances
+  /specs:
+    get:
+      summary: Get all specifications
+      tags:
+        - Specifications
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    spec_id:
+                      type: string
+                      example: hello-world
+                    last_modified:
+                      type: string
+                      format: date-time
+              examples:
+                Example 1:
+                  value:
+                    - spec_id: hello-world
+                      last_modified: '2019-08-24T14:15:22Z'
+                    - spec_id: personal-demographics
+                      last_modified: '2019-08-22T12:14:11Z'
+      operationId: get-specs
+  '/specs/{api_name}':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+    get:
+      summary: Get an API's specification
+      tags:
+        - Specifications
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./components/schemas/proxygen-oas.yaml
+      operationId: get-specs-api_name
 components:
   schemas:
     Api:
@@ -670,3 +752,4 @@ components:
         - environment
         - apikey
         - version_id
+  securitySchemes: {}
