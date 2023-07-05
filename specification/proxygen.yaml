@@ -1,7 +1,7 @@
-openapi: '3.0.3'
+openapi: 3.0.0
 info:
+  version: __VERSION__
   title: Proxygen API
-  version: '__VERSION__' # Computed and injected at build time by `scripts/set_version.py`
   description: |
     <div class="nhsd-m-emphasis-box nhsd-m-emphasis-box--emphasis nhsd-!t-margin-bottom-6" aria-label="Highlighted Information">
         <div class="nhsd-a-box nhsd-a-box--border-blue">
@@ -66,7 +66,7 @@ info:
     Our development environment:
     * is for developers of the Proxygen service itself
     * is not intended for [integration testing](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing)
-    
+
     ## Onboarding
     This API is for internal NHS England users only. There is no onboarding process for external parties.
     The 'Getting started as an API Producer' section of the API Management NHS England Platforms Confluence space provides instructions on how to engage with us and start using Proxygen.
@@ -79,104 +79,746 @@ info:
     * 500 to 599 if it failed because of an error on our server
 
     Errors specific to each API are shown in the Endpoints section, under Response. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
-
-  license:
-    name: MIT
   contact:
     name: API Management Support
     email: api.management@nhs.net
-
-x-spec-publication:
-  operation-order:
-    # - group: Registration
-    #   operations:
-    #     - method: POST
-    #       path: /registrations
-    #     - method: POST
-    #       path: /transfer-compatibility-statuses
-    #     - method: POST
-    #       path: /ehr-requests
-    #     - method: POST
-    #       path: /ehr-responses
-    #     - method: POST
-    #       path: /document-responses
-    #     - method: POST
-    #       path: /ready-to-integrate-statuses
-    #     - method: POST
-    #       path: /ehr-degrades
-    #     - method: POST
-    #       path: /ehr-integrations
-    #     - method: POST
-    #       path: /errors
-  try-this-api:
-    disabled: true
-
+  license:
+    name: MIT
 servers:
-  - url: https://proxygen.prod.api.platform.nhs.uk
+  - url: 'https://proxygen.prod.api.platform.nhs.uk'
     description: Production environment.
-  - url: https://proxygen.ptl.api.platform.nhs.uk
+  - url: 'https://proxygen.ptl.api.platform.nhs.uk'
     description: Development environment.
-tags:
-  - name: Instances
-    description: Endpoints to manage instances of your API 
-  - name: Secrets
-    description: Endpoints to manage sensitive information (secrets) such as API keys
-  - name: Container Registry
-    description: Get access details to use the Elastic Container Registry associated with your API 
-  - name: Specifications
-    description: Endpoints to manage 
 paths:
-  /test:
+  /apis:
     get:
-      responses:
-        '200':
-          description: OK
-  /apis/{api_name}/environments/{environment}/instances/{instance_name}:
-    get:
-      summary: "Get a specific API Instance"
-      operationId: get-instance
-      # description: ''
-      parameters:
-        - name: api_name
-          in: path
-          description: "..."
-          required: true
-          schema:
-            type: string
-            example: "hello-world"
-        - name: environment
-          in: path
-          description: "..."
-          required: true
-          schema:
-            type: string
-            enum:
-              - internal-dev
-              - internal-dev-sandbox
-              - internal-qa
-              - internal-qa-sandbox
-              - ref
-              - dev
-              - int
-              - sandbox
-              - prod
-        - name: instance_name
-          in: path
-          description: "..."
-          required: true
-          schema:
-            type: string
-            example: "..."
-            
+      summary: Get list of APIs deployed through proxygen.
+      operationId: get-apis
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: components/schemas/proxygen-oas.yaml
-              # example:
-              #   $ref: components/examples/Patient.json
-
-        # '404':
-          
+                type: array
+                items:
+                  type: string
+                  example: hello-world
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+    post:
+      summary: Create pre-requisite resources for your API.
+      description: ''
+      operationId: post-apis
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Api'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api'
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+  '/apis/{api_name}':
+    get:
+      summary: Get an APIs deployed resources (secrets and instances)
+      operationId: get-apis-api_name
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+            example: hello-world
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/resource'
+              examples:
+                Example 1:
+                  value:
+                    - type: instance
+                      environment: internal-dev
+                      name: hello-world-test-123
+                    - type: secret
+                      environment: internal-dev
+                      name: my-secret
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+    put:
+      summary: Update pre-requisite resources for your API.
+      operationId: put-apis-api_name
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+            example: hello-world
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Api'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api'
+        '422':
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: Path parameter api_name='hello-world' does match request body 'something-else'
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+    delete:
+      summary: Delete the pre-requisite resources for an API with no deployed resources
+      operationId: delete-apis-api_name
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+            example: hello-world
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: Cannot delete API with deployed resources.
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+  '/apis/{api_name}/docker-token':
+    get:
+      summary: Get an access token for our ECR
+      operationId: get-apis-api_name-docker-token
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: string
+                  password:
+                    type: string
+                  registry:
+                    type: string
+                  expiresAt:
+                    type: string
+                    format: date-time
+              examples:
+                Example 1:
+                  value:
+                    user: AWS
+                    password: '**********************'
+                    registry: 'https://958002497996.dkr.ecr.eu-west-2.amazonaws.com'
+                    expiresAt: '2022-10-26T02:05:39.540000+01:00'
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+  '/apis/{api_name}/spec':
+    get:
+      summary: Get an API's spec
+      operationId: get-apis-api_name-spec
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/proxygen-oas.yaml'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: Not found
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+    put:
+      summary: Create or replace an API's spec
+      operationId: put-apis-api_name-spec
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/proxygen-oas.yaml'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/proxygen-oas.yaml'
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+    delete:
+      summary: Delete an API's spec
+      operationId: delete-apis-api_name-spec
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+  '/apis/{api_name}/environments':
+    get:
+      summary: Get everything deployed in environments for an API
+      operationId: get-apis-api_name-environments
+      parameters:
+        - name: _type
+          in: query
+          schema:
+            enum:
+              - instance
+              - secret
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/resource'
+              examples:
+                Example 1:
+                  value:
+                    - type: instance
+                      environment: internal-dev
+                      name: hello-world-example-123
+                    - type: secret
+                      environment: internal-dev
+                      name: my-secret-name
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+  '/apis/{api_name}/environments/{environment}':
+    get:
+      summary: Get an API's resources deployed to a specific environment
+      operationId: get-apis-api_name-environments-environment
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: environment
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resource'
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+  '/apis/{api_name}/environments/{environment}/secrets':
+    get:
+      summary: Get the secrets for an API in a specific environment
+      operationId: get-apis-api_name-environments-environment-secrets
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: environment
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/resource'
+              examples:
+                Example 1:
+                  value:
+                    - type: secret
+                      environment: internal-dev
+                      name: my-secret
+                    - type: secret
+                      environment: internal-dev
+                      name: another-secret
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+  '/apis/{api_name}/environments/{environment}/secrets/{secret_name}':
+    put:
+      summary: Create or update a secret or API key
+      operationId: put-apis-api_name-environments-environment-secrets-secret_name
+      parameters:
+        - name: _type
+          in: query
+          schema:
+            enum:
+              - apikey
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: environment
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: secret_name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              minLength: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretDescription'
+              examples:
+                Example 1:
+                  value:
+                    name: my-secret
+                    type: secret
+                    last_modified: '2019-08-24T14:15:22Z'
+                    environment: internal-dev
+                    apikey: false
+                    version_id: 9e94c502-ca41-4342-a7f7-af96b444512c
+        '422':
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: Request body cannot be empty
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+    delete:
+      summary: Delete a secret or API key
+      operationId: delete-apis-api_name-environments-environment-secrets-secret_name
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: environment
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: secret_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretDescription'
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+  '/apis/{api_name}/environments/{environment}/instances':
+    get:
+      summary: Get an API's instances for a specific environment
+      operationId: get-apis-api_name-environments-environment-instances
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: environment
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/resource'
+              examples:
+                Example 1:
+                  value:
+                    - type: instance
+                      environment: internal-dev
+                      name: hello-world-instance-1
+                    - type: instance
+                      environment: internal-dev
+                      name: hello-world-instance-2
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+    post:
+      summary: Create an API instance in a specific environment
+      description: The instance name to be created is determined by base path of the server url
+      operationId: post-apis-api_name-environments-environment-instances
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: environment
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/proxygen-oas.yaml'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/proxygen-oas.yaml'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: API hello-world already has an instance hello-world-123 in internal-dev
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+  '/apis/{api_name}/environments/{environment}/instances/{instance_name}':
+    get:
+      summary: Get a specific API instance
+      operationId: get-apis-api_name-environments-environment-instances-instance_name
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: environment
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: instance_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/proxygen-oas.yaml'
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+    put:
+      summary: Update or create an API instance
+      description: The instance name supplied in the path parameter must match the one derived from the server.url
+      operationId: put-apis-api_name-environments-environment-instances-instance_name
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: environment
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: instance_name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/proxygen-oas.yaml'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/proxygen-oas.yaml'
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+    delete:
+      summary: Delete a specific API instance
+      operationId: delete-apis-api_name-environments-environment-instances-instance_name
+      parameters:
+        - name: api_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: environment
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: instance_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: No instance hello-world-123 in environment internal-dev
+      servers:
+        - url: 'https://proxygen.prod.api.platform.nhs.uk'
+          description: Production environment.
+        - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+          description: Development environment.
+tags:
+  - name: Instances
+    description: Endpoints to manage instances of your API
+  - name: Secrets
+    description: Endpoints to manage sensitive information (secrets) such as API keys
+  - name: Container Registry
+    description: Get access details to use the Elastic Container Registry associated with your API
+  - name: Specifications
+    description: Endpoints to manage
+components:
+  schemas:
+    HTTPException:
+      type: object
+      title: HTTPException
+      properties:
+        detail:
+          type: string
+    SecretDescription:
+      type: object
+      title: SecretDescription
+      properties:
+        name:
+          type: string
+        type:
+          enum:
+            - secret
+        last_modified:
+          type: string
+          format: date-time
+        environment:
+          $ref: '#/components/schemas/LITERAL_ENVS'
+        apikey:
+          type: boolean
+        version_id:
+          type: string
+          format: uuid
+      required:
+        - name
+        - type
+        - last_modified
+        - environment
+        - apikey
+        - version_id
+    resource:
+      type: object
+      title: resource
+      properties:
+        type:
+          enum:
+            - instance
+            - secret
+        environment:
+          $ref: '#/components/schemas/LITERAL_ENVS'
+        name:
+          type: string
+    LITERAL_ENVS:
+      enum:
+        - internal-dev
+        - internal-dev-sandbox
+        - internal-qa
+        - internal-qa-sandbox
+        - ref
+        - dev
+        - int
+        - sandbox
+        - prod
+      title: LITERAL_ENVS
+    Api:
+      type: object
+      title: Api
+      properties:
+        name:
+          type: string
+        api_registry_entry:
+          type: boolean
+          default: true
+        keycloak:
+          type: boolean
+          default: true
+        keycloak_client_jwks_resource_url:
+          type: string
+        docker_repositories:
+          type: array
+          description: "Defaults to one repository with the same name as the API name.\r\n\r\nNames must be the same as, or start with, the API name.\r\n\r\nSend an empty list to have no repositories."
+          uniqueItems: true
+          items:
+            type: string
+            example: hello-world
+      required:
+        - name
