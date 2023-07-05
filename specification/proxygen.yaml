@@ -1,6 +1,4 @@
 openapi: 3.0.3
-x-stoplight:
-  id: 5afmfye727016
 info:
   title: Proxygen API
   version: __VERSION__
@@ -117,8 +115,6 @@ paths:
               schema:
                 type: array
                 items:
-                  x-stoplight:
-                    id: czqc9ud5zh6w2
                   type: string
                   example: hello-world
               examples: {}
@@ -234,20 +230,12 @@ paths:
                 properties:
                   user:
                     type: string
-                    x-stoplight:
-                      id: forp1q8wiguxs
                   password:
                     type: string
-                    x-stoplight:
-                      id: ht21mlieiimi4
                   registry:
                     type: string
-                    x-stoplight:
-                      id: x6hwwqx6rduew
                   expiresAt:
                     type: string
-                    x-stoplight:
-                      id: 41lllyfqnem8l
                     format: date-time
               examples:
                 Example 1:
@@ -595,55 +583,35 @@ components:
   schemas:
     Api:
       title: Api
-      x-stoplight:
-        id: 22epkg5dn1n4i
       type: object
       properties:
         name:
           type: string
-          x-stoplight:
-            id: pxwx9zyxs70bt
         api_registry_entry:
           type: boolean
-          x-stoplight:
-            id: 28p38eengd4nt
           default: true
         keycloak:
           type: boolean
-          x-stoplight:
-            id: hrfz8co0zx2hk
           default: true
         keycloak_client_jwks_resource_url:
           type: string
-          x-stoplight:
-            id: kf36w9gb2almn
         docker_repositories:
           type: array
-          x-stoplight:
-            id: rvfee23slxasw
           uniqueItems: true
           description: "Defaults to one repository with the same name as the API name.\r\n\r\nNames must be the same as, or start with, the API name.\r\n\r\nSend an empty list to have no repositories."
           items:
-            x-stoplight:
-              id: 6ngo7ect633ap
             type: string
             example: hello-world
       required:
         - name
     HTTPException:
       title: HTTPException
-      x-stoplight:
-        id: 05zxsf8mvhelt
       type: object
       properties:
         detail:
           type: string
-          x-stoplight:
-            id: sfydvha3l5d1l
     LITERAL_ENVS:
       title: LITERAL_ENVS
-      x-stoplight:
-        id: 7vi5nbx7d4k86
       enum:
         - internal-dev
         - internal-dev-sandbox
@@ -657,13 +625,9 @@ components:
       description: ''
     resource:
       title: resource
-      x-stoplight:
-        id: w659uo1fiw2ov
       type: object
       properties:
         type:
-          x-stoplight:
-            id: w9gtothqjl0e4
           enum:
             - instance
             - secret
@@ -671,8 +635,6 @@ components:
           $ref: '#/components/schemas/LITERAL_ENVS'
         name:
           type: string
-          x-stoplight:
-            id: zrqqkjh420he7
       x-examples:
         Example 1:
           type: instance
@@ -684,34 +646,22 @@ components:
           name: my-secret-name
     SecretDescription:
       title: SecretDescription
-      x-stoplight:
-        id: fgmmgr9gcmwv7
       type: object
       properties:
         name:
           type: string
-          x-stoplight:
-            id: 40einl4h7evfx
         type:
-          x-stoplight:
-            id: b11hfw3p25ytx
           enum:
             - secret
         last_modified:
           type: string
-          x-stoplight:
-            id: 6bx9k11045gg3
           format: date-time
         environment:
           $ref: '#/components/schemas/LITERAL_ENVS'
         apikey:
           type: boolean
-          x-stoplight:
-            id: cmcwlm3z52a1e
         version_id:
           type: string
-          x-stoplight:
-            id: jg89l4h38m6i4
           format: uuid
       required:
         - name
