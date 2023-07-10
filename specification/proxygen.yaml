@@ -276,7 +276,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./components/schemas/proxygen-oas.yaml
+                $ref: '#/components/schemas/PaasOpenAPI'
         '404':
           description: Not Found
           content:
@@ -299,12 +299,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./components/schemas/proxygen-oas.yaml
+                $ref: '#/components/schemas/PaasOpenAPI'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: ./components/schemas/proxygen-oas.yaml
+              $ref: '#/components/schemas/PaasOpenAPI'
       tags:
         - Specifications
     delete:
@@ -531,7 +531,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./components/schemas/proxygen-oas.yaml
+                $ref: '#/components/schemas/PaasOpenAPI'
         '409':
           description: Conflict
           content:
@@ -547,7 +547,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: ./components/schemas/proxygen-oas.yaml
+              $ref: '#/components/schemas/PaasOpenAPI'
       tags:
         - Instances
   '/apis/{api_name}/environments/{environment}/instances/{instance_name}':
@@ -577,7 +577,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./components/schemas/proxygen-oas.yaml
+                $ref: '#/components/schemas/PaasOpenAPI'
       operationId: get-apis-api_name-environments-environment-instances-instance_name
     put:
       summary: Update or create an API instance
@@ -588,13 +588,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./components/schemas/proxygen-oas.yaml
+                $ref: '#/components/schemas/PaasOpenAPI'
       description: The instance name supplied in the path parameter must match the one derived from the server.url
       requestBody:
         content:
           application/json:
             schema:
-              $ref: ./components/schemas/proxygen-oas.yaml
+              $ref: '#/components/schemas/PaasOpenAPI'
       tags:
         - Instances
     delete:
@@ -661,7 +661,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./components/schemas/proxygen-oas.yaml
+                $ref: '#/components/schemas/PaasOpenAPI'
       operationId: get-specs-api_name
 components:
   schemas:
@@ -754,4 +754,304 @@ components:
         - environment
         - apikey
         - version_id
-  securitySchemes: {}
+    PaasOpenAPI:
+      title: OAS v3.0.3 Specification with proxygen-specific constraints and extensions
+      description: |
+        # Todo
+        Describe how this isn't a full specification and why
+      type: object
+      required:
+        - openapi
+        - info
+        - servers
+        - paths
+      properties:
+        openapi:
+          type: string
+          enum:
+          - '3.0.3'
+        info:
+          type: object
+        externalDocs:
+          type: object
+        servers:
+          type: array
+          minLength: 1
+          items:
+            type: object
+            required:
+              - url
+            properties:
+              url:
+                type: string
+                # regex from proxygen.models.paas_open_api.server.URL_REGEX
+                pattern: '^https://(internal-dev.api|internal-dev-sandbox.api|internal-qa.api|internal-qa-sandbox.api|ref.api|dev.api|int.api|sandbox.api|api).service.nhs.uk/((([a-zA-Z0-9])+[-/]?)+([a-zA-Z0-9])+)$'
+              description:
+                type: string
+              variables:
+                type: object
+        security:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaasSecurityRequirement'
+        tags:
+          type: array
+        paths:
+          type: object
+          properties:
+            '^\/':
+              type: object
+              description: Some (any) path
+              properties:
+                summary:
+                  type: string
+                description:
+                  type: string
+                servers:
+                  type: array
+                parameters:
+                  type: array
+                get:
+                  $ref: '#/components/schemas/Operation'
+                put:
+                  $ref: '#/components/schemas/Operation'
+                post:
+                  $ref: '#/components/schemas/Operation'
+                delete:
+                  $ref: '#/components/schemas/Operation'
+                options:
+                  $ref: '#/components/schemas/Operation'
+                head:
+                  $ref: '#/components/schemas/Operation'
+                patch:
+                  $ref: '#/components/schemas/Operation'
+                trace:
+                  $ref: '#/components/schemas/Operation'
+        components:
+          type: object
+        x-nhsd-apim:
+          $ref: '#/components/schemas/XNhsdApim'
+                
+    Operation:
+      type: object
+      properties:
+        tags:
+          type: array
+        summary:
+          type: string
+        description:
+          type: string
+        externalDocs:
+          type: object
+        operationId:
+          type: string
+        servers:
+          type: array
+        security:
+          $ref: '#/components/schemas/PaasSecurityRequirement'
+        deprecated:
+          type: boolean
+        responses:
+          type: object
+        parameters:
+          type: object
+    
+    PaasSecurityRequirement:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/_PaasSecurity'
+
+    EmptyList:
+      type: array
+      maxItems: 0
+      # items: {}  - not sure what this does but was put in by stoplight so preserving it in case I want to put it back
+   
+    _PaasSecurity:
+      type: object
+      title: _PaasSecurity
+      description: Some description
+      oneOf:
+        - properties:
+            app_level0:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - app_level0
+        - properties:
+            app_level3:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - app_level3
+        - properties:
+            nhs_login_p0:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - nhs_login_p0
+        - properties:
+            nhs_login_p5:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - nhs_login_p5
+        - properties:
+            nhs_login_p9:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - nhs_login_p9
+        - properties:
+            nhs_cis2_aal1:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - nhs_cis2_aal1
+        - properties:
+            nhs_cis2_aal3:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - nhs_cis2_aal3
+      x-examples:
+        Example 1:
+          app_level0: []
+    XNhsdApim:
+      type: object
+      properties:
+        target:
+          $ref: '#/components/schemas/Target'
+        access:
+          type: array
+          items:
+            $ref: '#/components/schemas/Access'
+        ratelimiting:
+          $ref: '#/components/schemas/RateLimiting'
+        monitoring:
+          type: boolean
+          default: true
+        temporary:
+          type: boolean
+          default: false
+    Target:
+      allOf:
+        - $ref: '#/components/schemas/BaseTarget'
+      oneOf:
+      - $ref: '#/components/schemas/HostedTarget'
+      - $ref: '#/components/schemas/ExternalTarget'
+    BaseTarget:
+      type: object
+      properties:
+        healthcheck:
+          type: string
+          pattern: "^/"
+    Access:
+      type: object
+      required:
+        - title
+        - grants
+      properties:
+        title:
+          type: string
+        grants:
+          $ref: '#/components/schemas/PaasSecurityAccess'
+        visible:
+          type: boolean
+          default: true
+    PaasSecurityAccess:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/_PaasSecurity'
+    HostedTarget:
+      type: object
+      required:
+      - containers
+      properties:
+        containers:
+          type: array
+          minItems: 1
+          maxItems: 5
+          uniqueItems: True
+          items:
+            $ref: '#/components/schemas/Container'
+
+    Container:
+      type: object
+      required:
+      - name
+      - image
+      properties:
+        name:
+          type: string
+        image:
+          $ref: '#/components/schemas/Image'
+        environment:
+          description: Environment variables
+          type: object
+        primary:
+          type: boolean
+
+    Image:
+      type: object
+      required:
+      - name
+      - tag
+      properties:
+        name:
+          type: string
+        tag:
+          type: string
+    ExternalTarget:
+      type: object
+      required:
+      - url
+      - security
+      properties:
+        url:
+          type: string
+          format: uri
+        security:
+          $ref: '#/components/schemas/APIKeyBackendSecurity'
+    
+    APIKeyBackendSecurity:
+      type: object
+      required:
+      - type
+      - header
+      - secret
+      properties:
+        header:
+          type: string
+        secret:
+          type: string
+        type:
+          type: string
+          enum:
+            - 'apikey'
+
+    RateLimiting:
+      type: object
+      properties:
+        proxy:
+          $ref: '#/components/schemas/RateLimit'
+        app_default:
+          $ref: '#/components/schemas/RateLimit'
+    
+    RateLimit:
+      type: object
+      required:
+      - timeunit
+      - limit
+      properties:
+        timeunit:
+          type: string
+          enum:
+            - 'second'
+            - 'minute'
+            - 'hour'
+        limit:
+          type: integer
+          minimum: 0
+
+
+
