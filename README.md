@@ -76,9 +76,7 @@ When publishing a preview using the [Publish Spec to Bloomreach UAT Portal](http
 
 This repo is for an OAS specification file. As such there are no dependencies ******per se****** however the following utilities are used by the GitHub actions workflows:
 
-- [openapi-spec-validator](https://github.com/python-openapi/openapi-spec-validator)
-Validates conformity to OAS v3.0 specification.
+- [vacuum](https://quobix.com/vacuum/)
+An OpenAPI linter
 - [proxygen-cli](https://github.com/NHSDigital/proxygen-cli)
 Deploys the specification
-
-These are installed and managed by `poetry`✨
