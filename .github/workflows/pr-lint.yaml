@@ -40,10 +40,16 @@ jobs:
       with:
         cmd: vacuum lint -d specification/proxygen.yaml
 
+    # - name: Install Python
+    #   uses: actions/setup-python@v4
+    #   with:
+    #     cache: 'poetry'
+
     - name: Check some stuff
       run: |
         pip --version
         pipx environment
         pipx install proxygen-cli
         pipx list
-          
+        poetry install
+        poetry env info
