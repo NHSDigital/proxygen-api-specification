@@ -4,11 +4,6 @@ on: [pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
-    env:
-      PROXYGEN_PRIVATE_KEY: ${{ secrets.ENCODED_PROXYGEN_PRIVATE_KEY }}
-      PROXYGEN_KID: ${{ secrets.PROXYGEN_KID }}
-      PROXYGEN_CLIENT_ID: ${{ secrets.PROXYGEN_CLIENT_ID }}
-
     steps:
     - name: Check the branch name references a Jira ticket
       env:
@@ -46,12 +41,16 @@ jobs:
         cmd: vacuum lint -d specification/proxygen.yaml
 
     - name: Setup proxygen-cli
+      env:
+        PROXYGEN_PRIVATE_KEY: ${{ secrets.ENCODED_PROXYGEN_PRIVATE_KEY }}
+        PROXYGEN_KID: ${{ secrets.PROXYGEN_KID }}
+        PROXYGEN_CLIENT_ID: ${{ secrets.PROXYGEN_CLIENT_ID }}
       run: |
         pipx install proxygen-cli
 
         # Setup proxygen auth and settings
         mkdir -p ${HOME}/.proxygen
-        echo -n $PROXYGEN_PRIVATE_KEY | base64 --decode > ${HOME}/.proxygen/key
+        echo $PROXYGEN_PRIVATE_KEY | base64 --decode > ${HOME}/.proxygen/key
         envsubst < ./.github/proxygen-credentials-template.yaml > ${HOME}/.proxygen/credentials.yaml
         envsubst < ./.github/proxygen-settings.yaml > ${HOME}/.proxygen/settings.yaml
         proxygen status
