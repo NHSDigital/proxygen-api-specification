@@ -32,20 +32,21 @@ jobs:
             Run the TODO pipeline to deploy the specification to the TODO: Add url UAT Developer Portal.
           comment_tag: uat-deploy
         
-      - name: Checkout
-        uses: actions/checkout@v3
+      # - name: Checkout
+      #   uses: actions/checkout@v3
 
-      - name: Install poetry
-        run: pipx install poetry
+      # - name: Install poetry
+      #   run: pipx install poetry
 
-      - name: Install Python
-        uses: actions/setup-python@v4
+      # - name: Install Python
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     cache: 'poetry'
+
+      # - name: Setup Python environment and dependencies
+      #   run: poetry install
+
+      - name: Vacuum OpenAPI Spec linter
+        uses: eduelias/gha-vacuum@v0.0.1
         with:
-          cache: 'poetry'
-
-      - name: Setup Python environment and dependencies
-        run: poetry install
-
-      - name: Lint spec
-        run: poetry run openapi-spec-validator specification/proxygen.yaml
-          
+          cmd: vacuum lint -d specification/proxygen.yaml
