@@ -32,8 +32,8 @@ jobs:
             Run the TODO pipeline to deploy the specification to the TODO: Add url UAT Developer Portal.
           comment_tag: uat-deploy
         
-      # - name: Checkout
-      #   uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       # - name: Install poetry
       #   run: pipx install poetry
