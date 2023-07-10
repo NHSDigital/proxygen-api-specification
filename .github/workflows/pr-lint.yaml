@@ -4,6 +4,11 @@ on: [pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
+    env:
+      PROXYGEN_PRIVATE_KEY: ${{ secrets.ENCODED_PROXYGEN_PRIVATE_KEY }}
+      PROXYGEN_KID: ${{ secrets.PROXYGEN_KID }}
+      PROXYGEN_CLIENT_ID: ${{ secrets.PROXYGEN_CLIENT_ID }}
+
     steps:
     - name: Check the branch name references a Jira ticket
       env:
@@ -40,20 +45,14 @@ jobs:
       with:
         cmd: vacuum lint -d specification/proxygen.yaml
 
-    - name: Install poetry
-      run: pipx install poetry
-
-
-    - name: Install Python
-      uses: actions/setup-python@v4
-      # with:
-      #   cache: 'poetry'
-
-    - name: Check some stuff
+    - name: Setup proxygen-cli
       run: |
-        pip --version
-        pipx environment
         pipx install proxygen-cli
-        pipx list
-        poetry install
-        poetry env info
+
+        # Setup proxygen auth and settings
+        mkdir -p ${HOME}/.proxygen
+        echo -n $PROXYGEN_PRIVATE_KEY | base64 --decode > ${HOME}/.proxygen/key
+        envsubst < ./.github/proxygen-credentials-template.yaml > ${HOME}/.proxygen/credentials.yaml
+        envsubst < ./.github/proxygen-settings.yaml > ${HOME}/.proxygen/settings.yaml
+        proxygen status
+  
