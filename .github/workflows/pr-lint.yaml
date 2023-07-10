@@ -50,6 +50,7 @@ jobs:
         pip --version
         pipx environment
         pipx install proxygen-cli
+        pipx install poetry
         pipx list
         poetry install
         poetry env info
