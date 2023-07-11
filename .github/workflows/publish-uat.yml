@@ -6,27 +6,33 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
 
-      - name: Install poetry
-        run: pipx install poetry
+    - name: Set OAS info.version to ${{ github.ref_name}}-${{github.sha}}
+      run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/proxygen.yaml
 
-      - name: Install Python
-        uses: actions/setup-python@v4
-        with:
-          cache: 'poetry'
+    - name: Vacuum OpenAPI Spec linter
+      uses: eduelias/gha-vacuum@v0.0.1
+      with:
+        cmd: vacuum lint -d specification/proxygen.yaml
 
-      - name: Setup Python environment and dependencies
-        run: poetry install
+    - name: Setup proxygen-cli
+      env:
+        PROXYGEN_PRIVATE_KEY: ${{ secrets.ENCODED_PROXYGEN_PRIVATE_KEY }}
+        PROXYGEN_KID: ${{ secrets.PROXYGEN_KID }}
+        PROXYGEN_CLIENT_ID: ${{ secrets.PROXYGEN_CLIENT_ID }}
+      run: |
+        pipx install proxygen-cli
 
-      - name: Set OAS info.version to ${{ github.ref_name}}-${{github.sha}}
-        run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/proxygen.yaml
+        # Setup proxygen auth and settings
+        mkdir -p ${HOME}/.proxygen
+        echo "$PROXYGEN_PRIVATE_KEY" | base64 --decode > ${HOME}/.proxygen/key
+        envsubst < ./.github/proxygen-credentials-template.yaml > ${HOME}/.proxygen/credentials.yaml
+        envsubst < ./.github/proxygen-settings.yaml > ${HOME}/.proxygen/settings.yaml
+        proxygen status
 
-      - name: Lint spec
-        run: poetry run openapi-spec-validator specification/proxygen.yaml
-
-      - name: Publish to UAT Bloomreach
-        run: poetry run proxygen spec publish
+    - name: Publish spec
+      run: proxygen spec publish specification/proxygen.yaml --no-confirm
 
 

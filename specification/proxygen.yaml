@@ -1,122 +1,78 @@
-openapi: "3.0.3"
-servers:
-  - url: 'https://int.api.service.nhs.uk/gp-registrations-mi'
-    description: Integration Environment
-  - url: 'https://api.service.nhs.uk/gp-registrations-mi'
-    description: Production Environment
-
-components:
-  securitySchemes:
-    app-level0:
-      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
-
-x-nhsd-apim:
-  access:
-    $ref: x-nhsd-apim/access.yaml
-  target:
-    $ref: x-nhsd-apim/target.yaml
-
+openapi: 3.0.3
 info:
-  version: "__VERSION__" # Automatic versioning based on commit messages. See README.md
-  title: GP Registrations Management Information API
+  title: Proxy Generator API
+  version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
   description: |
-    ## Overview
-    Use this API to send real-time GP registrations metrics to NHS for service monitoring of patient EHR transfers between GP Practices.
-
-    This API replaces the weekly submission of GP2GP information sent to us via a MESH mailbox, as required by [GP2GP V2.2b](https://nhsconnect.github.io/prm-external-developer-website/gp2gp/gp2gp_2.2b/overview/).
-
-    You can send us Management Information for registrations regardless of the transfer protocol used (GP2GP or GP Connect).
-
-    Using the API, you can send us information about the following:
-
-    * when a requesting practice completes a registration
-    * the compatibility of that registration with an electronic transfer
-    * when the requesting practice requests an EHR
-    * when the sending practice sends an EHR
-    * when the requesting practice received attachments/documents
-    * when the requesting practice is ready for the user to integrate the transfer
-    * when the requesting practice has integrated the EHR received
-    * when an error, or negative acknowledgement occurs
-    * degrades
-
-    You cannot:
-
-    * read any management information data submitted to us
-
-    ## Who can use this API
-    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
-    You must do this before you can go live (see ‘Onboarding’ below).
-
-    ## Related APIs
-    Use [GP2GP - HL7 API](https://digital.nhs.uk/developer/api-catalogue/gp2gp) to learn more the GP2GP protocol.
-
-    Use the following to learn more about the GP Connect protocol:
-    * [GP Connect Access Document - FHIR API](https://digital.nhs.uk/developer/api-catalogue/gp-connect-access-document-fhir)
-    * [GP Connect Access Record: HTML - FHIR API](https://digital.nhs.uk/developer/api-catalogue/gp-connect-access-record-html-fhir)
-    * [GP Connect Access Record: Structured - FHIR API](https://digital.nhs.uk/developer/api-catalogue/gp-connect-access-record-structured-fhir)
-    * [GP Connect Send Document - FHIR API](https://digital.nhs.uk/developer/api-catalogue/gp-connect-send-document-fhir)
-
-    ## API status and roadmap
-    This API is [in production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
-
-    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/suggestions/199324/gp-registrations-management-information-api).
-
-    If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
-
-    ## Service level
-    This API is a silver service, meaning it is operational 24 x 7 x 365 but only supported during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
-
-    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
-
-    ## Technology
-    This API uses HTTP POST to submit data.
-
-    ## Network access
-    This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
-
-    For more details, see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis#internet-only-apis).
-
-    ## Security and authorisation
-
-    This API is [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis),
-    meaning we authenticate the calling application but not the end user.
-    To use this access mode, use the following security pattern:
-    * [Application-restricted RESTful APIs - API key authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-api-key-authentication)
-
-    ## Environments and testing
-
-    | Environment       | Base URL                                                               |
-    | ----------------- | ---------------------------------------------------------------------- |
-    | Integration test  | `https://int.api.service.nhs.uk/gp-registrations-mi/`                  |
-    | Production        | `https://api.service.nhs.uk/gp-registrations-mi/`                      |
-
-
-    ### Integration testing
-    Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
-    * is for formal integration testing or early developer testing
-    * includes authorisation
-
-    ## Onboarding
-    You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
-
-    As part of this process, you need to demonstrate your technical conformance to the requirements for this API.
-    
-    To understand how our online digital onboarding process works, see [digital onboarding](https://digital.nhs.uk/developer/guides-and-documentation/digital-onboarding).
-
     <div class="nhsd-m-emphasis-box nhsd-m-emphasis-box--emphasis nhsd-!t-margin-bottom-6" aria-label="Highlighted Information">
         <div class="nhsd-a-box nhsd-a-box--border-blue">
             <div class="nhsd-m-emphasis-box__image-box">
                 <figure class="nhsd-a-image">
                     <picture class="nhsd-a-image__picture">
-                        <img src="http://digital.nhs.uk/binaries/content/gallery/icons/play-circle.svg?colour=231f20" alt="" style="object-fit:fill">
+                        <img src="http://digital.nhs.uk/binaries/content/gallery/icons/info.svg?colour=231f20" alt="" style="object-fit:fill">
                     </picture>
                 </figure>
             </div>
             <div class="nhsd-m-emphasis-box__content-box">
-                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">To get started, sign in or create a <a href="http://onboarding.prod.api.platform.nhs.uk/">developer account</a>, then select 'product onboarding'.</p></div>            
+                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is <a href="https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses">in production, beta but internal</a>, meaning the API is not currently available for integration by external third parties. If you want to use it, <a href="https://digital.nhs.uk/developer/help-and-support">contact us</a> and we'll look at making it available.</p></div>            
             </div>
         </div>
     </div>
+
+    ## Overview
+    Use this API to create and manage resources on NHS England's [API platform](https://digital.nhs.uk/services/api-platform).
+    This API is intended for API producers [building healthcare APIs](https://digital.nhs.uk/services/api-platform/building-healthcare-apis).
+
+    You can:
+    * Register new API definitions
+    * Publish API specifications
+    * Manage containers and secrets
+    * Use your OAS specification to manage API proxies, products and security patterns
+
+    In the future, you will be able to:
+    * Secure the connection to your target service (back end) with MTLS. (Currently only API Key security is supported.)
+    * Manage preview and live versions of your API's specification
+
+    ## Who can use this API
+    This API is currently for internal NHS England use only.
+
+    ## Related APIs
+    Can/should we remove this section?
+
+    ## API status and roadmap
+    This API is in [production, beta but internal](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
+    * we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
+    * it is only available for internal NHS England users
+
+    ## Service level
+    This API is a bronze service, meaning it is operational and supported only during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
+    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
+
+    ## Technology
+    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest-apis).
+
+    ## Network access
+    This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
+    For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
+
+    ## Security and authorisation
+    Todo
+
+    ## Environments and testing
+
+    | Environment       | Base URL                                                               |
+    | ----------------- | ---------------------------------------------------------------------- |
+    | Development       | `https://proxygen.ptl.api.platform.nhs.uk`                             |
+    | Production        | `https://proxygen.prod.api.platform.nhs.uk`                            |
+
+
+    ### Development environment
+    Our development environment:
+    * is for developers of the Proxygen service itself
+    * is not intended for [integration testing](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing)
+
+    ## Onboarding
+    This API is for internal NHS England users only. There is no onboarding process for external parties.
+    The 'Getting started as an API Producer' section of the API Management NHS England Platforms Confluence space provides instructions on how to engage with us and start using Proxygen.
 
     ## Errors
     We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
@@ -126,667 +82,976 @@ info:
     * 500 to 599 if it failed because of an error on our server
 
     Errors specific to each API are shown in the Endpoints section, under Response. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
-
-
   license:
     name: MIT
   contact:
-    email: gp-registrations-data@nhs.net
-
-tags:
-  - name: Registration
-    description: Endpoints to submit events for all stages of the patient registration.
-
+    name: API Management Support
+    email: api.management@nhs.net
+    url: 'https://digital.nhs.uk/developer/help-and-support'
 x-spec-publication:
-  operation-order:
-    - group: Registration
-      operations:
-        - method: POST
-          path: /registrations
-        - method: POST
-          path: /transfer-compatibility-statuses
-        - method: POST
-          path: /ehr-requests
-        - method: POST
-          path: /ehr-responses
-        - method: POST
-          path: /document-responses
-        - method: POST
-          path: /ready-to-integrate-statuses
-        - method: POST
-          path: /ehr-degrades
-        - method: POST
-          path: /ehr-integrations
-        - method: POST
-          path: /errors
+  operation-order: null
   try-this-api:
     disabled: true
+servers:
+  - url: 'https://internal-dev.api.service.nhs.uk/proxygen-specification'
+    description: Dummy environment. Required to appease Proxygen's OAS Parser which requires server URLs of a particular format.
+  # - url: 'https://proxygen.prod.api.platform.nhs.uk'
+  #   description: Production environment.
+  # - url: 'https://proxygen.ptl.api.platform.nhs.uk'
+  #   description: Development environment.
+tags:
+  - name: APIs
+  - name: Container Registry
+  - name: Instances
+  - name: Secrets
+  - name: Specifications
 paths:
-  /registrations:
-    post:
+  /apis:
+    get:
+      summary: Get list of APIs deployed through proxygen.
       tags:
-        - Registration
-      summary: Submit Registrations event
-      operationId: registrations
-      description: |
-        This event captures the details of the registration before the electronic transfer is initiated.
-
-        It includes information about the:
-        - sending practice
-        - status of the PDS trace
-        - type of registration
-        - GPLinks information
-
-        **Submitted by:** Requesting practice
-
-        **When to send:** When the user completes the registration. This event should be submitted for every regular patient registration.
-
-        Including, but not limited to, the following scenarios:
-
-        - The patient is new to the practice
-        - The patient is returning to the practice,
-        - The patient is already registered as a non-regular patient type (e.g. temporary, private etc) and is changing to a regular patient status (e.g. from temporary to regular patient)
-        - Registrations that will not trigger an electronic transfer of the EHR (e.g. the patient does not have a previous practice, or the previous practice is in Scotland)
-        - Registrations when a PDS trace is not performed
-
-        **Notes:** If a technical error or negative acknowledgment occurs, an Error event must be submitted, including the response code if applicable.
-
-        ### Request Body example:
-        ```json
-        {
-          "conversationId": "4345-986959-4930-684038",
-          "registrationEventDateTime": "2020-02-08T08:30:25Z",
-          "reportingSystemSupplier": "SYSTEM_SUPPLIER",
-          "reportingPracticeOdsCode": "ABC1234",
-          "requestingPracticeOdsCode": "ABC1234",
-          "sendingPracticeOdsCode": "XYZ4567",
-          "payload": {
-            "registration": {
-              "type": "NEW_GP_REGISTRATION",
-              "returningPatient": false,
-              "multifactorAuthenticationPresent": true
-            },
-            "demographicTraceStatus": {
-              "matched": false,
-              "reason": "no PDS trace results returned",
-              "multifactorAuthenticationPresent": true
-            },
-            "gpLinks": {
-              "gpLinksComplete": true
-            }
-          }
-        }
-        ```
-      security:
-        - app-level0: []
+        - APIs
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: hello-world
+              examples:
+                Example 1:
+                  value:
+                    - hello-world
+                    - personal-demographics
+      operationId: get-apis
+    post:
+      summary: Create pre-requisite resources for your API.
+      operationId: post-apis
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api'
+      description: ''
       requestBody:
-        description: |
-          The request body required for the Registrations event.
-        required: true
         content:
           application/json:
             schema:
-              type: object
-              allOf:
-                - $ref: components/schemas/BaseEventWithOptionalSendingPracticeOdsCode.yaml
-                - type: object
-                  required:
-                    - payload
+              $ref: '#/components/schemas/Api'
+  '/apis/{api_name}':
+    parameters:
+      - schema:
+          type: string
+          example: hello-world
+        name: api_name
+        in: path
+        required: true
+    get:
+      summary: Get an APIs deployed resources (secrets and instances)
+      tags:
+        - APIs
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/resource'
+              examples:
+                Example 1:
+                  value:
+                    - type: instance
+                      environment: internal-dev
+                      name: hello-world-test-123
+                    - type: secret
+                      environment: internal-dev
+                      name: my-secret
+      operationId: get-apis-api_name
+    put:
+      summary: Update pre-requisite resources for your API.
+      operationId: put-apis-api_name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api'
+        '422':
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: Path parameter api_name='hello-world' does match request body 'something-else'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Api'
+      tags:
+        - APIs
+    delete:
+      summary: Delete the pre-requisite resources for an API with no deployed resources
+      operationId: delete-apis-api_name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: Cannot delete API with deployed resources.
+      tags:
+        - APIs
+  '/apis/{api_name}/docker-token':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+    get:
+      summary: Get an access token for our ECR
+      tags:
+        - Container Registry
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: string
+                  password:
+                    type: string
+                  registry:
+                    type: string
+                  expiresAt:
+                    type: string
+                    format: date-time
+              examples:
+                Example 1:
+                  value:
+                    user: AWS
+                    password: '**********************'
+                    registry: 'https://958002497996.dkr.ecr.eu-west-2.amazonaws.com'
+                    expiresAt: '2022-10-26T02:05:39.540000+01:00'
+      operationId: get-apis-api_name-docker-token
+  '/apis/{api_name}/spec':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+    get:
+      summary: Get an API's spec
+      tags:
+        - Specifications
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaasOpenAPI'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: Not found
+      operationId: get-apis-api_name-spec
+      requestBody:
+        content: {}
+    put:
+      summary: Create or replace an API's spec
+      operationId: put-apis-api_name-spec
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaasOpenAPI'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaasOpenAPI'
+      tags:
+        - Specifications
+    delete:
+      summary: Delete an API's spec
+      operationId: delete-apis-api_name-spec
+      responses:
+        '204':
+          description: No Content
+      tags:
+        - Specifications
+  '/apis/{api_name}/environments':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+    get:
+      summary: Get everything deployed in environments for an API
+      tags:
+        - Instances
+        - Secrets
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/resource'
+              examples:
+                Example 1:
+                  value:
+                    - type: instance
+                      environment: internal-dev
+                      name: hello-world-example-123
+                    - type: secret
+                      environment: internal-dev
+                      name: my-secret-name
+      operationId: get-apis-api_name-environments
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - instance
+              - secret
+          in: query
+          name: _type
+  '/apis/{api_name}/environments/{environment}':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: environment
+        in: path
+        required: true
+    get:
+      summary: Get an API's resources deployed to a specific environment
+      tags:
+        - Instances
+        - Secrets
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resource'
+      operationId: get-apis-api_name-environments-environment
+  '/apis/{api_name}/environments/{environment}/secrets':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: environment
+        in: path
+        required: true
+    get:
+      summary: Get the secrets for an API in a specific environment
+      tags:
+        - Secrets
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/resource'
+              examples:
+                Example 1:
+                  value:
+                    - type: secret
+                      environment: internal-dev
+                      name: my-secret
+                    - type: secret
+                      environment: internal-dev
+                      name: another-secret
+      operationId: get-apis-api_name-environments-environment-secrets
+  '/apis/{api_name}/environments/{environment}/secrets/{secret_name}':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: environment
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: secret_name
+        in: path
+        required: true
+    put:
+      summary: Create or update a secret or API key
+      operationId: put-apis-api_name-environments-environment-secrets-secret_name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretDescription'
+              examples:
+                Example 1:
+                  value:
+                    name: my-secret
+                    type: secret
+                    last_modified: '2019-08-24T14:15:22Z'
+                    environment: internal-dev
+                    apikey: false
+                    version_id: 9e94c502-ca41-4342-a7f7-af96b444512c
+        '422':
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: Request body cannot be empty
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              minLength: 1
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - apikey
+          in: query
+          name: _type
+      tags:
+        - Secrets
+    delete:
+      summary: Delete a secret or API key
+      operationId: delete-apis-api_name-environments-environment-secrets-secret_name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretDescription'
+      tags:
+        - Secrets
+  '/apis/{api_name}/environments/{environment}/instances':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: environment
+        in: path
+        required: true
+    get:
+      summary: Get an API's instances for a specific environment
+      tags:
+        - Instances
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/resource'
+              examples:
+                Example 1:
+                  value:
+                    - type: instance
+                      environment: internal-dev
+                      name: hello-world-instance-1
+                    - type: instance
+                      environment: internal-dev
+                      name: hello-world-instance-2
+      operationId: get-apis-api_name-environments-environment-instances
+    post:
+      summary: Create an API instance in a specific environment
+      operationId: post-apis-api_name-environments-environment-instances
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaasOpenAPI'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: API hello-world already has an instance hello-world-123 in internal-dev
+      description: The instance name to be created is determined by base path of the server url
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaasOpenAPI'
+      tags:
+        - Instances
+  '/apis/{api_name}/environments/{environment}/instances/{instance_name}':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: environment
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: instance_name
+        in: path
+        required: true
+    get:
+      summary: Get a specific API instance
+      tags:
+        - Instances
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaasOpenAPI'
+      operationId: get-apis-api_name-environments-environment-instances-instance_name
+    put:
+      summary: Update or create an API instance
+      operationId: put-apis-api_name-environments-environment-instances-instance_name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaasOpenAPI'
+      description: The instance name supplied in the path parameter must match the one derived from the server.url
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaasOpenAPI'
+      tags:
+        - Instances
+    delete:
+      summary: Delete a specific API instance
+      operationId: delete-apis-api_name-environments-environment-instances-instance_name
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: No instance hello-world-123 in environment internal-dev
+      tags:
+        - Instances
+  /specs:
+    get:
+      summary: Get all specifications
+      tags:
+        - Specifications
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
                   properties:
-                    payload:
-                      description: An object that contains the detailed payload of the event.
-                      type: object
-                      required:
-                        - registration
-                        - demographicTraceStatus
-                        - gpLinks
-                      properties:
-                        registration:
-                          $ref: components/schemas/RegistrationWithAdditionalDetails.yaml
-                        demographicTraceStatus:
-                          $ref: components/schemas/DemographicTraceStatus.yaml
-                        gpLinks:
-                          $ref: components/schemas/GPLinks.yaml
-      responses:
-        '200':
-          $ref: components/responses/OK.yaml
-        '400':
-          $ref: components/responses/BadRequest.yaml
-        '500':
-          $ref: components/responses/InternalServerError.yaml
-
-  /transfer-compatibility-statuses:
-    post:
-      tags:
-        - Registration
-      summary: Submit Transfer Compatibility Statuses
-      operationId: transfer-compatibility-statuses
-      description: |
-        This event captures whether or not the registration is compatible with an electronic transfer of the patient’s record.
-        This event should be submitted for all registrations where a sending (previous) practice ODS code is present.
-
-        **Submitted by:** Requesting practice
-
-        **When to send:** When it is determined that an electronic transfer will or will not be triggered.
-
-        **Notes:** If a technical error or negative acknowledgment occurs, an Error event must be submitted, including the response code if applicable.
-
-        ### Request Body example:
-        ```json
-        {
-          "conversationId": "4345-986959-4930-684038",
-          "registrationEventDateTime": "2020-02-08T08:30:25Z",
-          "reportingSystemSupplier": "SYSTEM_SUPPLIER",
-          "reportingPracticeOdsCode": "ABC1234",
-          "requestingPracticeOdsCode": "ABC1234",
-          "sendingPracticeOdsCode": "XYZ4567",
-          "payload": {
-            "transferCompatibilityStatus": {
-              "internalTransfer": false,
-              "transferCompatible": false,
-              "reason": "Previous practice not eligible for transfer"
-            }
-          }
-        }
-        ```
-      security:
-        - app-level0: []
-      requestBody:
-        description: |
-          The request body required for the Transfer Compatability Statuses event.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              allOf:
-                - $ref: components/schemas/BaseEvent.yaml
-                - type: object
-                  required:
-                    - payload
-                  properties:
-                    payload:
-                      description: An object that contains the detailed payload of the event.
-                      type: object
-                      required:
-                        - transferCompatibilityStatus
-                      properties:
-                        transferCompatibilityStatus:
-                          $ref: components/schemas/TransferCompatibilityStatus.yaml
-      responses:
-        '200':
-          $ref: components/responses/OK.yaml
-        '400':
-          $ref: components/responses/BadRequest.yaml
-        '500':
-          $ref: components/responses/InternalServerError.yaml
-
-  /ehr-requests:
-    post:
-      tags:
-        - Registration
-      summary: Submit EHR Requests
-      operationId: ehr-requests
-      description: |
-        This event logs when the EHR request has been sent to the sending practice.
-
-        **Submitted by:** Requesting practice
-
-        **When to send:** When the EHR request has been sent to the sending practice.
-
-        **Notes:** If a technical error or negative acknowledgment occurs, an Error event must be submitted, including the response code if applicable.
-
-        ### Request Body example:
-        ```json
-        {
-          "conversationId": "4345-986959-4930-684038",
-          "registrationEventDateTime": "2020-02-08T08:30:25Z",
-          "reportingSystemSupplier": "SYSTEM_SUPPLIER",
-          "reportingPracticeOdsCode": "ABC1234",
-          "requestingPracticeOdsCode": "ABC1234",
-          "sendingPracticeOdsCode": "XYZ4567"
-        }
-        ```
-      security:
-        - app-level0: []
-      requestBody:
-        description: |
-          The request body required for the EHR Requests event.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              allOf:
-                - $ref: components/schemas/BaseEvent.yaml
-      responses:
-        '200':
-          $ref: components/responses/OK.yaml
-        '400':
-          $ref: components/responses/BadRequest.yaml
-        '500':
-          $ref: components/responses/InternalServerError.yaml
-
-  /ehr-responses:
-    post:
-      tags:
-        - Registration
-      summary: Submit EHR Responses
-      operationId: ehr-responses
-      description: |
-        This event logs when a response to the EHR request has been sent. It contains details of the EHR and attachment placeholders.
-
-        **Submitted by:** Sending practice
-
-        **When to send:** When the EHR response has been sent by the sending practice.
-
-        **Notes:** If a technical error or negative acknowledgment occurs, an Error event must be submitted, including the response code if applicable.
-
-        ### Request Body example:
-        ```json
-        {
-          "conversationId": "4345-986959-4930-684038",
-          "registrationEventDateTime": "2020-02-08T08:30:25Z",
-          "reportingSystemSupplier": "SYSTEM_SUPPLIER",
-          "reportingPracticeOdsCode": "ABC1234",
-          "requestingPracticeOdsCode": "ABC1234",
-          "sendingPracticeOdsCode": "XYZ4567",
-          "payload": {
-            "ehr": {
-              "ehrStructuredSizeBytes": 4096,
-              "placeholders": [
-                {
-                  "generatedBy": "PRE_EXISTING",
-                  "clinicalType": "SCANNED_DOCUMENT",
-                  "reason": "FILE_NOT_FOUND",
-                  "originalMimeType": "application/pdf"
-                },
-                {
-                  "generatedBy": "SENDER",
-                  "clinicalType": "AUDIO_DICTATION",
-                  "reason": "FILE_DELETED",
-                  "originalMimeType": "audio/mpeg"
-                }
-              ]
-            }
-          }
-        }
-        ```
-      security:
-        - app-level0: []
-      requestBody:
-        description: |
-          The request body required for the EHR Responses event.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              allOf:
-                - $ref: components/schemas/BaseEvent.yaml
-                - type: object
-                  required:
-                    - payload
-                  properties:
-                    payload:
-                      description: An object that contains the detailed payload of the event.
-                      type: object
-                      required:
-                        - ehr
-                      properties:
-                        ehr:
-                          properties:
-                            ehrStructuredSizeBytes:
-                              type: integer
-                              description: The total size in bytes of structured part of the GP2GP message (attachments are NOT to be included).
-                              example: 4956
-                            placeholders:
-                              $ref: components/schemas/Placeholder.yaml
-      responses:
-        '200':
-          $ref: components/responses/OK.yaml
-        '400':
-          $ref: components/responses/BadRequest.yaml
-        '500':
-          $ref: components/responses/InternalServerError.yaml
-
-  /document-responses:
-    post:
-      tags:
-        - Registration
-      summary: Submit Document Responses
-      operationId: document-responses
-      description: |
-        This event records the addition of an attachment to the patient record.
-
-        **Submitted by:** Requesting practice
-
-        **When to send:** As each document is processed and saved into the clinical system.
-
-        For HL7 v3 EHRs, this will be when the attachments are decoded from the message fragments.
-
-        For FHIR EHRs, this will be when the attachment transfer is complete.
-
-        **Notes:** If a technical error or negative acknowledgment occurs, an Error event must be submitted, including the response code if applicable.
-
-        ### Request Body example:
-        ```json
-        {
-          "conversationId": "4345-986959-4930-684038",
-          "registrationEventDateTime": "2020-02-08T08:30:25Z",
-          "reportingSystemSupplier": "SYSTEM_SUPPLIER",
-          "reportingPracticeOdsCode": "ABC1234",
-          "requestingPracticeOdsCode": "ABC1234",
-          "sendingPracticeOdsCode": "XYZ4567",
-          "payload": {
-            "attachment": {
-              "clinicalType": "SCANNED_DOCUMENT",
-              "mimeType": "application/pdf",
-              "sizeBytes": 3084322
-            },
-            "documentMigration": {
-              "successful": false,
-              "reason": "Large file size"
-            }
-          }
-        }
-        ```
-      security:
-        - app-level0: []
-      requestBody:
-        description: |
-          The request body required for the Document Responses event.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              allOf:
-                - $ref: components/schemas/BaseEvent.yaml
-                - type: object
-                  required:
-                    - payload
-                  properties:
-                    payload:
-                      description: An object that contains the detailed payload of the event.
-                      type: object
-                      required:
-                        - attachment
-                        - documentMigration
-                      properties:
-                        attachment:
-                          $ref: components/schemas/Attachment.yaml
-                        documentMigration:
-                          $ref: components/schemas/DocumentMigration.yaml
-      responses:
-        '200':
-          $ref: components/responses/OK.yaml
-        '400':
-          $ref: components/responses/BadRequest.yaml
-        '500':
-          $ref: components/responses/InternalServerError.yaml
-
-  /ready-to-integrate-statuses:
-    post:
-      tags:
-        - Registration
-      summary: Submit Ready to Integrate Statuses
-      operationId: /ready-to-integrate-statuses
-      description: |
-        This event logs when the EHR has been received and is awaiting the user in the receiving practice to integrate or reject.
-
-        **Submitted by:** Requesting practice
-
-        **When to send:** When the EHR has been received and has been make available for the user in the receiving practice to integrate or reject.
-
-        **Notes:** If a technical error or negative acknowledgment occurs, an Error event must be submitted, including the response code if applicable.
-
-        ### Request Body example:
-        ```json
-        {
-          "conversationId": "4345-986959-4930-684038",
-          "registrationEventDateTime": "2020-02-08T08:30:25Z",
-          "reportingSystemSupplier": "SYSTEM_SUPPLIER",
-          "reportingPracticeOdsCode": "ABC1234",
-          "requestingPracticeOdsCode": "ABC1234",
-          "sendingPracticeOdsCode": "XYZ4567"
-        }
-        ```
-      security:
-        - app-level0: []
-      requestBody:
-        description: |
-          The request body required for the Ready to Integrate Statuses event.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              allOf:
-                - $ref: components/schemas/BaseEvent.yaml
-      responses:
-        '200':
-          $ref: components/responses/OK.yaml
-        '400':
-          $ref: components/responses/BadRequest.yaml
-        '500':
-          $ref: components/responses/InternalServerError.yaml
-
-  /ehr-degrades:
-    post:
-      tags:
-        - Registration
-      summary: Submit EHR Degrades
-      operationId: ehr-degrades
-      description: |
-        This event gathers information about the degraded data within an EHR once it has been received.
-
-        The following information **MUST NOT** be sent:
-          - conversationID
-          - registrationEventDateTime
-          - reportingPracticeODSCode
-          - requestingPracticeODSCode
-          - sendingPracticeODSCode
-
-        **Submitted by:** Requesting practice
-
-        **When to send:** When the degrades for the EHR have been identified.
-
-        **Notes:** Submit Errors events **MUST NOT** be sent in relation to degrades.
-
-        **No information that relates the degrade to a particular transfer may be sent.**
-
-        ### Request Body example:
-        ```json
-        {
-          "reportingSystemSupplier": "SYSTEM_SUPPLIER",
-          "payload": {
-            "degrades": [
-              {
-                "type": "RECORD_ENTRY",
-                "reason": "CODE",
-                "coding": [
-                  {
-                    "code": "1676331000000110",
-                    "system": "http://snomed.info/sct"
-                  }
-                ]
-              }
-            ]
-          }
-        }
-        ```
-      security:
-        - app-level0: []
-      requestBody:
-        description: |
-          The request body required for the EHR Degrades event.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              allOf:
-                - type: object
-                  required:
-                    - reportingSystemSupplier
-                    - payload
-                  properties:
-                    reportingSystemSupplier:
+                    spec_id:
                       type: string
-                      description: The system supplier who generated the event. A unique identifier given to you as a supplier by NHSD.
-                      example: SupplierName
-                    payload:
-                      description: An object that contains the detailed payload of the event.
-                      type: object
-                      required:
-                        - degrades
-                      properties:
-                        degrades:
-                          $ref: components/schemas/Degrade.yaml
-
-      responses:
-        '200':
-          $ref: components/responses/OK.yaml
-        '400':
-          $ref: components/responses/BadRequest.yaml
-        '500':
-          $ref: components/responses/InternalServerError.yaml
-
-  /ehr-integrations:
-    post:
-      tags:
-        - Registration
-      summary: Submit EHR Integrations
-      operationId: ehr-integrations
-      description: |
-        This event gathers information about the success or failure of the integration of the record into the requesting practice clinical system.
-
-        **Submitted by:** Requesting practice
-
-        **When to send:** When the EHR has been integrated by the user at the requesting practice.
-
-        For HL7 v3 EHRs, this will be when the attachments are decoded from the message fragments.
-
-        For FHIR EHRs, this will be when the attachment transfer is complete.
-
-        **Notes:** If a technical error or negative acknowledgment occurs, an Error event must be submitted, including the response code if applicable.
-
-        ### Request Body example:
-        ```json
-        {
-          "conversationId": "4345-986959-4930-684038",
-          "registrationEventDateTime": "2020-02-08T08:30:25Z",
-          "reportingSystemSupplier": "SYSTEM_SUPPLIER",
-          "reportingPracticeOdsCode": "ABC1234",
-          "requestingPracticeOdsCode": "ABC1234",
-          "sendingPracticeOdsCode": "XYZ4567",
-          "payload": {
-            "integration": {
-              "outcome": "INTEGRATED"
-            }
-          }
-        }
-        ```
-      security:
-        - app-level0: []
-      requestBody:
-        description: |
-          The request body required for the EHR Integrations event.
+                      example: hello-world
+                    last_modified:
+                      type: string
+                      format: date-time
+              examples:
+                Example 1:
+                  value:
+                    - spec_id: hello-world
+                      last_modified: '2019-08-24T14:15:22Z'
+                    - spec_id: personal-demographics
+                      last_modified: '2019-08-22T12:14:11Z'
+      operationId: get-specs
+  '/specs/{api_name}':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
         required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              allOf:
-                - $ref: components/schemas/BaseEvent.yaml
-                - type: object
-                  required:
-                    - payload
-                  properties:
-                    payload:
-                      description: An object that contains the detailed payload of the event.
-                      type: object
-                      required:
-                        - integration
-                      properties:
-                        integration:
-                          $ref: components/schemas/Integration.yaml
-      responses:
-        '200':
-          $ref: components/responses/OK.yaml
-        '400':
-          $ref: components/responses/BadRequest.yaml
-        '500':
-          $ref: components/responses/InternalServerError.yaml
-
-  /errors:
-    post:
+    get:
+      summary: Get an API's specification
       tags:
-        - Registration
-      summary: Submit Errors
-      operationId: errors
-      description: |
-        This event gathers information about all errors and events that trigger the sending of a negative acknowledgement that occur during a registration.
-
-        This is used to understand errors and prioritise their resolution to support the successful transfer of patient EHRs.
-
-        **Submitted by:** Requesting practice or Sending practice, whichever encounters the issue
-
-        **When to send:** When an issue occurs that prevents the successful processing of the patient EHR (or a component of the EHR) then this endpoint should be called.
-
-        **Notes:** All negative acknowledgement defined in the specification must be reported as errors. However, this endpoint is not limited to negative acknowledgements.
-
-          Anytime a technical error occurs that prevents the transfers from starting or completing, this must be reported using this endpoint.
-
-          Error events **MUST NOT** be submitted for failures or errors relating to Degrades.
-
-        ### Request Body example:
-        ```json
-        {
-          "conversationId": "4345-986959-4930-684038",
-          "registrationEventDateTime": "2020-02-08T08:30:26Z",
-          "reportingSystemSupplier": "SYSTEM_SUPPLIER",
-          "reportingPracticeOdsCode": "ABC1234",
-          "requestingPracticeOdsCode": "ABC1234",
-          "sendingPracticeOdsCode": "XYZ4567",
-          "payload": {
-            "error": {
-              "errorCode": "99",
-              "errorDescription": "unexpected error",
-              "failurePoint": "EHR_RESPONSE"
-            }
-          }
-        }
-        ```
-      security:
-        - app-level0: []
-      requestBody:
-        description: |
-          The request body required for the Errors event.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              allOf:
-                - $ref: components/schemas/BaseEventWithOptionalSendingPracticeOdsCode.yaml
-                - type: object
-                  required:
-                    - payload
-                  properties:
-                    payload:
-                      description: An object that contains the detailed payload of the event.
-                      type: object
-                      required:
-                        - error
-                      properties:
-                        error:
-                          $ref: components/schemas/Error.yaml
+        - Specifications
       responses:
         '200':
-          $ref: components/responses/OK.yaml
-        '400':
-          $ref: components/responses/BadRequest.yaml
-        '500':
-          $ref: components/responses/InternalServerError.yaml
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaasOpenAPI'
+      operationId: get-specs-api_name
+components:
+  schemas:
+    Api:
+      title: Api
+      type: object
+      properties:
+        name:
+          type: string
+        api_registry_entry:
+          type: boolean
+          default: true
+        keycloak:
+          type: boolean
+          default: true
+        keycloak_client_jwks_resource_url:
+          type: string
+        docker_repositories:
+          type: array
+          uniqueItems: true
+          description: "Defaults to one repository with the same name as the API name.\r\n\r\nNames must be the same as, or start with, the API name.\r\n\r\nSend an empty list to have no repositories."
+          items:
+            type: string
+            example: hello-world
+      required:
+        - name
+    HTTPException:
+      title: HTTPException
+      type: object
+      properties:
+        detail:
+          type: string
+    LITERAL_ENVS:
+      title: LITERAL_ENVS
+      enum:
+        - internal-dev
+        - internal-dev-sandbox
+        - internal-qa
+        - internal-qa-sandbox
+        - ref
+        - dev
+        - int
+        - sandbox
+        - prod
+      description: ''
+    resource:
+      title: resource
+      type: object
+      properties:
+        type:
+          enum:
+            - instance
+            - secret
+        environment:
+          $ref: '#/components/schemas/LITERAL_ENVS'
+        name:
+          type: string
+      x-examples:
+        Example 1:
+          type: instance
+          environment: internal-dev
+          name: hello-world-test-123
+        Example 2:
+          type: secret
+          environment: internal-dev
+          name: my-secret-name
+    SecretDescription:
+      title: SecretDescription
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          enum:
+            - secret
+        last_modified:
+          type: string
+          format: date-time
+        environment:
+          $ref: '#/components/schemas/LITERAL_ENVS'
+        apikey:
+          type: boolean
+        version_id:
+          type: string
+          format: uuid
+      required:
+        - name
+        - type
+        - last_modified
+        - environment
+        - apikey
+        - version_id
+    PaasOpenAPI:
+      title: OAS v3.0.3 Specification with proxygen-specific constraints and extensions
+      description: |
+        # Todo
+        Describe how this isn't a full specification and why
+      type: object
+      required:
+        - openapi
+        - info
+        - servers
+        - paths
+      properties:
+        openapi:
+          type: string
+          enum:
+          - '3.0.3'
+        info:
+          type: object
+        externalDocs:
+          type: object
+        servers:
+          type: array
+          minLength: 1
+          items:
+            type: object
+            required:
+              - url
+            properties:
+              url:
+                type: string
+                # regex from proxygen.models.paas_open_api.server.URL_REGEX
+                pattern: '^https://(internal-dev.api|internal-dev-sandbox.api|internal-qa.api|internal-qa-sandbox.api|ref.api|dev.api|int.api|sandbox.api|api).service.nhs.uk/((([a-zA-Z0-9])+[-/]?)+([a-zA-Z0-9])+)$'
+              description:
+                type: string
+              variables:
+                type: object
+        security:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaasSecurityRequirement'
+        tags:
+          type: array
+        paths:
+          type: object
+          properties:
+            '^\/':
+              type: object
+              description: Some (any) path
+              properties:
+                summary:
+                  type: string
+                description:
+                  type: string
+                servers:
+                  type: array
+                parameters:
+                  type: array
+                get:
+                  $ref: '#/components/schemas/Operation'
+                put:
+                  $ref: '#/components/schemas/Operation'
+                post:
+                  $ref: '#/components/schemas/Operation'
+                delete:
+                  $ref: '#/components/schemas/Operation'
+                options:
+                  $ref: '#/components/schemas/Operation'
+                head:
+                  $ref: '#/components/schemas/Operation'
+                patch:
+                  $ref: '#/components/schemas/Operation'
+                trace:
+                  $ref: '#/components/schemas/Operation'
+        components:
+          type: object
+        x-nhsd-apim:
+          $ref: '#/components/schemas/XNhsdApim'
+                
+    Operation:
+      type: object
+      properties:
+        tags:
+          type: array
+        summary:
+          type: string
+        description:
+          type: string
+        externalDocs:
+          type: object
+        operationId:
+          type: string
+        servers:
+          type: array
+        security:
+          $ref: '#/components/schemas/PaasSecurityRequirement'
+        deprecated:
+          type: boolean
+        responses:
+          type: object
+        parameters:
+          type: object
+    
+    PaasSecurityRequirement:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/_PaasSecurity'
+
+    EmptyList:
+      type: array
+      maxItems: 0
+      # items: {}  - not sure what this does but was put in by stoplight so preserving it in case I want to put it back
+   
+    _PaasSecurity:
+      type: object
+      title: _PaasSecurity
+      description: Some description
+      oneOf:
+        - properties:
+            app_level0:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - app_level0
+        - properties:
+            app_level3:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - app_level3
+        - properties:
+            nhs_login_p0:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - nhs_login_p0
+        - properties:
+            nhs_login_p5:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - nhs_login_p5
+        - properties:
+            nhs_login_p9:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - nhs_login_p9
+        - properties:
+            nhs_cis2_aal1:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - nhs_cis2_aal1
+        - properties:
+            nhs_cis2_aal3:
+              $ref: '#/components/schemas/EmptyList'
+          additionalProperties: false
+          required:
+            - nhs_cis2_aal3
+      x-examples:
+        Example 1:
+          app_level0: []
+    XNhsdApim:
+      type: object
+      properties:
+        target:
+          $ref: '#/components/schemas/Target'
+        access:
+          type: array
+          items:
+            $ref: '#/components/schemas/Access'
+        ratelimiting:
+          $ref: '#/components/schemas/RateLimiting'
+        monitoring:
+          type: boolean
+          default: true
+        temporary:
+          type: boolean
+          default: false
+    Target:
+      allOf:
+        - $ref: '#/components/schemas/BaseTarget'
+      oneOf:
+      - $ref: '#/components/schemas/HostedTarget'
+      - $ref: '#/components/schemas/ExternalTarget'
+    BaseTarget:
+      type: object
+      properties:
+        healthcheck:
+          type: string
+          pattern: "^/"
+    Access:
+      type: object
+      required:
+        - title
+        - grants
+      properties:
+        title:
+          type: string
+        grants:
+          $ref: '#/components/schemas/PaasSecurityAccess'
+        visible:
+          type: boolean
+          default: true
+    PaasSecurityAccess:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/_PaasSecurity'
+    HostedTarget:
+      type: object
+      required:
+      - containers
+      properties:
+        containers:
+          type: array
+          minItems: 1
+          maxItems: 5
+          uniqueItems: True
+          items:
+            $ref: '#/components/schemas/Container'
+
+    Container:
+      type: object
+      required:
+      - name
+      - image
+      properties:
+        name:
+          type: string
+        image:
+          $ref: '#/components/schemas/Image'
+        environment:
+          description: Environment variables
+          type: object
+        primary:
+          type: boolean
+
+    Image:
+      type: object
+      required:
+      - name
+      - tag
+      properties:
+        name:
+          type: string
+        tag:
+          type: string
+    ExternalTarget:
+      type: object
+      required:
+      - url
+      - security
+      properties:
+        url:
+          type: string
+          format: uri
+        security:
+          $ref: '#/components/schemas/APIKeyBackendSecurity'
+    
+    APIKeyBackendSecurity:
+      type: object
+      required:
+      - type
+      - header
+      - secret
+      properties:
+        header:
+          type: string
+        secret:
+          type: string
+        type:
+          type: string
+          enum:
+            - 'apikey'
+
+    RateLimiting:
+      type: object
+      properties:
+        proxy:
+          $ref: '#/components/schemas/RateLimit'
+        app_default:
+          $ref: '#/components/schemas/RateLimit'
+    
+    RateLimit:
+      type: object
+      required:
+      - timeunit
+      - limit
+      properties:
+        timeunit:
+          type: string
+          enum:
+            - 'second'
+            - 'minute'
+            - 'hour'
+        limit:
+          type: integer
+          minimum: 0
+
+
+
