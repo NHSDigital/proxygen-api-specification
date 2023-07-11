@@ -89,7 +89,11 @@ info:
     email: api.management@nhs.net
     url: 'https://digital.nhs.uk/developer/help-and-support'
 x-spec-publication:
-  operation-order: null
+  # operation-order:
+  #   - group: Some group
+  #     operations:
+  #       - method: GET
+  #         path: /apis
   try-this-api:
     disabled: true
 servers:
@@ -99,18 +103,12 @@ servers:
   #   description: Production environment.
   # - url: 'https://proxygen.ptl.api.platform.nhs.uk'
   #   description: Development environment.
-tags:
-  - name: APIs
-  - name: Container Registry
-  - name: Instances
-  - name: Secrets
-  - name: Specifications
 paths:
   /apis:
+    description: A description for the whole path
     get:
       summary: Get list of APIs deployed through proxygen.
-      tags:
-        - APIs
+      description: A description for the GET operation specifically
       responses:
         '200':
           description: OK
@@ -153,8 +151,6 @@ paths:
         required: true
     get:
       summary: Get an APIs deployed resources (secrets and instances)
-      tags:
-        - APIs
       responses:
         '200':
           description: OK
@@ -199,8 +195,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Api'
-      tags:
-        - APIs
     delete:
       summary: Delete the pre-requisite resources for an API with no deployed resources
       operationId: delete-apis-api_name
@@ -221,8 +215,6 @@ paths:
                 Example 1:
                   value:
                     detail: Cannot delete API with deployed resources.
-      tags:
-        - APIs
   '/apis/{api_name}/docker-token':
     parameters:
       - schema:
@@ -232,8 +224,6 @@ paths:
         required: true
     get:
       summary: Get an access token for our ECR
-      tags:
-        - Container Registry
       responses:
         '200':
           description: OK
@@ -268,8 +258,6 @@ paths:
         required: true
     get:
       summary: Get an API's spec
-      tags:
-        - Specifications
       responses:
         '200':
           description: OK
@@ -305,16 +293,12 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PaasOpenAPI'
-      tags:
-        - Specifications
     delete:
       summary: Delete an API's spec
       operationId: delete-apis-api_name-spec
       responses:
         '204':
           description: No Content
-      tags:
-        - Specifications
   '/apis/{api_name}/environments':
     parameters:
       - schema:
@@ -324,9 +308,6 @@ paths:
         required: true
     get:
       summary: Get everything deployed in environments for an API
-      tags:
-        - Instances
-        - Secrets
       responses:
         '200':
           description: OK
@@ -368,9 +349,6 @@ paths:
         required: true
     get:
       summary: Get an API's resources deployed to a specific environment
-      tags:
-        - Instances
-        - Secrets
       responses:
         '200':
           description: OK
@@ -393,8 +371,6 @@ paths:
         required: true
     get:
       summary: Get the secrets for an API in a specific environment
-      tags:
-        - Secrets
       responses:
         '200':
           description: OK
@@ -473,8 +449,6 @@ paths:
               - apikey
           in: query
           name: _type
-      tags:
-        - Secrets
     delete:
       summary: Delete a secret or API key
       operationId: delete-apis-api_name-environments-environment-secrets-secret_name
@@ -485,8 +459,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SecretDescription'
-      tags:
-        - Secrets
   '/apis/{api_name}/environments/{environment}/instances':
     parameters:
       - schema:
@@ -501,8 +473,6 @@ paths:
         required: true
     get:
       summary: Get an API's instances for a specific environment
-      tags:
-        - Instances
       responses:
         '200':
           description: OK
@@ -548,8 +518,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PaasOpenAPI'
-      tags:
-        - Instances
   '/apis/{api_name}/environments/{environment}/instances/{instance_name}':
     parameters:
       - schema:
@@ -569,8 +537,6 @@ paths:
         required: true
     get:
       summary: Get a specific API instance
-      tags:
-        - Instances
       responses:
         '200':
           description: OK
@@ -595,8 +561,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PaasOpenAPI'
-      tags:
-        - Instances
     delete:
       summary: Delete a specific API instance
       operationId: delete-apis-api_name-environments-environment-instances-instance_name
@@ -613,13 +577,9 @@ paths:
                 Example 1:
                   value:
                     detail: No instance hello-world-123 in environment internal-dev
-      tags:
-        - Instances
   /specs:
     get:
       summary: Get all specifications
-      tags:
-        - Specifications
       responses:
         '200':
           description: OK
@@ -653,8 +613,6 @@ paths:
         required: true
     get:
       summary: Get an API's specification
-      tags:
-        - Specifications
       responses:
         '200':
           description: OK
