@@ -105,13 +105,17 @@ servers:
   #   description: Development environment.
 paths:
   /apis:
-    description: A description for the whole path
+    description: |
+      TODO: Does this description ever get rendered anywhere? Remove if not!
     get:
-      summary: Get list of APIs deployed through proxygen.
-      description: A description for the GET operation specifically
+      summary: List all APIs
+      description: |-
+        Get a list of all API names.
+
+        > This operation requires the **admin** permission.
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -120,27 +124,67 @@ paths:
                   type: string
                   example: hello-world
               examples:
-                Example 1:
+                api-list:
                   value:
                     - hello-world
                     - personal-demographics
       operationId: get-apis
+      parameters: []
     post:
-      summary: Create pre-requisite resources for your API.
+      summary: Register a new API
       operationId: post-apis
+      description: |-
+        Register a new API with Proxygen.
+
+        > This operation requires the **admin** permission.
+
+        Registers a new API with Proxygen, creating the following pre-requisite resources:
+
+        ### Keycloak policies and permissions
+        When `keycloak` is set to `true` (the default) policies and permissions are created in keycloak. These are required to permit access to users and machine clients to perform operations on this API through proxygen.
+
+        ### Machine client
+        When `keycloak` is set to `true` and a `keycloak_client_jwks_resource_url` is provided a machine client is created with client ID `{api-name}-client` with permissions to perform operations on this API through proxygen. See [Authorisation](#TODO).
+
+        ### API Registry entry
+        Creates an entry in the API registry unless `api_registry_entry` is set to `false`.
+
+        ### Docker repositories
+        The default behaviour is to create an [Elastic Container Registry](https://aws.amazon.com/ecr/) (ECR) Docker Repository for this API with the same name as the API.
+
+        Set `docker_repositories` to an empty list (`[]`) to skip creation of a repository.
+
+        Create one or more repositories with different names by setting the `docker_repositories` array. Repository names must start with (or be the same as) the API name.
       responses:
         '201':
-          description: Created
+          description: New API created.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Api'
-      description: ''
+              examples:
+                hello-world-api-created:
+                  value:
+                    name: hello-world
+                    api_registry_entry: true
+                    keycloak: true
+                    keycloak_client_jwks_resource_url: 'https://example.org/jwks'
+                    docker_repositories:
+                      - hello-world
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Api'
+            examples:
+              create-hello-world-api:
+                value:
+                  name: hello-world
+                  api_registry_entry: true
+                  keycloak: true
+                  keycloak_client_jwks_resource_url: 'https://example.org/jwks'
+                  docker_repositories:
+                    - hello-world
   '/apis/{api_name}':
     parameters:
       - schema:
@@ -150,10 +194,10 @@ paths:
         in: path
         required: true
     get:
-      summary: Get an APIs deployed resources (secrets and instances)
+      summary: Get an APIs deployed resources
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -161,17 +205,43 @@ paths:
                 items:
                   $ref: '#/components/schemas/resource'
               examples:
-                Example 1:
+                get-all-resources:
                   value:
-                    - type: instance
+                    - spec_hash: 437b930db84b8079c2dd804a71936b5f
+                      temporary: false
+                      type: instance
                       environment: internal-dev
-                      name: hello-world-test-123
+                      name: hello-world-123
+                      last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
+                      apikey: false
+                      version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-dev
-                      name: my-secret
+                      name: some-secret
+                      last_modified: '2022-10-12T11:39:45+00:00'
+                    - spec_hash: 437b930db84b8079c2dd804a71936b5f
+                      temporary: false
+                      type: instance
+                      environment: internal-qa
+                      name: hello-world-321
+                      last_modified: '2022-10-12T11:39:45+00:00'
+                    - type: secret
+                      apikey: false
+                      version_id: 106a9942-210f-4f43-9735-a9310a34daa7
+                      environment: internal-qa
+                      name: some-other-secret
+                      last_modified: '2022-10-12T11:39:45+00:00'
       operationId: get-apis-api_name
+      description: |-
+        Get a list of the deployed resources for an API.
+
+        > This operations requires the read permission for the specific API
+
+        Resource can be either 'secrets' or 'instances' (API proxies).
+
+        Resources in *all* environments are listed.
     put:
-      summary: Update pre-requisite resources for your API.
+      summary: Update an existing API
       operationId: put-apis-api_name
       responses:
         '200':
@@ -180,6 +250,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Api'
+              examples:
+                update-api-response:
+                  value:
+                    name: hello-world
+                    api_registry_entry: true
+                    keycloak: true
+                    keycloak_client_jwks_resource_url: 'https://example.org/new-jwks-endpoint'
+                    docker_repositories:
+                      - hello-world
+                      - hello-world-auxiliary
         '422':
           description: Unprocessable Entity (WebDAV)
           content:
@@ -195,16 +275,40 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Api'
+            examples:
+              update-api:
+                value:
+                  name: hello-world
+                  api_registry_entry: true
+                  keycloak: true
+                  keycloak_client_jwks_resource_url: 'https://example.org/new-jwks-endpoint'
+                  docker_repositories:
+                    - hello-world
+                    - hello-world-auxiliary
+      description: |-
+        Change the pre-requisite resources for an existing API. You can update anything except the API name.
+
+        > This operation requires the update permission fir the specific API
+
+        See [POST /apis](#post-apis) for details of the semantics of the request.
     delete:
-      summary: Delete the pre-requisite resources for an API with no deployed resources
+      summary: Delete an API
       operationId: delete-apis-api_name
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Api'
+              examples:
+                delete-api:
+                  value:
+                    name: hello-world
+                    api_registry_entry: false
+                    keycloak: false
+                    keycloak_client_jwks_resource_url: ''
+                    docker_repositories: []
         '400':
           description: Bad Request
           content:
@@ -215,6 +319,10 @@ paths:
                 Example 1:
                   value:
                     detail: Cannot delete API with deployed resources.
+      description: |-
+        Delete an API. The API must have no deployed resources for the operation to succeed.
+
+        > This operation requires the delete permission for the specific API
   '/apis/{api_name}/docker-token':
     parameters:
       - schema:
@@ -223,10 +331,10 @@ paths:
         in: path
         required: true
     get:
-      summary: Get an access token for our ECR
+      summary: Get a container registry access token
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -242,13 +350,25 @@ paths:
                     type: string
                     format: date-time
               examples:
-                Example 1:
+                docker-token:
                   value:
                     user: AWS
                     password: '**********************'
                     registry: 'https://958002497996.dkr.ecr.eu-west-2.amazonaws.com'
                     expiresAt: '2022-10-26T02:05:39.540000+01:00'
       operationId: get-apis-api_name-docker-token
+      description: |
+        Get an access token for an API's container registries.
+
+        > This operation requires the read permission for the specific API
+
+        An API may have one or more associated Elastic Container Registry (ECR) Docker repositories associated with it - see the [PUT /apis/{api_name}](#put-apis-api_name) and [POST /apis](#post-apis).
+
+        Use this endpoint to retrieve a short-lived access token (a username and password) and registry URI to access the registry:
+
+        ```
+        $ docker login --username <user> --password <password> <registry>
+        ```
   '/apis/{api_name}/spec':
     parameters:
       - schema:
@@ -257,14 +377,55 @@ paths:
         in: path
         required: true
     get:
-      summary: Get an API's spec
+      summary: Get the Specification for an API
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaasOpenAPI'
+              examples:
+                api-spec:
+                  value:
+                    openapi: 3.0.3
+                    info:
+                      version: 0.0.1
+                      title: Hello World API
+                      description: |
+                        ## Overview
+                        Use this API alongside our  [tutorials](https://digital.nhs.uk/developer/guides-and-documentation/tutorials) to teach yourself how to connect to our RESTful APIs.
+                        You can:
+                         - get a response from an open-access endpoint, where the calling application and the end users are not authenticated
+                         - get a response from an application-restricted endpoint, where the calling application is authenticated but the end user is not authenticated
+                         - get a response from a user-restricted endpoint, where the calling application and the end user are authenticated
+                      contact:
+                        name: API Management Support
+                        email: api.management@nhs.net
+                    servers:
+                      - url: 'https://sandbox.api.service.nhs.uk/specification/hello-world'
+                        description: Sandbox environment.
+                    paths:
+                      /hello/world:
+                        get:
+                          summary: Get a "Hello world!" response from an open-access endpoint
+                          operationId: getHello
+                          description: |
+                            ## Overview
+                            Use this endpoint alongside our [open-access REST API tutorial](https://digital.nhs.uk/developer/guides-and-documentation/tutorials/open-access-rest-api-tutorial) to learn how to connect to our APIs.
+                          responses:
+                            '200':
+                              description: Successful response.
+                              content:
+                                application/json:
+                                  schema:
+                                    type: object
+                                    properties:
+                                      message:
+                                        type: string
+                                        example: Hello world!
+                                  example:
+                                    message: Hello world!
         '404':
           description: Not Found
           content:
@@ -278,12 +439,20 @@ paths:
       operationId: get-apis-api_name-spec
       requestBody:
         content: {}
+      description: |-
+        Get an API's OpenAPI Specification (OAS).
+
+        > This operation require the read permission for the specific API
+
+        An API may have an OAS format specification which is (or will be) published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue).
+
+        Note that this is distinct from the OAS files that drive the generation of API's 'instances' (deployed API proxies). Instance-specific OAS files are typically derived from this specification, but include Proxygen-specific extensions.
     put:
-      summary: Create or replace an API's spec
+      summary: Create or replace the specification for an API
       operationId: put-apis-api_name-spec
       responses:
         '200':
-          description: OK
+          description: Successful request
           content:
             application/json:
               schema:
@@ -293,12 +462,63 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PaasOpenAPI'
+            examples:
+              update-api-specification:
+                value:
+                  openapi: 3.0.3
+                  info:
+                    version: 0.0.1
+                    title: Hello World API
+                    description: |
+                      ## Overview
+                      Use this API alongside our  [tutorials](https://digital.nhs.uk/developer/guides-and-documentation/tutorials) to teach yourself how to connect to our RESTful APIs.
+                      You can:
+                       - get a response from an open-access endpoint, where the calling application and the end users are not authenticated
+                       - get a response from an application-restricted endpoint, where the calling application is authenticated but the end user is not authenticated
+                       - get a response from a user-restricted endpoint, where the calling application and the end user are authenticated
+                    contact:
+                      name: API Management Support
+                      email: api.management@nhs.net
+                  servers:
+                    - url: 'https://sandbox.api.service.nhs.uk/specification/hello-world'
+                      description: Sandbox environment.
+                  paths:
+                    /hello/world:
+                      get:
+                        summary: Get a "Hello world!" response from an open-access endpoint
+                        operationId: getHello
+                        description: |
+                          ## Overview
+                          Use this endpoint alongside our [open-access REST API tutorial](https://digital.nhs.uk/developer/guides-and-documentation/tutorials/open-access-rest-api-tutorial) to learn how to connect to our APIs.
+                        responses:
+                          '200':
+                            description: Successful response.
+                            content:
+                              application/json:
+                                schema:
+                                  type: object
+                                  properties:
+                                    message:
+                                      type: string
+                                      example: Hello world!
+                                example:
+                                  message: Hello world!
+      description: |-
+        Create or replace (update) an API's OAS specification.
+
+        > This operation requires the update permission for the specific API
     delete:
-      summary: Delete an API's spec
+      summary: Delete the specification for an API
       operationId: delete-apis-api_name-spec
       responses:
         '204':
-          description: No Content
+          description: Specification deleted successfully
+      description: |-
+        Delete an API's OpenAPI Specification (OAS).
+
+        > This operation requires the delete permission for the specific API
+
+        An API may have an OAS format specification which is (or will be) published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue), however this is not mandatory. Using this operation you can delete the API's specification.
   '/apis/{api_name}/environments':
     parameters:
       - schema:
@@ -307,10 +527,10 @@ paths:
         in: path
         required: true
     get:
-      summary: Get everything deployed in environments for an API
+      summary: Get an APIs deployed resources (optionally just a specific type)
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -318,14 +538,32 @@ paths:
                 items:
                   $ref: '#/components/schemas/resource'
               examples:
-                Example 1:
+                get-resources-all-environments:
                   value:
-                    - type: instance
+                    - spec_hash: 437b930db84b8079c2dd804a71936b5f
+                      temporary: false
+                      type: instance
                       environment: internal-dev
-                      name: hello-world-example-123
+                      name: hello-world-123
+                      last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
+                      apikey: false
+                      version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-dev
-                      name: my-secret-name
+                      name: some-secret
+                      last_modified: '2022-10-12T11:39:45+00:00'
+                    - spec_hash: 437b930db84b8079c2dd804a71936b5f
+                      temporary: false
+                      type: instance
+                      environment: internal-qa
+                      name: hello-world-321
+                      last_modified: '2022-10-12T11:39:45+00:00'
+                    - type: secret
+                      apikey: false
+                      version_id: 106a9942-210f-4f43-9735-a9310a34daa7
+                      environment: internal-qa
+                      name: some-other-secret
+                      last_modified: '2022-10-12T11:39:45+00:00'
       operationId: get-apis-api_name-environments
       parameters:
         - schema:
@@ -333,8 +571,19 @@ paths:
             enum:
               - instance
               - secret
+            example: instance
           in: query
           name: _type
+      description: |-
+        Get a list of the deployed resources for an API.
+
+        > This operations requires the read permission for the specific API
+
+        Resource can be either 'secrets' or 'instances' (API proxies).
+
+        Retrieve instances of a specific type using the optional `_type` query parameter.
+
+        Resources in *all* environments are listed.
   '/apis/{api_name}/environments/{environment}':
     parameters:
       - schema:
@@ -348,15 +597,38 @@ paths:
         in: path
         required: true
     get:
-      summary: Get an API's resources deployed to a specific environment
+      summary: Get an APIs deployed resources for a specific environment
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/resource'
+                type: array
+                items:
+                  $ref: '#/components/schemas/resource'
+              examples:
+                get-resources-specific-environment:
+                  value:
+                    - spec_hash: 437b930db84b8079c2dd804a71936b5f
+                      temporary: false
+                      type: instance
+                      environment: internal-dev
+                      name: hello-world-123
+                      last_modified: '2022-10-12T11:39:45+00:00'
+                    - type: secret
+                      apikey: false
+                      version_id: 106a9942-210f-4f43-9735-a9310a34daa7
+                      environment: internal-dev
+                      name: some-secret
+                      last_modified: '2022-10-12T11:39:45+00:00'
       operationId: get-apis-api_name-environments-environment
+      description: |-
+        Get a list of the deployed resources for an API, in a specific environment.
+
+        > This operations requires the read permission for the specific API
+
+        Resource can be either 'secrets' or 'instances' (API proxies).
   '/apis/{api_name}/environments/{environment}/secrets':
     parameters:
       - schema:
@@ -379,17 +651,27 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/resource'
+                  $ref: '#/components/schemas/secret'
               examples:
-                Example 1:
+                get-secrets-for-environment:
                   value:
                     - type: secret
+                      apikey: true
+                      version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-dev
-                      name: my-secret
+                      name: some-secret
+                      last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
+                      apikey: true
+                      version_id: 4e03f1bd-f6d4-415e-bf04-10640136f031
                       environment: internal-dev
-                      name: another-secret
+                      name: some-other-secret
+                      last_modified: '2022-10-10T10:12:25+00:00'
       operationId: get-apis-api_name-environments-environment-secrets
+      description: |-
+        Get a list of stored secrets for an API, in a specific environment.
+
+        > This operations requires the read permission for the specific API
   '/apis/{api_name}/environments/{environment}/secrets/{secret_name}':
     parameters:
       - schema:
@@ -402,13 +684,17 @@ paths:
         name: environment
         in: path
         required: true
-      - schema:
-          type: string
+      - in: path
         name: secret_name
-        in: path
+        schema:
+          type: string
+          pattern: '^[a-zA-Z0-9_-]+$'
+          minLength: 1
+          maxLength: 400
+          example: some-secret
         required: true
     put:
-      summary: Create or update a secret or API key
+      summary: Create or update a secret
       operationId: put-apis-api_name-environments-environment-secrets-secret_name
       responses:
         '200':
@@ -416,9 +702,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SecretDescription'
+                $ref: '#/components/schemas/secret'
               examples:
-                Example 1:
+                put-secret-response:
                   value:
                     name: my-secret
                     type: secret
@@ -427,7 +713,7 @@ paths:
                     apikey: false
                     version_id: 9e94c502-ca41-4342-a7f7-af96b444512c
         '422':
-          description: Unprocessable Entity (WebDAV)
+          description: Unprocessable Entity
           content:
             application/json:
               schema:
@@ -442,6 +728,7 @@ paths:
             schema:
               type: string
               minLength: 1
+            examples: {}
       parameters:
         - schema:
             type: string
@@ -449,16 +736,39 @@ paths:
               - apikey
           in: query
           name: _type
+      description: |-
+        Create or update a secret or API Key
+
+        > This operation requires the update permission for the specific API
+
+        Created a named secret using this operation, specifying the secret name (key) in the path and secret value to be stored in the body of the request.
+
+        If the secret already exists it will be updated.
+
+        Optionally set the query parameter `_type=apikey` to mark this secret as an API Key which can be used to secure the connection between an instance (API Proxy) and back-end (target).
     delete:
       summary: Delete a secret or API key
       operationId: delete-apis-api_name-environments-environment-secrets-secret_name
       responses:
         '200':
-          description: OK
+          description: Secret deleted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SecretDescription'
+                $ref: '#/components/schemas/secret'
+              examples:
+                delete-secret:
+                  value:
+                    type: secret
+                    apikey: false
+                    version_id: 106a9942-210f-4f43-9735-a9310a34daa7
+                    environment: internal-dev
+                    name: some-secret
+                    last_modified: '2022-10-12T11:39:45+00:00'
+      description: |-
+        Delete a secret or API Key
+
+        > This operation requires the delete permission for the specific API
   '/apis/{api_name}/environments/{environment}/instances':
     parameters:
       - schema:
@@ -629,13 +939,19 @@ components:
       properties:
         name:
           type: string
+          description: API Name
+          example: hello-world
         api_registry_entry:
           type: boolean
           default: true
+          description: Whether to create an entry in the API Registry
         keycloak:
           type: boolean
           default: true
+          description: Whether to create Keycloak permissions for this API. Keycloak permissions are required to allow users/machine clients other than those with the admin permission to administer this API
         keycloak_client_jwks_resource_url:
+          description: The JWKS resource URL holding the public key for the default machine user admin client.
+          example: 'https://example.org/jwks-endpoint'
           type: string
         docker_repositories:
           type: array
@@ -665,53 +981,20 @@ components:
         - sandbox
         - prod
       description: ''
-    resource:
-      title: resource
+    base_resource:
+      title: base_resource
       type: object
+      x-examples: {}
       properties:
-        type:
-          enum:
-            - instance
-            - secret
         environment:
           $ref: '#/components/schemas/LITERAL_ENVS'
         name:
           type: string
-      x-examples:
-        Example 1:
-          type: instance
-          environment: internal-dev
-          name: hello-world-test-123
-        Example 2:
-          type: secret
-          environment: internal-dev
-          name: my-secret-name
-    SecretDescription:
-      title: SecretDescription
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          enum:
-            - secret
+          example: hello-world-123
         last_modified:
           type: string
           format: date-time
-        environment:
-          $ref: '#/components/schemas/LITERAL_ENVS'
-        apikey:
-          type: boolean
-        version_id:
-          type: string
-          format: uuid
-      required:
-        - name
-        - type
-        - last_modified
-        - environment
-        - apikey
-        - version_id
+          example: '2022-10-12T11:39:45+00:00'
     PaasOpenAPI:
       title: OAS v3.0.3 Specification with proxygen-specific constraints and extensions
       description: |
@@ -727,7 +1010,7 @@ components:
         openapi:
           type: string
           enum:
-          - '3.0.3'
+            - 3.0.3
         info:
           type: object
         externalDocs:
@@ -789,7 +1072,6 @@ components:
           type: object
         x-nhsd-apim:
           $ref: '#/components/schemas/XNhsdApim'
-                
     Operation:
       type: object
       properties:
@@ -813,17 +1095,13 @@ components:
           type: object
         parameters:
           type: object
-    
     PaasSecurityRequirement:
       type: object
       allOf:
-      - $ref: '#/components/schemas/_PaasSecurity'
-
+        - $ref: '#/components/schemas/_PaasSecurity'
     EmptyList:
       type: array
       maxItems: 0
-      # items: {}  - not sure what this does but was put in by stoplight so preserving it in case I want to put it back
-   
     _PaasSecurity:
       type: object
       title: _PaasSecurity
@@ -895,14 +1173,14 @@ components:
       allOf:
         - $ref: '#/components/schemas/BaseTarget'
       oneOf:
-      - $ref: '#/components/schemas/HostedTarget'
-      - $ref: '#/components/schemas/ExternalTarget'
+        - $ref: '#/components/schemas/HostedTarget'
+        - $ref: '#/components/schemas/ExternalTarget'
     BaseTarget:
       type: object
       properties:
         healthcheck:
           type: string
-          pattern: "^/"
+          pattern: ^/
     Access:
       type: object
       required:
@@ -919,30 +1197,29 @@ components:
     PaasSecurityAccess:
       type: object
       allOf:
-      - $ref: '#/components/schemas/_PaasSecurity'
+        - $ref: '#/components/schemas/_PaasSecurity'
     HostedTarget:
       type: object
       required:
-      - containers
-      - type
+        - containers
+        - type
       properties:
         type:
           type: string
           enum:
-           - hosted
+            - hosted
         containers:
           type: array
           minItems: 1
           maxItems: 5
-          uniqueItems: True
+          uniqueItems: true
           items:
             $ref: '#/components/schemas/Container'
-
     Container:
       type: object
       required:
-      - name
-      - image
+        - name
+        - image
       properties:
         name:
           type: string
@@ -953,12 +1230,11 @@ components:
           type: object
         primary:
           type: boolean
-
     Image:
       type: object
       required:
-      - name
-      - tag
+        - name
+        - tag
       properties:
         name:
           type: string
@@ -967,26 +1243,25 @@ components:
     ExternalTarget:
       type: object
       required:
-      - url
-      - security
-      - type
+        - url
+        - security
+        - type
       properties:
         type:
           type: string
           enum:
-           - external
+            - external
         url:
           type: string
           format: uri
         security:
           $ref: '#/components/schemas/APIKeyBackendSecurity'
-    
     APIKeyBackendSecurity:
       type: object
       required:
-      - type
-      - header
-      - secret
+        - type
+        - header
+        - secret
       properties:
         header:
           type: string
@@ -995,8 +1270,7 @@ components:
         type:
           type: string
           enum:
-            - 'apikey'
-
+            - apikey
     RateLimiting:
       type: object
       properties:
@@ -1004,22 +1278,80 @@ components:
           $ref: '#/components/schemas/RateLimit'
         app_default:
           $ref: '#/components/schemas/RateLimit'
-    
     RateLimit:
       type: object
       required:
-      - timeunit
-      - limit
+        - timeunit
+        - limit
       properties:
         timeunit:
           type: string
           enum:
-            - 'second'
-            - 'minute'
-            - 'hour'
+            - second
+            - minute
+            - hour
         limit:
           type: integer
           minimum: 0
-
-
-
+    instance:
+      title: instance
+      allOf:
+        - type: object
+          properties:
+            spec_hash:
+              type: string
+              example: 437b930db84b8079c2dd804a71936b5f
+            temporary:
+              type: boolean
+              default: false
+            type:
+              enum:
+                - instance
+        - $ref: '#/components/schemas/base_resource'
+      x-examples:
+        Example 1:
+          spec_hash: string
+          temporary: false
+          type: instance
+          environment: internal-dev
+          name: hello-world-123
+          last_modified: '2022-10-12T11:39:45+00:00'
+    resource:
+      oneOf:
+        - $ref: '#/components/schemas/instance'
+        - $ref: '#/components/schemas/secret'
+      title: resource
+    secret:
+      title: secret
+      allOf:
+        - type: object
+          properties:
+            type:
+              enum:
+                - secret
+            apikey:
+              type: boolean
+            version_id:
+              type: string
+              format: uuid
+              example: 106a9942-210f-4f43-9735-a9310a34daa7
+        - $ref: '#/components/schemas/base_resource'
+  parameters:
+    Authorization:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+        pattern: Bearer .+
+    secret_name:
+      name: secret_name
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 400
+        example: some-secret
+        pattern: '^[a-zA-Z0-9_-]+$'
+  securitySchemes: {}
