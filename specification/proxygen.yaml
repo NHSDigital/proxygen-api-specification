@@ -19,8 +19,8 @@ info:
     </div>
 
     ## Overview
-    Use this API to create and manage resources on NHS England's API Management platform.
-    This API is intended for NHS England internal product teams to make services available over the internet.
+    Use this API to create and manage resources on NHS England's [API platform](https://digital.nhs.uk/services/api-platform).
+    This API is intended for API producers [building healthcare APIs](https://digital.nhs.uk/services/api-platform/building-healthcare-apis).
 
     You can:
     * Register new API definitions
