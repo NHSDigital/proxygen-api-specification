@@ -20,20 +20,20 @@ jobs:
         poetry install
 
     - name: Calculate version
-      run: echo "VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
+      run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
 
-    - name: Set OAS info.version to ${{ env.VERSION }}
-      run: sed -i 's/__VERSION__/${{ env.VERSION }}/g' specification/proxygen.yaml
+    - name: Set OAS info.version to ${{ env.SPEC_VERSION }}
+      run: sed -i 's/__VERSION__/${{ env.SPEC_VERSION }}/g' specification/proxygen.yaml
 
     - name: Vacuum OpenAPI Spec linter
       uses: eduelias/gha-vacuum@v0.0.1
       with:
         cmd: vacuum lint -d specification/proxygen.yaml
 
-    - name: Create Release ${{ env.VERSION }}
+    - name: Create Release ${{ env.SPEC_VERSION }}
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ env.VERSION }}
+        tag_name: ${{ env.SPEC_VERSION }}
 
     - name: Setup proxygen-cli
       env:
