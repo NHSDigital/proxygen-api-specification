@@ -55,7 +55,89 @@ info:
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Security and authorisation
-    Todo
+
+    This API has support both [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) and [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis) access modes.
+
+    Proxygen's permission model is implemented in a separate OAuth2 authorisation and authentication service: Keycloak.
+
+    Proxygen uses the `api-producers` realm. The base url is: `https://identity.prod.api.platform.nhs.uk/realms/api-producers`
+
+    Proxygen users and clients first authenticate with Keycloak and obtain an **access token**. When making calls to Proxygen include this token in the `Authorization` header using the `Bearer <token>` scheme.
+
+    ### Application-restricted access
+
+    To use this access mode, use the following security pattern:
+
+    - [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
+
+    > The instructions in the above guide are valid, but the implementation details/endpoints differ.
+
+    In application-restricted access mode a token is obtained by performing a *client credentials* grant request, with an assertion type of `jwt-bearer` (a signed JWT).
+
+    #### Requirements
+
+    During API registration ([POST /apis](#post-apis)) a **public key** is supplied as a JWKS endpoint.
+
+    A 'machine user' **client** is created having a client ID of `<api_name>-client` and is associated with this public key.
+
+    You use this client ID and the corresponding **private key** to authenticate against Keycloak and obtain an access token.
+
+    #### Example
+
+    To authenticate as the `hello-world` API machine user, having:
+
+    - a Client ID of `hello-world-client`
+    - a private key file
+    - The KID of the corresponding public key in the JWKS endpoint: `prod-1`
+
+    ```python
+    import uuid
+    from time import time
+
+    import requests
+    import jwt  # pyjwt library
+
+    REALM_URL = "https://identity.prod.api.platform.nhs.uk/realms/api-producers"
+    PRIVATE_KEY_FILE = "/home/alexh/hello-world-client-prod-1.key"
+    CLIENT_ID = "hello-world-client"
+    KID = "prod-1"
+
+    claims = {
+        "sub": CLIENT_ID,
+        "iss": CLIENT_ID,
+        "jti": str(uuid.uuid4()),
+        "aud": REALM_URL,
+        "exp": int(time()) + 300,
+    }
+
+    with open(PRIVATE_KEY_FILE, "r") as f:
+        private_key = f.read()
+
+    client_assertion = jwt.encode(
+      claims, private_key, algorithm="RS512", headers={'kid': KID}
+    )
+
+    token_response = requests.post(
+        f"{REALM_URL}/protocol/openid-connect/token",
+        data={
+            "grant_type": "client_credentials",
+            "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+            "client_assertion": client_assertion,
+        },
+    )
+
+    access_token = token_response.json()["access_token"]
+
+    # Make a request to a protected endpoint
+    response = requests.get(
+        "https://proxygen.prod.api.platform.nhs.uk/apis/hello-world",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    ```
+
+    #### User-restricted access
+
+    To be documented.
 
     ## Environments and testing
 
@@ -82,6 +164,84 @@ info:
     * 500 to 599 if it failed because of an error on our server
 
     Errors specific to each API are shown in the Endpoints section, under Response. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
+
+    ## Concepts and terminology
+
+    ### API
+
+    The top-level concept in Proxygen. Uniquely identified by its kebab-case **API name**. 
+
+    > The example API in this documentation is `hello-world`
+
+    An API is typically created with the following **pre-requisite resources**:
+
+    - **Machine client**
+    An OAuth v2 client that can be directly authenticated against, secured by a public-private keypair, with permissions to perform operations against this API. Intended for use in CI/CD pipelines. In our example API the client ID is `hello-world-client`.
+    See [Authorisation](#authorisation).
+    - **Docker Repositories**
+    An API may have one or more associated Docker Repositories. These are typically used to store container images which can be referenced in API instances as *hosted targets*.
+    See [GET /apis/{api_name}/docker-token](#get-apis-api_name-docker-token) and the `target` section of the `[x-nhsd-apim](#TODO)` OAS Extension reference.
+    - **Keycloak policies and permissions**
+    The ability act on APIs in Proxygen is controlled by a permission model implemented in a separate authentication and authorisation provider: Keycloak.
+    See [Security and authorisation](#security-and-authorisation).
+    - **API Registry entry**
+    A central registry of each API. The name (eg `hello-world`), short name eg (eg `hw`) are recorded against a GUID. This allows tracking of APIs through name changes and provides a canonical reference of everything on the API Platform.
+
+    These pre-requisite resources can be updated or enabled/disabled after creation.
+
+    ### Specification
+
+    Each API may have a single OpenAPI Specification (v3.0.3) which will be published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue) for reference by API Consumers. Refer to the [Writing you API documentation](https://nhsd-confluence.digital.nhs.uk/display/APM/Writing+your+API+documentation) section of the API Platform Confluence space for guidance and best-practices.
+
+    #### API specification vs instance specification
+
+    An 'API specification' is distinct from the 'instance specification' which drives the creation of API *Instances*.
+
+    | Specification type | Endpoints | Purpose | API Catalogue |
+    | --- | --- | --- | --- |
+    | API Specification | `GET`, `PUT` `/apis/{api_name}/spec`<br>`GET` `/specs/{api_name}` | Reference for the API (service) as a whole. | Publishes to the API Catalogue |
+    | Instance Specification | `POST` `/apis/{api_name}/environments/{environment}/instances`<br>`GET`, `PUT` `/apis/{api_name}/environments/{environment}/instances/{instance_name}` | Manages an API Instance | Does not publish to the API Catalogue |
+
+    ### Instances, secrets, and environments
+
+    #### Environments
+
+    API Instances and Secrets are deployed into a specific *environment*. Environments are logically divided into three categories:
+
+    - **Internal PTL:**  `internal-dev`, `internal-dev-sandbox`, `internal-qa-sandbox`, `internal-qa`, `internal-qa-sandbox`, `ref`
+    Used by API Producers in the development and testing of API Proxies.
+    - **External PTL:** `dev`, `int`, `sandbox`
+    Used by API Consumers in their development of services integrating with the API Platform
+    - **Production:** `prod`
+    The production environment.
+
+    > All environments are treated equally with the exception of **production** which requires additional permissions.
+
+    #### Instances
+
+    API *instances* are configured from a supplied **instance-specific OpenAPI specification** (OAS).
+
+    > See [OpenAPI Specification Constraints and Extensions](#openapi-specification-constraints-and-extensions) for the full explanation of the format of this specification.
+
+    An API instance is essentially an API Proxy which routes requests to some back-end service. It is deployed in a specific *environment.*
+
+    An API instance has an **instance name** which is derived from the base path of the `servers.0.server.url` property of the OAS. 
+
+    > A server URL of `https://internal-dev.api.service.nhs.uk/hello-world/pr123` would map to the instance name `hello-world_pr123`
+
+    An API instance may:
+
+    - have one or more **API Products** for API consumers to subscribe to
+    - implement **rate limiting**
+    - send traffic to a **back-end service** or a **hosted container**
+    - implement one or more **security patterns** controlling how API clients can authenticate
+
+    #### Secrets
+
+    Proxygen can be used to store secret values. 
+
+    ## OpenAPI Specification Constraints and Extensions
+
   license:
     name: MIT
   contact:
