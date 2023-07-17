@@ -13,7 +13,7 @@ info:
                 </figure>
             </div>
             <div class="nhsd-m-emphasis-box__content-box">
-                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is <a href="https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses">in production, beta but internal</a>, meaning the API is not currently available for integration by external third parties. If you want to use it, <a href="https://digital.nhs.uk/developer/help-and-support">contact us</a> and we'll look at making it available.</p></div>            
+                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is <a href="https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses">in production, beta but internal</a>, meaning the API is not currently available for integration by external third parties. If you want to use it, <a href="https://digital.nhs.uk/developer/help-and-support">contact us</a> and we'll look at making it available.</p></div>
             </div>
         </div>
     </div>
@@ -169,7 +169,7 @@ info:
 
     ### API
 
-    The top-level concept in Proxygen. Uniquely identified by its kebab-case **API name**. 
+    The top-level concept in Proxygen. Uniquely identified by its kebab-case **API name**.
 
     > The example API in this documentation is `hello-world`
 
@@ -225,7 +225,7 @@ info:
 
     An API instance is essentially an API Proxy which routes requests to some back-end service. It is deployed in a specific *environment.*
 
-    An API instance has an **instance name** which is derived from the base path of the `servers.0.server.url` property of the OAS. 
+    An API instance has an **instance name** which is derived from the base path of the `servers.0.server.url` property of the OAS.
 
     > A server URL of `https://internal-dev.api.service.nhs.uk/hello-world/pr123` would map to the instance name `hello-world_pr123`
 
@@ -238,7 +238,9 @@ info:
 
     #### Secrets
 
-    Proxygen can be used to store secret values. 
+    Proxygen can be used to store secret values; primarily for use by proxies which are configured for externally hosted target servers. Secrets have a `_type` attribute, which indicate their upstream use. Currently supported secret types are:
+
+    - `apikey` - used when employing API Key security between the API Platform and back-end 'target' servers - this will be added to HTTP requests to the target as the value of the 'apikey' header.
 
     ## OpenAPI Specification Constraints and Extensions
 
@@ -448,7 +450,7 @@ paths:
       description: |-
         Change the pre-requisite resources for an existing API. You can update anything except the API name.
 
-        > This operation requires the update permission fir the specific API
+        > This operation requires the update permission for the specific API
 
         See [POST /apis](#post-apis) for details of the semantics of the request.
     delete:
@@ -1439,8 +1441,11 @@ components:
       properties:
         header:
           type: string
+          description: The name of the HTTP header, added by the API Platform, which will contain the API key.
+          example: apikey (the default)
         secret:
           type: string
+          description: The name of a `secret` resource, which must already be deployed into the relevant environment.
         type:
           type: string
           enum:
