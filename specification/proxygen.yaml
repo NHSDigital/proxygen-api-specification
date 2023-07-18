@@ -262,7 +262,7 @@ info:
 
     #### Security Scheme Constraints
     ##### Schema path: `components.securitySchemes`
-    This list may contain only the two exact items listed below:
+    This list may contain only the two exact items listed below. these should be referenced in the [security](https://swagger.io/specification/#security-requirement-object) property of path [Operations Objects](https://swagger.io/specification/#operation-object).
 
     components:
     ```
@@ -272,6 +272,11 @@ info:
       app-level0:
         $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level0
     ```
+
+    ### Extensions
+    #### x-nhsd-apim
+    Tthis section descripbed the API back-end and is the primary source of information for infrastructure to be deployed by Proxygen.
+    See the schema definition below for a full list of which available/required attributes.
 
   license:
     name: MIT
@@ -1359,22 +1364,28 @@ components:
           app_level0: []
     XNhsdApim:
       type: object
+      description: |
+        This section defines the infrastructure and resources required to deploy the Proxy.
       properties:
         target:
+          description: Creates a back-end target for this API on the API platform.
           $ref: '#/components/schemas/Target'
         access:
           type: array
+          description: Defines a list of API Prodcts to be deployed within the API Platform.
           items:
             $ref: '#/components/schemas/Access'
         ratelimiting:
           $ref: '#/components/schemas/RateLimiting'
         monitoring:
+          description: Adds _ping and _status endpoints to the list of endpoints to be monitored
           type: boolean
           default: true
         temporary:
           type: boolean
           default: false
     Target:
+      description: Describes the API back-end and therefore associated infrastructure for deployment.
       allOf:
         - $ref: '#/components/schemas/BaseTarget'
       oneOf:
@@ -1384,6 +1395,7 @@ components:
       type: object
       properties:
         healthcheck:
+          description: The path of the healthcheck endpoint on the back-end.
           type: string
           pattern: ^/
     Access:
@@ -1401,10 +1413,12 @@ components:
           default: true
     PaasSecurityAccess:
       type: object
+      description: Grant access to this view using items defined in `securitySchemes`
       allOf:
         - $ref: '#/components/schemas/_PaasSecurity'
     HostedTarget:
       type: object
+      description: The back-end target is hosted using Docker container(s) within the API Platform.
       required:
         - containers
         - type
@@ -1414,6 +1428,7 @@ components:
           enum:
             - hosted
         containers:
+          description: A list of Docker containers to deploy with each API instance.
           type: array
           minItems: 1
           maxItems: 5
@@ -1434,9 +1449,11 @@ components:
           description: Environment variables
           type: object
         primary:
+          description: The primary container is the one which will handle incoming requests. It is expected that this container exposes HTTP port 9000.
           type: boolean
     Image:
       type: object
+      description: A container image whihch must be available in the AWS ECR.
       required:
         - name
         - tag
@@ -1447,6 +1464,7 @@ components:
           type: string
     ExternalTarget:
       type: object
+      description: The API back-end is hosted externally to the API Platform. Reqeusts will be sent sent out to the provided URL.
       required:
         - url
         - security
@@ -1463,6 +1481,7 @@ components:
           $ref: '#/components/schemas/APIKeyBackendSecurity'
     APIKeyBackendSecurity:
       type: object
+      description: A target back-end which is secured using an API key, which will be included in the configured HTTP request header.
       required:
         - type
         - header
@@ -1481,6 +1500,7 @@ components:
             - apikey
     RateLimiting:
       type: object
+      description: Rate limits can be described per-proxy and/or a default for the entire app.
       properties:
         proxy:
           $ref: '#/components/schemas/RateLimit'
