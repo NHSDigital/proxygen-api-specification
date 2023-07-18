@@ -191,7 +191,7 @@ info:
 
     ### Specification
 
-    Each API may have a single OpenAPI Specification (v3.0.3) which will be published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue) for reference by API Consumers. Refer to the [Writing you API documentation](https://nhsd-confluence.digital.nhs.uk/display/APM/Writing+your+API+documentation) section of the API Platform Confluence space for guidance and best-practices.
+    Each API may have a single OpenAPI Specification (v3.0.3) which will be published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue) for reference by API Consumers. Refer to the [Writing your API documentation](https://nhsd-confluence.digital.nhs.uk/display/APM/Writing+your+API+documentation) section of the API Platform Confluence space for guidance and best-practices.
 
     #### API specification vs instance specification
 
@@ -243,6 +243,35 @@ info:
     - `apikey` - used when employing API Key security between the API Platform and back-end 'target' servers - this will be added to HTTP requests to the target as the value of the 'apikey' header.
 
     ## OpenAPI Specification Constraints and Extensions
+
+    ### Constraints
+
+    #### OpenAPI Version Restriction to 3.0.3
+    ##### Schema path: `openapi`
+    E.g.:
+
+    `openapi: 3.0.3`
+
+    #### List of servers must contain a single item
+    ##### Schema path: `servers`
+    E.g.:
+    ```
+    servers:
+     - url: 'https://internal-dev-sandbox.api.service.nhs.uk/apiname'
+    ```
+
+    #### Security Scheme Constraints
+    ##### Schema path: `components.securitySchemes`
+    This list may contain only the two exact items listed below:
+
+    components:
+    ```
+    securitySchemes:
+      nhs-login-p5:
+        $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p5
+      app-level0:
+        $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level0
+    ```
 
   license:
     name: MIT
