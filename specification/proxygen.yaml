@@ -285,11 +285,60 @@ info:
     email: api.management@nhs.net
     url: 'https://digital.nhs.uk/developer/help-and-support'
 x-spec-publication:
-  # operation-order:
-  #   - group: Some group
-  #     operations:
-  #       - method: GET
-  #         path: /apis
+  operation-order:
+    - group: APIs
+      operations:
+        - method: GET
+          path: /apis
+        - method: POST
+          path: /apis
+        - method: PUT
+          path: /apis/{api-name}
+        - method: DELETE
+          path: /apis/{api-name}
+    - group: Specifications
+      operations:
+        - method: GET
+          path: /specs
+        - method: GET
+          path: /specs/{api_name}
+        - method: GET
+          path: /apis/{api-name}/spec
+        - method: PUT
+          path: /apis/{api-name}/spec
+        - method: DELETE
+          path: /apis/{api-name}/spec
+    - group: Resources
+      operations:
+        - method: GET
+          path: /apis/{api-name}
+        - method: GET
+          path: /apis/{api-name}/docker-token
+        - method: GET
+          path: /apis/{api_name}/environments
+        - method: GET
+          path: /apis/{api_name}/environments/{environment}
+        - method: GET
+          path: /apis/{api_name}/environments/{environment}/secrets
+        - method: PUT
+          path: /apis/{api_name}/environments/{environment}/secrets/{secret_name}
+        - method: DELETE
+          path: /apis/{api_name}/environments/{environment}/secrets/{secret_name}
+        - method: GET
+          path: /apis/{api_name}/environments/{environment}/secrets/{secret_name}
+    - group: Instances
+      operations:
+        - method: GET
+          path: /apis/{api-name}/environments/{environment}/instances
+        - method: POST
+          path: /apis/{api-name}/environments/{environment}/instances
+        - method: GET
+          path: /apis/{api-name}/environments/{environment}/instances/{instance_name}
+        - method: PUT
+          path: /apis/{api-name}/environments/{environment}/instances/{instance_name}
+        - method: DELETE
+          path: /apis/{api-name}/environments/{environment}/instances/{instance_name}
+
   try-this-api:
     disabled: true
 servers:
