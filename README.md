@@ -80,3 +80,12 @@ This repo is for an OAS specification file. As such there are no dependencies **
 An OpenAPI linter
 - [proxygen-cli](https://github.com/NHSDigital/proxygen-cli)
 Deploys the specification
+
+### Secrets Required by Github Worflows
+The Github workflows use the Proxygen CLI to perform automated deployment and therefore require some secrets to be defined. The current values for these are always stored in the APIM Prod AWS Secrets Manager.
+
+| Workflow Variable | AWS SM Path |
+| ----------- | ----------- |
+| PROXYGEN_CLIENT_ID | prod/proxygen-api-specification/client_id |
+| PROXYGEN_KID | prod/proxygen-api-specification/key_id |
+| ENCODED_PROXYGEN_PRIVATE_KEY | prod/proxygen-api-specification/keycloak_client_private_key |
