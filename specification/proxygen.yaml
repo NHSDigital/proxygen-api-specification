@@ -1417,7 +1417,6 @@ components:
         This section defines the infrastructure and resources required to deploy the Proxy.
       properties:
         target:
-          description: Creates a back-end target for this API on the API platform.
           $ref: '#/components/schemas/Target'
         access:
           type: array
