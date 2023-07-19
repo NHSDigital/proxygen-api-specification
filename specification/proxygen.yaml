@@ -275,8 +275,10 @@ info:
 
     ### Extensions
     #### x-nhsd-apim
-    Tthis section descripbed the API back-end and is the primary source of information for infrastructure to be deployed by Proxygen.
-    See the schema definition below for a full list of which available/required attributes.
+    This customm extension to the OpenAPI specification describes the API back-end and is the primary source of information for infrastructure to be deployed by Proxygen.
+    See the schema definition below for a full list of available/required attributes.
+
+    In summary, targets
 
   license:
     name: MIT
@@ -1420,7 +1422,7 @@ components:
           $ref: '#/components/schemas/Target'
         access:
           type: array
-          description: Defines a list of API Prodcts to be deployed within the API Platform.
+          description: Defines a list of API Products to be deployed within the API Platform.
           items:
             $ref: '#/components/schemas/Access'
         ratelimiting:
