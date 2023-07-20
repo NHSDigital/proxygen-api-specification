@@ -29,14 +29,11 @@ info:
     * Use your OAS specification to manage API proxies, products and security patterns
 
     In the future, you will be able to:
-    * Secure the connection to your target service (back end) with MTLS. (Currently only API Key security is supported.)
+    * Secure the connection to your target service (back end) with TLS-MA. (Currently only API Key security is supported.)
     * Manage preview and live versions of your API's specification
 
     ## Who can use this API
     This API is currently for internal NHS England use only.
-
-    ## Related APIs
-    Can/should we remove this section?
 
     ## API status and roadmap
     This API is in [production, beta but internal](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
@@ -56,7 +53,7 @@ info:
 
     ## Security and authorisation
 
-    This API has support both [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) and [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis) access modes.
+    This API will support[user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) (currently in development) and [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis) access modes.
 
     Proxygen's permission model is implemented in a separate OAuth2 authorisation and authentication service: Keycloak.
 
@@ -78,7 +75,7 @@ info:
 
     During API registration ([POST /apis](#post-apis)) a **public key** is supplied as a JWKS endpoint.
 
-    A 'machine user' **client** is created having a client ID of `<api_name>-client` and is associated with this public key.
+    A 'machine user' **client** is created with a client ID of `<api_name>-client` and is associated with this public key.
 
     You use this client ID and the corresponding **private key** to authenticate against Keycloak and obtain an access token.
 
@@ -98,8 +95,7 @@ info:
     import jwt  # pyjwt library
 
     REALM_URL = "https://identity.prod.api.platform.nhs.uk/realms/api-producers"
-    PRIVATE_KEY_FILE = "/home/alexh/hello-world-client-prod-1.key"
-    CLIENT_ID = "hello-world-client"
+    PRIVATE_KEY_FILE = "./hello-world-client-prod-1.key"  # absolute path
     KID = "prod-1"
 
     claims = {
@@ -135,22 +131,15 @@ info:
     )
     ```
 
-    #### User-restricted access
+    ### User-restricted access
 
-    To be documented.
+    Not supported yet. Requires implementation of back-end verification with TLS-MA, which is currently in development.
 
     ## Environments and testing
 
-    | Environment       | Base URL                                                               |
-    | ----------------- | ---------------------------------------------------------------------- |
-    | Development       | `https://proxygen.ptl.api.platform.nhs.uk`                             |
-    | Production        | `https://proxygen.prod.api.platform.nhs.uk`                            |
+    The Production instance of Proxygen is used to deploy APIs in all other environments.
 
-
-    ### Development environment
-    Our development environment:
-    * is for developers of the Proxygen service itself
-    * is not intended for [integration testing](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing)
+    The URL is `https://proxygen.prod.api.platform.nhs.uk`
 
     ## Onboarding
     This API is for internal NHS England users only. There is no onboarding process for external parties.
@@ -180,7 +169,7 @@ info:
     See [Authorisation](#authorisation).
     - **Docker Repositories**
     An API may have one or more associated Docker Repositories. These are typically used to store container images which can be referenced in API instances as *hosted targets*.
-    See [GET /apis/{api_name}/docker-token](#get-apis-api_name-docker-token) and the `target` section of the `[x-nhsd-apim](#TODO)` OAS Extension reference.
+    See [GET /apis/{api_name}/docker-token](#get-apis-api_name-docker-token) and the `target` section of the OAS Extension reference.
     - **Keycloak policies and permissions**
     The ability act on APIs in Proxygen is controlled by a permission model implemented in a separate authentication and authorisation provider: Keycloak.
     See [Security and authorisation](#security-and-authorisation).
@@ -202,7 +191,7 @@ info:
     | API Specification | `GET`, `PUT` `/apis/{api_name}/spec`<br>`GET` `/specs/{api_name}` | Reference for the API (service) as a whole. | Publishes to the API Catalogue |
     | Instance Specification | `POST` `/apis/{api_name}/environments/{environment}/instances`<br>`GET`, `PUT` `/apis/{api_name}/environments/{environment}/instances/{instance_name}` | Manages an API Instance | Does not publish to the API Catalogue |
 
-    ### Instances, secrets, and environments
+    ### Environments, Instances and Secrets
 
     #### Environments
 
@@ -277,8 +266,6 @@ info:
     #### x-nhsd-apim
     This customm extension to the OpenAPI specification describes the API back-end and is the primary source of information for infrastructure to be deployed by Proxygen.
     See the schema definition below for a full list of available/required attributes.
-
-    In summary, targets
 
   license:
     name: MIT
