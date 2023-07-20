@@ -264,7 +264,7 @@ info:
 
     ### Extensions
     #### x-nhsd-apim
-    This customm extension to the OpenAPI specification describes the API back-end and is the primary source of information for infrastructure to be deployed by Proxygen.
+    This custom extension to the OpenAPI specification describes the API back-end and is the primary source of information for infrastructure to be deployed by Proxygen.
     See the schema definition below for a full list of available/required attributes.
 
   license:
@@ -339,14 +339,12 @@ servers:
   #   description: Development environment.
 paths:
   /apis:
-    description: |
-      TODO: Does this description ever get rendered anywhere? Remove if not!
     get:
       summary: List all APIs
       description: |-
         Get a list of all API names.
 
-        > This operation requires the **admin** permission.
+        > This operation requires the **admin** permission, users can contact API Management support to get an up-to-date list.
       responses:
         '200':
           description: Successful response
@@ -378,7 +376,7 @@ paths:
         When `keycloak` is set to `true` (the default) policies and permissions are created in keycloak. These are required to permit access to users and machine clients to perform operations on this API through proxygen.
 
         ### Machine client
-        When `keycloak` is set to `true` and a `keycloak_client_jwks_resource_url` is provided a machine client is created with client ID `{api-name}-client` with permissions to perform operations on this API through proxygen. See [Authorisation](#TODO).
+        When `keycloak` is set to `true` and a `keycloak_client_jwks_resource_url` is provided a machine client is created with client ID `{api-name}-client` with permissions to perform operations on this API through proxygen. See Security and Authorisation section above.
 
         ### API Registry entry
         Creates an entry in the API registry unless `api_registry_entry` is set to `false`.
