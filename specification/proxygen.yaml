@@ -171,7 +171,7 @@ info:
     An API may have one or more associated Docker Repositories. These are typically used to store container images which can be referenced in API instances as *hosted targets*.
     See [GET /apis/{api_name}/docker-token](#get-apis-api_name-docker-token) and the `target` section of the OAS Extension reference.
     - **Keycloak policies and permissions**
-    The ability act on APIs in Proxygen is controlled by a permission model implemented in a separate authentication and authorisation provider: Keycloak.
+    The ability to act on APIs in Proxygen is controlled by a permission model implemented in a separate authentication and authorisation provider: Keycloak.
     See [Security and authorisation](#security-and-authorisation).
     - **API Registry entry**
     A central registry of each API. The name (eg `hello-world`), short name eg (eg `hw`) are recorded against a GUID. This allows tracking of APIs through name changes and provides a canonical reference of everything on the API Platform.
@@ -202,7 +202,7 @@ info:
     - **External PTL:** `dev`, `int`, `sandbox`
     Used by API Consumers in their development of services integrating with the API Platform
     - **Production:** `prod`
-    The production environment.
+    The live environment.
 
     > All environments are treated equally with the exception of **production** which requires additional permissions.
 
@@ -246,7 +246,7 @@ info:
     E.g.:
     ```
     servers:
-     - url: 'https://internal-dev-sandbox.api.service.nhs.uk/apiname'
+     - url: 'https://internal-dev-sandbox.api.service.nhs.uk/hello-world'
     ```
 
     #### Security Scheme Constraints
