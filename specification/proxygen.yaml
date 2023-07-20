@@ -1023,7 +1023,7 @@ paths:
 
         > This operation requires the create permission for the specific API
 
-        The name of the created instance is determined by base path of the server url. See TODO for more details.
+        The name of the created instance is determined by base path of the server url.
       requestBody:
         content:
           application/json:
@@ -1088,7 +1088,7 @@ paths:
 
         If the instance already exists it will be updated.
 
-        The instance name supplied in the path parameter must match the one derived from the `servers.0.server.url` base path. See TODO for details.
+        The instance name supplied in the path parameter must match the one derived from the `servers.0.server.url` base path.
       requestBody:
         content:
           application/json:
