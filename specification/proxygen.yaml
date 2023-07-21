@@ -229,10 +229,10 @@ info:
 
     API resources are limited across the platform and in order to keep deployed resources manageable, API Producer teams are allocated a limited number of conncurrently deployed API instances. Once this limit is reached, deployments will fail. In order to keep this manageable for producers, there are a number of batch jobs which delete API instances which are marked as `temporary` periodically, based on their `last_modified` date.
 
-    Add the `temporary` attribute would be appropriate for API instances created in the following example situations:
-    - on creation of a Pull Request (PR) - these instances are often used for automated testing
-    - during penetration testing
-    - during load testing
+    Examples of when the `temporary` attribute would be appropriate include, but are not limited to:
+    - on creation of a Pull Request (PR) - these instances are often used for automated testing.
+    - during penetration testing.
+    - during load testing.
 
     #### Secrets
 
