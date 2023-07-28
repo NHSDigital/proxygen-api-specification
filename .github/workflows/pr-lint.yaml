@@ -8,13 +8,13 @@ jobs:
     - name: Check the branch name references a Jira ticket
       env:
         REF: ${{ github.event.pull_request.head.ref }}
-      run: echo "$REF" | grep -i -E -q "(apm-[0-9]+)|(apmspii-[0-9]+)|(adz-[0-9]+)|(amb-[0-9]+)|(dependabot\/)"
+      run: echo "$REF" | grep -i -E -q "(apm-[0-9]+)|(apmspii-[0-9]+)|(adz-[0-9]+)|(amb-[0-9]+)|(amp-[0-9]+)|(dependabot\/)"
 
     - name: Set TICKET_NAME environment variable
       env:
         REF: ${{ github.event.pull_request.head.ref }}
       run: |
-        TICKET_NAME=$(echo "$REF" | grep -i -o '\(apm-[0-9]\+\)\|\(apmspii-[0-9]\+\)\|\(adz-[0-9]\+\)|\(amb-[0-9]\+\)' | tr '[:lower:]' '[:upper:]')
+        TICKET_NAME=$(echo "$REF" | grep -i -o '\(apm-[0-9]\+\)\|\(apmspii-[0-9]\+\)\|\(adz-[0-9]\+\)\|\(amb-[0-9]\+\)\|\(amp-[0-9]\+\)' | tr '[:lower:]' '[:upper:]')
         echo "TICKET_NAME=$TICKET_NAME" >> "$GITHUB_ENV"
 
     - name: Comment on PR with link to JIRA ticket
