@@ -312,11 +312,19 @@ x-spec-publication:
         - method: GET
           path: /specs/{api_name}
         - method: GET
+          path: /specs/{api_name}/uat
+        - method: GET
           path: /apis/{api-name}/spec
+        - method: GET
+          path: /apis/{api-name}/spec/uat
         - method: PUT
           path: /apis/{api-name}/spec
+        - method: PUT
+          path: /apis/{api-name}/spec/uat
         - method: DELETE
           path: /apis/{api-name}/spec
+        - method: DELETE
+          path: /apis/{api-name}/spec/uat
     - group: Resources
       operations:
         - method: GET
@@ -694,6 +702,76 @@ paths:
         > This operation requires the delete permission for the specific API
 
         An API may have an OAS format specification which is (or will be) published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue), however this is not mandatory. Using this operation you can delete the API's specification.
+  '/apis/{api_name}/spec/uat':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+    get:
+      summary: Get the UAT Specification for an API
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaasOpenAPI'
+              examples:
+                api-spec:
+                  $ref: '#/components/examples/api-oas'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                Example 1:
+                  value:
+                    detail: Not found
+      operationId: get-apis-api_name-spec-uat
+      requestBody:
+        content: {}
+      description: |-
+        Identical to [GET /apis/{api_name}/spec](#get-apis-api_name-spec) except if a UAT version of the spec exist, then
+        this will be returned instead.
+    put:
+      summary: Create or replace the UAT specification for an API
+      operationId: put-apis-api_name-spec-uat
+      responses:
+        '200':
+          description: Successful request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaasOpenAPI'
+              examples:
+                put-spec-response:
+                  $ref: '#/components/examples/api-oas'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaasOpenAPI'
+            examples:
+              update-api-specification:
+                $ref: '#/components/examples/api-oas'
+      description: |-
+        Create or replace (update) the UAT version of an API's OAS specification.
+
+        > This operation requires the update permission for the specific API
+    delete:
+      summary: Delete the UAT specification for an API
+      operationId: delete-apis-api_name-spec-uat
+      responses:
+        '204':
+          description: Specification deleted successfully
+      description: |-
+        Delete an the UAT version of an API's OpenAPI Specification (OAS).
+
+        > This operation requires the delete permission for the specific API
   '/apis/{api_name}/environments':
     parameters:
       - schema:
@@ -1188,6 +1266,29 @@ paths:
         > This operation requires the special `spec-resource` permission
 
         The specification is API specification as you might access through the [GET /apis/{api_name}/spec](#get-apis-api_name-spec) endpoint and not the instance-specific specification.
+  '/specs/{api_name}/uat':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+    get:
+      summary: Get the UAT version of an API specification
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaasOpenAPI'
+              examples:
+                get-spec:
+                  $ref: '#/components/examples/api-oas'
+      operationId: get-specs-api_name_uat
+      description: |-
+        Identical to [GET /specs/{api_name}/uat](#get-specs-api_name) except if a UAT version of the spec exist, then
+        this will be returned instead.
 components:
   schemas:
     Api:
