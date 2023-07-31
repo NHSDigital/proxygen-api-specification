@@ -193,7 +193,7 @@ info:
 
     - **Internal path to live** -  `internal-dev`, `internal-dev-sandbox`, `internal-qa-sandbox`, `internal-qa`, `internal-qa-sandbox`, `ref`:
     used by API producers in the development and testing of API proxies.
-    - **External ath to live** - `sandbox`, `dev`, `int`:
+    - **External path to live** - `sandbox`, `dev`, `int`:
     used by API consumers in their development of services integrating with the API Platform
     - **Production** - `prod`:
     the live environment.
@@ -221,7 +221,7 @@ info:
 
     ##### Temporary instances
 
-    API resources are limited across the platform and in order to keep deployed resources manageable. API producer teams are allocated a limited number of conncurrently deployed API instances. Once this limit is reached, deployments will fail. In order to keep this manageable for producers, there are a number of batch jobs which delete API instances which are marked as `temporary` periodically, based on their `last_modified` date.
+    API resources are limited across the platform and in order to keep deployed resources manageable, API producer teams are allocated a limited number of conncurrently deployed API instances. Once this limit is reached, deployments will fail. In order to keep this manageable for producers, there are a number of batch jobs which delete API instances which are marked as `temporary` periodically, based on their `last_modified` date.
 
     Examples of when the `temporary` attribute would be appropriate include, but are not limited to:
     - on creation of a pull request (PR) - these instances are often used for automated testing
@@ -250,7 +250,7 @@ info:
      - url: 'https://internal-dev-sandbox.api.service.nhs.uk/hello-world'
     ```
 
-    #### Security scheme constraints
+    #### Security schema constraints
     ##### Schema path: `components.securitySchemes`
     A distinct list of security schemes referred to in the [security](https://swagger.io/specification/#security-requirement-object) property of path [Operations Objects](https://swagger.io/specification/#operation-object) defined within this spec.
 
