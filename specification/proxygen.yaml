@@ -23,17 +23,17 @@ info:
     This API is intended for API producers [building healthcare APIs](https://digital.nhs.uk/services/api-platform/building-healthcare-apis).
 
     You can:
-    * Register new API definitions
-    * Publish API specifications
-    * Manage containers and secrets
-    * Use your OAS specification to manage API proxies, products and security patterns
+    * register new API definitions
+    * publish API specifications
+    * manage containers and secrets
+    * use your OAS specification to manage API proxies, products and security patterns
 
     In the future, you will be able to:
-    * Secure the connection to your target service (back end) with TLS-MA. (Currently only API Key security is supported.)
-    * Manage preview and live versions of your API's specification
+    * secure the connection to your target service (back end) with TLS-MA (currently only API Key security is supported)
+    * manage preview and live versions of your API's specification
 
     ## Who can use this API
-    This API is currently for internal NHS England use only.
+    This API is only for use by teams building APIs on our API platform. These are predominantly internal NHS England teams.
 
     ## API status and roadmap
     This API is in [production, beta but internal](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
@@ -42,24 +42,21 @@ info:
 
     ## Service level
     This API is a bronze service, meaning it is operational and supported only during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
+    
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
 
     ## Technology
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest-apis).
 
     ## Network access
-    This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
+    This API is available on the internet.
+    
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Security and authorisation
 
-    This API will support[user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) (currently in development) and [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis) access modes.
-
-    Proxy Generator API's permission model is implemented in a separate OAuth2 authorisation and authentication service: Keycloak.
-
-    Proxy Generator API uses the `api-producers` realm. The base url is: `https://identity.prod.api.platform.nhs.uk/realms/api-producers`
-
-    Proxy Generator API users and clients first authenticate with Keycloak and obtain an **access token**. When making calls to Proxy Generator API include this token in the `Authorization` header using the `Bearer <token>` scheme.
+    This API supports [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis) access.
+    We are working on [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) access. 
 
     ### Application-restricted access
 
@@ -67,7 +64,7 @@ info:
 
     - [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
-    > The instructions in the above guide are valid, but the implementation details/endpoints differ.
+    > The instructions in the above guide are valid, but the implementation details/endpoints differ, as explained below.
 
     In application-restricted access mode a token is obtained by performing a *client credentials* grant request, with an assertion type of `jwt-bearer` (a signed JWT).
 
@@ -77,7 +74,7 @@ info:
 
     A 'machine user' **client** is created with a client ID of `<api_name>-client` and is associated with this public key.
 
-    You use this client ID and the corresponding **private key** to authenticate against Keycloak and obtain an access token.
+    You use this client ID and the corresponding **private key** to authenticate against our authorisation server and obtain an access token.
 
     #### Example
 
@@ -132,19 +129,16 @@ info:
     ```
 
     ### User-restricted access
-
     Not supported yet. Requires implementation of back-end verification with TLS-MA, which is currently in development.
 
     ## Environments and testing
+    Use the production instance of Proxy Generator API to deploy APIs to all environments.
 
-    The Production instance of Proxy Generator API is used to deploy APIs in all other environments.
-
-    The URL is `https://proxygen.prod.api.platform.nhs.uk`
+    The base URL is `https://proxygen.prod.api.platform.nhs.uk`.
 
     ## Onboarding
-    This API is for internal NHS England users only. There is no onboarding process for external parties.
-    The 'Getting started as an API Producer' section of the API Management NHS England Platforms Confluence space provides instructions on how to engage with us and start using Proxy Generator API.
-
+    To use this API, you need to [engage with us as an API producer team](https://digital.nhs.uk/services/api-platform/building-healthcare-apis#getting-started).
+    
     ## Errors
     We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
 
@@ -164,45 +158,45 @@ info:
 
     An API is typically created with the following **pre-requisite resources**:
 
-    - **Machine client**
-    An OAuth v2 client that can be directly authenticated against, secured by a public-private keypair, with permissions to perform operations against this API. Intended for use in CI/CD pipelines. In our example API the client ID is `hello-world-client`.
+    - **Machine client**:
+    an OAuth v2 client that can be directly authenticated against, secured by a public-private keypair, with permissions to perform operations against this API. Intended for use in CI/CD pipelines. In our example API the client ID is `hello-world-client`.
     See [Authorisation](#authorisation).
-    - **Docker Repositories**
-    An API may have one or more associated Docker Repositories. These are typically used to store container images which can be referenced in API instances as *hosted targets*.
+    - **Docker repositories**:
+    an API may have one or more associated Docker Repositories. These are typically used to store container images which can be referenced in API instances as *hosted targets*.
     See [GET /apis/{api_name}/docker-token](#get-apis-api_name-docker-token) and the `target` section of the OAS Extension reference.
-    - **Keycloak policies and permissions**
-    The ability to act on APIs in Proxy Generator API is controlled by a permission model implemented in a separate authentication and authorisation provider: Keycloak.
+    - **Keycloak policies and permissions**:
+    the ability to act on APIs in Proxy Generator API is controlled by a permission model implemented in a separate authentication and authorisation provider: Keycloak.
     See [Security and authorisation](#security-and-authorisation).
-    - **API Registry entry**
-    A central registry of each API. The name (eg `hello-world`), short name eg (eg `hw`) are recorded against a GUID. This allows tracking of APIs through name changes and provides a canonical reference of everything on the API Platform.
+    - **API registry entry**:
+    a central registry of each API. The name (for example `hello-world`), short name (for example `hw`) are recorded against a GUID. This allows tracking of APIs through name changes and provides a canonical reference of everything on the API Platform.
 
     These pre-requisite resources can be updated or enabled/disabled after creation.
 
     ### Specification
 
-    Each API may have a single OpenAPI Specification (v3.0.3) which will be published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue) for reference by API Consumers. Refer to the [Writing your API documentation](https://nhsd-confluence.digital.nhs.uk/display/APM/Writing+your+API+documentation) section of the API Platform Confluence space for guidance and best-practices.
+    Each API may have a single OpenAPI specification (v3.0.3) which will be published on the [API catalogue](https://digital.nhs.uk/developer/api-catalogue) for reference by API consumers. Refer to the [Writing your API documentation](https://nhsd-confluence.digital.nhs.uk/display/APM/Writing+your+API+documentation) section of the API Platform Confluence space for guidance and best practices.
 
     #### API specification vs instance specification
 
-    An 'API specification' is distinct from the 'instance specification' which drives the creation of API *Instances*.
+    An 'API specification' is distinct from the 'instance specification' which drives the creation of API *instances*.
 
-    | Specification type | Endpoints | Purpose | API Catalogue |
+    | Specification type | Endpoints | Purpose | API catalogue |
     | --- | --- | --- | --- |
-    | API Specification | `GET`, `PUT` `/apis/{api_name}/spec`<br>`GET` `/specs/{api_name}` | Reference for the API (service) as a whole. | Publishes to the API Catalogue |
-    | Instance Specification | `POST` `/apis/{api_name}/environments/{environment}/instances`<br>`GET`, `PUT` `/apis/{api_name}/environments/{environment}/instances/{instance_name}` | Manages an API Instance | Does not publish to the API Catalogue |
+    | API specification | `GET`, `PUT` `/apis/{api_name}/spec`<br>`GET` `/specs/{api_name}` | Reference for the API (service) as a whole. | Publishes to the API catalogue |
+    | Instance specification | `POST` `/apis/{api_name}/environments/{environment}/instances`<br>`GET`, `PUT` `/apis/{api_name}/environments/{environment}/instances/{instance_name}` | Manages an API instance | Does not publish to the API catalogue |
 
-    ### Environments, Instances and Secrets
+    ### Environments, instances and secrets
 
     #### Environments
 
-    API Instances and Secrets are deployed into a specific *environment*. Environments are logically divided into three categories:
+    API instances and secrets are deployed into a specific *environment*. Environments are logically divided into three categories:
 
-    - **Internal PTL:**  `internal-dev`, `internal-dev-sandbox`, `internal-qa-sandbox`, `internal-qa`, `internal-qa-sandbox`, `ref`
-    Used by API Producers in the development and testing of API Proxies.
-    - **External PTL:** `dev`, `int`, `sandbox`
-    Used by API Consumers in their development of services integrating with the API Platform
-    - **Production:** `prod`
-    The live environment.
+    - **Internal path to live** -  `internal-dev`, `internal-dev-sandbox`, `internal-qa-sandbox`, `internal-qa`, `internal-qa-sandbox`, `ref`:
+    used by API producers in the development and testing of API proxies.
+    - **External ath to live** - `sandbox`, `dev`, `int`:
+    used by API consumers in their development of services integrating with the API Platform
+    - **Production** - `prod`:
+    the live environment.
 
     > All environments are treated equally with the exception of **production** which requires additional permissions.
 
@@ -210,9 +204,9 @@ info:
 
     API *instances* are configured from a supplied **instance-specific OpenAPI specification** (OAS).
 
-    > See [OpenAPI Specification Constraints and Extensions](#openapi-specification-constraints-and-extensions) for the full explanation of the format of this specification.
+    > See [OpenAPI specification constraints and extensions](#openapi-specification-constraints-and-extensions) for the full explanation of the format of this specification.
 
-    An API instance is essentially an API Proxy which routes requests to some back-end service. It is deployed in a specific *environment.*
+    An API instance is essentially an API proxy which routes requests to some back-end service. It is deployed in a specific *environment.*
 
     An API instance has an **instance name** which is derived from the base path of the `servers.0.server.url` property of the OAS.
 
@@ -220,49 +214,47 @@ info:
 
     An API instance may:
 
-    - have one or more **API Products** for API consumers to subscribe to
+    - have one or more **API products** for API consumers to subscribe to
     - implement **rate limiting**
     - send traffic to a **back-end service** or a **hosted container**
     - implement one or more **security patterns** controlling how API clients can authenticate
 
-    ##### Temporary Instances
+    ##### Temporary instances
 
-    API resources are limited across the platform and in order to keep deployed resources manageable, API Producer teams are allocated a limited number of conncurrently deployed API instances. Once this limit is reached, deployments will fail. In order to keep this manageable for producers, there are a number of batch jobs which delete API instances which are marked as `temporary` periodically, based on their `last_modified` date.
+    API resources are limited across the platform and in order to keep deployed resources manageable. API producer teams are allocated a limited number of conncurrently deployed API instances. Once this limit is reached, deployments will fail. In order to keep this manageable for producers, there are a number of batch jobs which delete API instances which are marked as `temporary` periodically, based on their `last_modified` date.
 
     Examples of when the `temporary` attribute would be appropriate include, but are not limited to:
-    - on creation of a Pull Request (PR) - these instances are often used for automated testing.
-    - during penetration testing.
-    - during load testing.
+    - on creation of a pull request (PR) - these instances are often used for automated testing
+    - during penetration testing
+    - during load testing
 
     #### Secrets
 
-    Proxy Generator API can be used to store secret values; primarily for use by proxies which are configured for externally hosted target servers. Secrets have a `_type` attribute, which indicate their upstream use. Currently supported secret types are:
+    Proxy Generator API can be used to store secret values - primarily for use by proxies which are configured for externally hosted target servers. Secrets have a `_type` attribute, which indicate their upstream use. Currently supported secret types are:
 
-    - `apikey` - used when employing API Key security between the API Platform and back-end 'target' servers - this will be added to HTTP requests to the target as the value of the 'apikey' header.
+    - `apikey` - used when employing API Key security between the API platform and back-end 'target' servers - this will be added to HTTP requests to the target as the value of the 'apikey' header.
 
-    ## OpenAPI Specification Constraints and Extensions
+    ## OpenAPI specification constraints and extensions
 
     ### Constraints
 
-    #### OpenAPI Version Restriction to 3.0.3
+    #### OpenAPI version restriction to 3.0.3
     ##### Schema path: `openapi`
-    E.g.:
-
-    `openapi: 3.0.3`
+    For example: `openapi: 3.0.3`
 
     #### List of servers must contain a single item
     ##### Schema path: `servers`
-    E.g.:
+    For example:
     ```
     servers:
      - url: 'https://internal-dev-sandbox.api.service.nhs.uk/hello-world'
     ```
 
-    #### Security Scheme Constraints
+    #### Security scheme constraints
     ##### Schema path: `components.securitySchemes`
     A distinct list of security schemes referred to in the [security](https://swagger.io/specification/#security-requirement-object) property of path [Operations Objects](https://swagger.io/specification/#operation-object) defined within this spec.
 
-    E.g.:
+    For example:
     ```
     securitySchemes:  # limit this to only those used in your API
       nhs-login-p0:
@@ -450,7 +442,7 @@ paths:
         in: path
         required: true
     get:
-      summary: Get an APIs deployed resources
+      summary: Get an API's deployed resources
       responses:
         '200':
           description: Successful response
@@ -780,7 +772,7 @@ paths:
         in: path
         required: true
     get:
-      summary: Get an APIs deployed resources (optionally just a specific type)
+      summary: Get an API's deployed resources (optionally just a specific type)
       responses:
         '200':
           description: Successful response
@@ -850,7 +842,7 @@ paths:
         in: path
         required: true
     get:
-      summary: Get an APIs deployed resources for a specific environment
+      summary: Get an API's deployed resources for a specific environment
       responses:
         '200':
           description: Successful response
