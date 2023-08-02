@@ -29,7 +29,7 @@ info:
     * use your OAS specification to manage API proxies, products and security patterns
 
     In the future, you will be able to:
-    * secure the connection to your target service (back-end) with MTLS (Mutual TLS or sometimes termed TLS-MA)
+    * secure the connection to your target service (back-end) with mTLS (Mutual TLS or sometimes termed TLS-MA)
     * manage preview and live versions of your API's specification
 
     ## Who can use this API
