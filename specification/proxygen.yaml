@@ -29,7 +29,7 @@ info:
     * use your OAS specification to manage API proxies, products and security patterns
 
     In the future, you will be able to:
-    * secure the connection to your target service (back end) with TLS-MA (currently only API Key security is supported)
+    * secure the connection to your target service (back-end) with MTLS (Mutual TLS or sometimes termed TLS-MA)
     * manage preview and live versions of your API's specification
 
     ## Who can use this API
@@ -128,9 +128,6 @@ info:
     )
     ```
 
-    ### User-restricted access
-    Not supported yet. Requires implementation of back-end verification with TLS-MA, which is currently in development.
-
     ## Environments and testing
     Use the production instance of Proxy Generator API to deploy APIs to all environments.
 
@@ -162,13 +159,14 @@ info:
     an OAuth v2 client that can be directly authenticated against, secured by a public-private keypair, with permissions to perform operations against this API. Intended for use in CI/CD pipelines. In our example API the client ID is `hello-world-client`.
     See [Authorisation](#authorisation).
     - **Docker repositories**:
-    an API may have one or more associated Docker Repositories. These are typically used to store container images which can be referenced in API instances as *hosted targets*.
+    the API Platform offers you the ability to deploy a Docker image behind your API to carry out lightweight, stateless processing. In the internal documentation this is referred to as *hosted containers*.
+    An API may have one or more associated Docker repositories to store the image(s). 
     See [GET /apis/{api_name}/docker-token](#get-apis-api_name-docker-token) and the `target` section of the OAS Extension reference.
-    - **Keycloak policies and permissions**:
-    the ability to act on APIs in Proxy Generator API is controlled by a permission model implemented in a separate authentication and authorisation provider: Keycloak.
+    - **Managing access and permissions**:
+    we control access and permissions to make changes to the Proxy Generator APIs, so that you cannot change another teams API. This is managed by an authorisation server, Keycloak, using the `api-producers` realm.
     See [Security and authorisation](#security-and-authorisation).
     - **API registry entry**:
-    a central registry of each API. The name (for example `hello-world`), short name (for example `hw`) are recorded against a GUID. This allows tracking of APIs through name changes and provides a canonical reference of everything on the API Platform.
+    a central registry of all the API Platform APIs. The name (for example `hello-world`), short name (for example `hw`) are recorded against a GUID. This allows tracking of APIs through name changes and provides a canonical reference of everything on the API Platform.
 
     These pre-requisite resources can be updated or enabled/disabled after creation.
 
@@ -178,7 +176,8 @@ info:
 
     #### API specification vs instance specification
 
-    An 'API specification' is distinct from the 'instance specification' which drives the creation of API *instances*.
+    Underlying Proxy Generator is the Open API Specification, and the same underlying specification is used to display your API in the API Catalogue and to deploy (publish) your proxy on the API Platform. The instance requires Proxy Generator API-specific extensions, so you might want to keep those separate and merge in your pipelines.
+    The term 'API specification' is distinct from the term 'instance specification'. An API *instance* relates to a callable API endpoint, that then routes your API back-end service. 
 
     | Specification type | Endpoints | Purpose | API catalogue |
     | --- | --- | --- | --- |
@@ -202,12 +201,11 @@ info:
 
     #### Instances
 
-    API *instances* are configured from a supplied **instance-specific OpenAPI specification** (OAS).
+    An API instance is a deployed API proxy which routes requests to your back-end service. It is always specific to an *environment*, although you can have more than one instance in an environment. Each *instance* is entirely independant of each other. API *instances* are configured from a supplied **instance-specific OpenAPI specification** (OAS).
 
     > See [OpenAPI specification constraints and extensions](#openapi-specification-constraints-and-extensions) for the full explanation of the format of this specification.
 
-    An API instance is essentially an API proxy which routes requests to some back-end service. It is deployed in a specific *environment.*
-
+    
     An API instance has an **instance name** which is derived from the base path of the `servers.0.server.url` property of the OAS.
 
     > A server URL of `https://internal-dev.api.service.nhs.uk/hello-world-pr-123` would map to the instance name `hello-world-pr-123`
@@ -230,7 +228,7 @@ info:
 
     #### Secrets
 
-    Proxy Generator API can be used to store secret values - primarily for use by proxies which are configured for externally hosted target servers. Secrets have a `_type` attribute, which indicate their upstream use. Currently supported secret types are:
+    Proxy Generator API can be used to store secret values - primarily for use by proxies which are configured for hosted containers. Secrets have a `_type` attribute, which indicate their upstream use. Currently supported secret types are:
 
     - `apikey` - used when employing API Key security between the API platform and back-end 'target' servers - this will be added to HTTP requests to the target as the value of the 'apikey' header.
 
@@ -390,7 +388,7 @@ paths:
         `api_registry_entry` should always be set to `true`, and it creates an entry in the API registry. There are some edge cases where it might be set to `false`.
 
         ### Docker repositories
-        The API Platform offers you the ability to deploy a Docker image behind your API to carry out lightweight, stateless processing. In the internal documentation this is referred to as APIM AWS Hosted Containers, and during deployment this is all automatically wired up and secured. Behind the scenes we use [Elastic Container Registry](https://aws.amazon.com/ecr/) (ECR) Docker Repository to manage this.
+        The API Platform offers you the ability to deploy a Docker image behind your API to carry out lightweight, stateless processing. In the internal documentation this is referred to as as *hosted containers*, and during deployment this is all automatically wired up and secured. Behind the scenes we use [Elastic Container Registry](https://aws.amazon.com/ecr/) (ECR) Docker Repository to manage this.
 
         Set `docker_repositories` to an empty list (`[]`) to skip creation of a repository.
 
@@ -644,7 +642,7 @@ paths:
 
         > This operation require the read permission for the specific API
 
-        An API may have an OAS format specification which is (or will be) published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue).
+        An API may have an OAS format specification which is published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue).
 
         Note that this is distinct from the OAS files that drive the generation of API's 'instances' (deployed API proxies). Instance-specific OAS files are typically derived from this specification, but include Proxy Generator API-specific extensions.
     put:
@@ -672,6 +670,10 @@ paths:
         Create or replace (update) an API's OAS specification.
 
         > This operation requires the update permission for the specific API
+
+        An API may have an OAS format specification which is published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue).
+
+        Note that this is distinct from the OAS files that drive the generation of API's 'instances' (deployed API proxies). Instance-specific OAS files are typically derived from this specification, but include Proxy Generator API-specific extensions.
     delete:
       summary: Delete the specification for an API
       operationId: delete-apis-api_name-spec
@@ -1018,7 +1020,7 @@ paths:
                   value:
                     detail: API hello-world already has an instance hello-world-123 in internal-dev
       description: |-
-        Create a new instance of this API in the specified environment.
+        Creating a new instance of the API, in the specified environment, will deploy it and make it available in that environment.
 
         > This operation requires the create permission for the specific API
 
@@ -1195,7 +1197,7 @@ components:
         keycloak:
           type: boolean
           default: true
-          description: Whether to create Keycloak permissions for this API. Keycloak permissions are required to allow users/machine clients other than those with the admin permission to administer this API
+          description: Indicates that Keycloak manages access and permissions for this API. This should always be set to `true`
         keycloak_client_jwks_resource_url:
           description: The JWKS resource URL holding the public key for the default machine user admin client.
           example: 'https://example.org/jwks-endpoint'
