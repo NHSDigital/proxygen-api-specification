@@ -379,7 +379,7 @@ paths:
         Registers a new API with Proxy Generator API, creating the following pre-requisite resources:
 
         ### Keycloak policies and permissions
-        When `keycloak` is set to `true` (the default) this allows the API to be managed via Proxy Generator. In the background, the policies and permissions are created in keycloak.
+        When `keycloak` is set to `true` (the default) this allows the API to be managed via Proxy Generator. In the background, the policies and permissions are created in Keycloak.
 
         ### Machine client
         When `keycloak` is set to `true` and a `keycloak_client_jwks_resource_url` is provided a machine client is created with client ID `{api-name}-client` with permissions to perform operations on this API through Proxy Generator API. See Security and Authorisation section above.
@@ -388,7 +388,7 @@ paths:
         `api_registry_entry` should always be set to `true`, and it creates an entry in the API registry. There are some edge cases where it might be set to `false`.
 
         ### Docker repositories
-        The API Platform offers you the ability to deploy a Docker image behind your API to carry out lightweight, stateless processing. In the internal documentation this is referred to as as *hosted containers*, and during deployment this is all automatically wired up and secured. Behind the scenes we use [Elastic Container Registry](https://aws.amazon.com/ecr/) (ECR) Docker Repository to manage this.
+        The API Platform offers you the ability to deploy a Docker image behind your API to carry out lightweight, stateless processing. In the internal documentation this is referred to as as *hosted containers*, and during deployment this is all automatically wired up and secured. Behind the scenes we use [Elastic Container Registry](https://aws.amazon.com/ecr/) (ECR) Docker Repository to manage the images.
 
         Set `docker_repositories` to an empty list (`[]`) to skip creation of a repository.
 
@@ -558,7 +558,7 @@ paths:
                   value:
                     detail: Cannot delete API with deployed resources.
       description: |-
-        Delete an API. The API must have no deployed resources for the operation to succeed.
+        Delete an API and the API registration entry. The API must have no deployed resources for the operation to succeed.
 
         > This operation requires the delete permission for the specific API
   '/apis/{api_name}/docker-token':
@@ -642,7 +642,7 @@ paths:
 
         > This operation require the read permission for the specific API
 
-        An API may have an OAS format specification which is published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue).
+        An API may have an OpenAPI Specification which is published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue).
 
         Note that this is distinct from the OAS files that drive the generation of API's 'instances' (deployed API proxies). Instance-specific OAS files are typically derived from this specification, but include Proxy Generator API-specific extensions.
     put:
@@ -671,7 +671,7 @@ paths:
 
         > This operation requires the update permission for the specific API
 
-        An API may have an OAS format specification which is published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue).
+        An API may have an OpenAPI Specification which is published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue).
 
         Note that this is distinct from the OAS files that drive the generation of API's 'instances' (deployed API proxies). Instance-specific OAS files are typically derived from this specification, but include Proxy Generator API-specific extensions.
     delete:
@@ -1188,7 +1188,7 @@ components:
       properties:
         name:
           type: string
-          description: API Name
+          description: API name in kebab-case. It has to be unique
           example: hello-world
         api_registry_entry:
           type: boolean
