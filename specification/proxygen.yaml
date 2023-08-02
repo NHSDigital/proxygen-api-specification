@@ -33,7 +33,7 @@ info:
     * manage preview and live versions of your API's specification
 
     ## Who can use this API
-    This API is only for use by teams building APIs on our API platform. These are predominantly internal NHS England teams.
+    This API is only for use by teams publishing APIs on our API platform. These are predominantly internal NHS England teams.
 
     ## API status and roadmap
     This API is in [production, beta but internal](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
@@ -381,16 +381,16 @@ paths:
         Registers a new API with Proxy Generator API, creating the following pre-requisite resources:
 
         ### Keycloak policies and permissions
-        When `keycloak` is set to `true` (the default) policies and permissions are created in keycloak. These are required to permit access to users and machine clients to perform operations on this API through Proxy Generator API.
+        When `keycloak` is set to `true` (the default) this allows the API to be managed via Proxy Generator. In the background, the policies and permissions are created in keycloak.
 
         ### Machine client
         When `keycloak` is set to `true` and a `keycloak_client_jwks_resource_url` is provided a machine client is created with client ID `{api-name}-client` with permissions to perform operations on this API through Proxy Generator API. See Security and Authorisation section above.
 
         ### API Registry entry
-        Creates an entry in the API registry unless `api_registry_entry` is set to `false`.
+        `api_registry_entry` should always be set to `true`, and it creates an entry in the API registry. There are some edge cases where it might be set to `false`.
 
         ### Docker repositories
-        The default behaviour is to create an [Elastic Container Registry](https://aws.amazon.com/ecr/) (ECR) Docker Repository for this API with the same name as the API.
+        The API Platform offers you the ability to deploy a Docker image behind your API to carry out lightweight, stateless processing. In the internal documentation this is referred to as APIM AWS Hosted Containers, and during deployment this is all automatically wired up and secured. Behind the scenes we use [Elastic Container Registry](https://aws.amazon.com/ecr/) (ECR) Docker Repository to manage this.
 
         Set `docker_repositories` to an empty list (`[]`) to skip creation of a repository.
 
@@ -598,11 +598,9 @@ paths:
                     expiresAt: '2022-10-26T02:05:39.540000+01:00'
       operationId: get-apis-api_name-docker-token
       description: |
-        Get an access token for an API's container registries.
+        If you are using the Hosted Containers function, you might need to access the associated Elastic Container Registry (ECR) Docker repository. To do this you will need a user name and password - use this endpoint to get those. See [Register a new API](#post-apis) for more information.
 
         > This operation requires the read permission for the specific API
-
-        An API may have one or more associated Elastic Container Registry (ECR) Docker repositories associated with it - see the [PUT /apis/{api_name}](#put-apis-api_name) and [POST /apis](#post-apis).
 
         Use this endpoint to retrieve a short-lived access token (a username and password) and registry URI to access the registry:
 
