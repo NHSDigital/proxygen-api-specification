@@ -34,5 +34,10 @@ jobs:
 
     - name: Publish spec
       run: proxygen spec publish specification/proxygen.yaml --uat --no-confirm
+    
+    - name: View uat spec
+      run:
+        echo "View uat spec changes at https://uat2.nhsd.io/developer/api-catalogue/proxy-generator"
+        echo "Remember Bloomreach pulls UAT changes every 5-10 minutes so changes may not appear right away"
 
 
