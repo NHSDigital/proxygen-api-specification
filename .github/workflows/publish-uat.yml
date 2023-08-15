@@ -33,6 +33,6 @@ jobs:
         proxygen status
 
     - name: Publish spec
-      run: proxygen spec publish specification/proxygen.yaml --no-confirm
+      run: proxygen spec publish specification/proxygen.yaml --uat --no-confirm
 
 
