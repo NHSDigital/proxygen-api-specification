@@ -24,13 +24,9 @@ info:
 
     You can:
     * register new API definitions
-    * publish API specifications
+    * publish preview and live API specifications
     * manage containers and secrets
     * use your OAS specification to manage API proxies, products and security patterns
-
-    In the future, you will be able to:
-    * secure the connection to your target service (back-end) with mTLS (Mutual TLS or sometimes termed TLS-MA)
-    * manage preview and live versions of your API's specification
 
     ## Who can use this API
     This API is only for use by teams publishing APIs on our API platform. These are predominantly internal NHS England teams.
@@ -231,6 +227,7 @@ info:
     Proxy Generator API can be used to store secret values - primarily for use by proxies which are configured for hosted containers. Secrets have a `_type` attribute, which indicate their upstream use. Currently supported secret types are:
 
     - `apikey` - used when employing API Key security between the API platform and back-end 'target' servers - this will be added to HTTP requests to the target as the value of the 'apikey' header.
+    - `mtls` - used when employing mTLS security between the API platform and back-end 'target' servers - this is a a combination of the client certificate and private key. Adding this secret creates or updates a keystore on the API platform which is used in a handshake with the target server certificate, which verifies that both the client and server certificates have been signed by the same root certificate authority. 
 
     ## OpenAPI specification constraints and extensions
 
@@ -461,6 +458,7 @@ paths:
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
                       apikey: false
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-dev
                       name: some-secret
@@ -473,6 +471,7 @@ paths:
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
                       apikey: false
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-qa
                       name: some-other-secret
@@ -793,6 +792,7 @@ paths:
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
                       apikey: false
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-dev
                       name: some-secret
@@ -805,6 +805,7 @@ paths:
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
                       apikey: false
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-qa
                       name: some-other-secret
@@ -863,6 +864,7 @@ paths:
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
                       apikey: false
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-dev
                       name: some-secret
@@ -902,12 +904,14 @@ paths:
                   value:
                     - type: secret
                       apikey: true
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-dev
                       name: some-secret
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
-                      apikey: true
+                      apikey: false
+                      mtls: true
                       version_id: 4e03f1bd-f6d4-415e-bf04-10640136f031
                       environment: internal-dev
                       name: some-other-secret
@@ -956,6 +960,7 @@ paths:
                     last_modified: '2019-08-24T14:15:22Z'
                     environment: internal-dev
                     apikey: false
+                    mtls: false
                     version_id: 9e94c502-ca41-4342-a7f7-af96b444512c
         '422':
           description: Unprocessable Entity
@@ -964,25 +969,59 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPException'
               examples:
-                Example 1:
+                empty-request-body:
                   value:
                     detail: Request body cannot be empty
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                missing-key-file:
+                  value:
+                    detail: Missing key file in payload. Must include both key and cert files.
+                missing-cert-file:
+                  value:
+                    detail: Missing cert file in payload. Must include both key and cert files.
+                invalid-key-file:
+                  value:
+                    detail: Invalid key file in payload. Must be a PEM key file.
+                invalid-cert-file:
+                  value:
+                    detail: Invalid cert file in payload. Must be a PEM cert file.
+                password-protected-key-file:
+                  value:
+                    detail: Invalid key file in payload. key file cannot be password protected.
       requestBody:
+        required: true
         content:
           text/plain:
             schema:
               type: string
               minLength: 1
             examples: {}
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                key:
+                  type: string
+                  format: binary
+                cert:
+                  type: string
+                  format: binary
       parameters:
         - schema:
             type: string
             enum:
               - apikey
+              - mtls
           in: query
           name: _type
       description: |-
-        Create or update a secret or API Key
+        Create or update a secret, API Key or mTLS certificate and private key combination
 
         > This operation requires the update permission for the specific API
 
@@ -991,6 +1030,11 @@ paths:
         If the secret already exists it will be updated.
 
         Optionally set the query parameter `_type=apikey` to mark this secret as an API Key which can be used to secure the connection between an instance (API Proxy) and back-end (target).
+
+        Optionally set the query parameter `_type=mtls` if adding a certificate and private key combination. Adding this secret creates or updates a keystore on the API platform which is used in a handshake with the target server certificate, which verifies that both the client and server certificates have been signed by the same root certificate authority.
+
+        > * When setting the query parameter `_type=mtls` the certificate and private key files should be in PEM format and must be sent as `multipart/form-data` under fields of `key` and `cert`.
+        > * Updating an mtls secret will always update the keystore and will be used by any instances of the API in the specified environment. This is can be used for key rotation but should be done with caution for live environments.
     delete:
       summary: Delete a secret or API key
       operationId: delete-apis-api_name-environments-environment-secrets-secret_name
@@ -1029,6 +1073,7 @@ paths:
                   value:
                     type: secret
                     apikey: false
+                    mtls: false
                     version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                     environment: internal-dev
                     name: some-secret
@@ -1459,7 +1504,7 @@ components:
     _PaasSecurity:
       type: object
       title: _PaasSecurity
-      description: Some description
+      description: Authorisation and Authentication pattern of the path
       oneOf:
         - properties:
             app_level0:
@@ -1621,7 +1666,9 @@ components:
           type: string
           format: uri
         security:
-          $ref: '#/components/schemas/APIKeyBackendSecurity'
+          oneOf:
+            - $ref: '#/components/schemas/APIKeyBackendSecurity'
+            - $ref: '#/components/schemas/MTLSBackendSecurity'
     APIKeyBackendSecurity:
       type: object
       description: A target back-end which is secured using an API key, which will be included in the configured HTTP request header.
@@ -1641,6 +1688,20 @@ components:
           type: string
           enum:
             - apikey
+    MTLSBackendSecurity:
+      type: object
+      description: A target back-end which is secured using mTLS, a handshake, which verifies that both the client (API platform) and server (target backend) certificates have been signed by the same root certificate authority.
+      required:
+        - type
+        - secret
+      properties:
+        secret:
+          type: string
+          description: The name of a `secret` resource, which must already be deployed into the relevant environment.
+        type:
+          type: string
+          enum:
+            - mtls
     RateLimiting:
       type: object
       description: Rate limits can be described per-proxy and/or a default for the entire app.
@@ -1703,6 +1764,8 @@ components:
               enum:
                 - secret
             apikey:
+              type: boolean
+            mtls:
               type: boolean
             version_id:
               type: string

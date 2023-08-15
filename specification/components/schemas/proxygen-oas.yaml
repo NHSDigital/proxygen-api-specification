@@ -782,6 +782,7 @@ definitions:
   SecurityScheme:
     oneOf:
       - $ref: '#/definitions/APIKeySecurityScheme'
+      - $ref: '#/definitions/MTLSSecurityScheme'
       - $ref: '#/definitions/HTTPSecurityScheme'
       - $ref: '#/definitions/OAuth2SecurityScheme'
       - $ref: '#/definitions/OpenIdConnectSecurityScheme'
@@ -1139,7 +1140,7 @@ definitions:
   _PaasSecurity:
     type: object
     title: _PaasSecurity
-    description: Some description
+    description: Authorisation and Authentication pattern of the path
     oneOf:
       - properties:
           app_level0:
@@ -1269,7 +1270,9 @@ definitions:
       type: string
       format: uri
     security:
-      $ref: '#/definitions/APIKeyBackendSecurity'
+      oneOf:
+        - $ref: '#/definitions/APIKeyBackendSecurity'
+        - $ref: '#/definitions/MTLSBackendSecurity'
   
   APIKeyBackendSecurity:
     type: object
@@ -1286,6 +1289,19 @@ definitions:
         type: string
         enum:
           - 'apikey'
+
+  MTLSBackendSecurity:
+    type: object
+    required:
+     - type is required...
+     - secret
+    properties:
+      secret:
+        type: string
+      type:
+        type: string
+        enum:
+          - 'mtls'
 
   Access:
     type: object
