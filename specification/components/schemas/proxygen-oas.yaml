@@ -782,7 +782,6 @@ definitions:
   SecurityScheme:
     oneOf:
       - $ref: '#/definitions/APIKeySecurityScheme'
-      - $ref: '#/definitions/MTLSSecurityScheme'
       - $ref: '#/definitions/HTTPSecurityScheme'
       - $ref: '#/definitions/OAuth2SecurityScheme'
       - $ref: '#/definitions/OpenIdConnectSecurityScheme'

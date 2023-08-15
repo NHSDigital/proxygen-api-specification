@@ -272,6 +272,65 @@ info:
     ### Extensions
     #### x-nhsd-apim
     This custom extension to the OpenAPI specification describes the API back-end and is the primary source of information for infrastructure to be deployed by Proxy Generator API.
+
+    The target field of the x-nhsd-apim schema is used to define one of three available API back-end security patterns
+    ##### mTLS external target
+    mTLS (Mutual TLS or sometimes termed TLS-MA) provides the strongest security between the API Platform and an externally hosted back-end.
+
+    mTLS is a handshake, which verifies that both the client (API platform) and server (target back-end) certificates have been signed by the same root certificate authority.
+
+    Before deploying instances with mTLS security you must first PUT the client certificate and private key as a secret in the environment the instance will be deployed in. See below schema for `/apis/{api_name}/environments/{environment}/secrets/{secret_name}`
+
+    Each environment can have one keystore per API. Adding an mTLS secret will create or update the keystore in that environment with the provided certificate and private key to be used for the mTLS connection.
+
+    For example:
+    ```
+    target:
+      type: external
+      healthcheck: /_status
+      url: https://example.external.mtls.secured.backend.com
+      security:
+        type: mtls
+        secret: example-cert-key-pair-secret-name
+    ```
+    ##### API Key external target
+    API Key back-end security is used for external back-ends with non or low sensitivity. The server trusts HTTP requests to the target with a known API Key in the 'apikey' header.
+
+    Before deploying instances with API Key security you must first PUT the apikey required by the target server in the environment the instance will be deployed in. See below schema for `/apis/{api_name}/environments/{environment}/secrets/{secret_name}`
+
+    For example:
+    ```
+    target:
+      type: external
+      healthcheck: /_status
+      url: https://example.external.apikey.secured.backend.com
+      security:
+        type: apikey
+        header: apikey
+        secret: example-apikey-secret-name
+    ```
+    ##### Hosted container
+    Hosted containers are back-ends hosted by the API Platform.
+
+    An image name and tag of a registered container must be provided along with any environment variables used in the container.
+
+    For example:
+    ```
+    target:
+      type: hosted
+      healthcheck: /_status
+      containers:
+        - name: hello-world
+          image:
+            name: hello-world_hello-world
+            tag: 72537-sha6c0ccdb
+          environment:
+            LOG_LEVEL: info
+            UPSTREAM: 'https://internal-dev.api.service.nhs.uk'
+            NODE_ENV: production
+    ```
+
+
     See the schema definition below for a full list of available/required attributes.
 
   license:
@@ -1690,7 +1749,7 @@ components:
             - apikey
     MTLSBackendSecurity:
       type: object
-      description: A target back-end which is secured using mTLS, a handshake, which verifies that both the client (API platform) and server (target backend) certificates have been signed by the same root certificate authority.
+      description: A target back-end which is secured using mTLS, a handshake, which verifies that both the client (API platform) and server (target back-end) certificates have been signed by the same root certificate authority.
       required:
         - type
         - secret
