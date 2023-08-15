@@ -1058,7 +1058,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level0
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
 
   AppLevel3Reference:
@@ -1069,7 +1069,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level3
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level3
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level3
 
   NhsLoginP0Reference:
@@ -1080,7 +1080,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p0
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p0
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p0
 
   NhsLoginP5Reference:
@@ -1091,7 +1091,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p5
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p5
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p5
 
   NhsLoginP9Reference:
@@ -1102,7 +1102,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p9
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p9
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p9
 
   NhsCis2Aal1Reference:
@@ -1113,7 +1113,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal1
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal1
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal1
 
   NhsCis2Aal3Reference:
@@ -1124,7 +1124,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
 
   PaasSecurityRequirement:

@@ -253,19 +253,19 @@ info:
     ```
     securitySchemes:  # limit this to only those used in your API
       nhs-login-p0:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p0
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p0
     nhs-login-p5:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p5
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p5
     nhs-login-p9:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p9
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p9
     nhs-cis2-aal1:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal1
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal1
     nhs-cis2-aal3:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
     app-level0:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level0
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
     app-level3:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level3
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level3
     ```
     Each item references a publically available JSON description object, which is rendered into the final specification document.
 
@@ -346,8 +346,8 @@ x-spec-publication:
   try-this-api:
     disabled: true
 servers:
-  - url: 'https://internal-dev.api.service.nhs.uk/proxygen-specification'
-    description: Dummy environment. Required to appease Proxy Generator API's OAS Parser which requires server URLs of a particular format.
+  - url: 'https://proxygen.prod.api.platform.nhs.uk'
+    description: Base url for proxygen
 paths:
   /apis:
     get:
@@ -1819,7 +1819,7 @@ components:
         components:
           securitySchemes:
             app-level0:
-              \$ref: 'https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level0'
+              \$ref: 'https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0'
         x-nhsd-apim:
           monitoring: true
           access:
