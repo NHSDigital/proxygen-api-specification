@@ -227,7 +227,7 @@ info:
     Proxy Generator API can be used to store secret values - primarily for use by proxies which are configured for hosted containers. Secrets have a `_type` attribute, which indicate their upstream use. Currently supported secret types are:
 
     - `apikey` - used when employing API Key security between the API platform and back-end 'target' servers - this will be added to HTTP requests to the target as the value of the 'apikey' header.
-    - `mtls` - used when employing mTLS security between the API platform and back-end 'target' servers - this is a a combination of the client certificate and private key. Adding this secret creates or updates a keystore on the API platform which is used in a handshake with the target server certificate, which verifies that both the client and server certificates have been signed by the same root certificate authority. 
+    - `mtls` - used when employing mTLS security between the API platform and back-end 'target' servers - this is a a combination of the client certificate and private key. Adding this secret creates or updates a keystore on the API platform, which is used in a handshake with the target server certificate and verifies that both the client and server certificates have been signed by the same root certificate authority. 
 
     ## OpenAPI specification constraints and extensions
 
@@ -279,9 +279,9 @@ info:
 
     mTLS is a handshake, which verifies that both the client (API platform) and server (target back-end) certificates have been signed by the same root certificate authority.
 
-    Before deploying instances with mTLS security you must first PUT the client certificate and private key as a secret in the environment the instance will be deployed in. See below schema for `/apis/{api_name}/environments/{environment}/secrets/{secret_name}`
+    Before deploying instances with mTLS security you must first PUT the client certificate and private key as a secret in the environment the instance will be deployed in. See schema for `/apis/{api_name}/environments/{environment}/secrets/{secret_name}`
 
-    Each environment can have one keystore per API. Adding an mTLS secret will create or update the keystore in that environment with the provided certificate and private key to be used for the mTLS connection.
+    An API can have one keystore per environment. Adding an mTLS secret will create or update the keystore in that environment with the provided certificate and private key to be used for the mTLS connection.
 
     For example:
     ```
@@ -294,9 +294,9 @@ info:
         secret: example-cert-key-pair-secret-name
     ```
     ##### API Key external target
-    API Key back-end security is used for external back-ends with non or low sensitivity. The server trusts HTTP requests to the target with a known API Key in the 'apikey' header.
+    API Key back-end security is used for external back-ends with no or low sensitivity. The server trusts HTTP requests to the target with a known API Key in the 'apikey' header.
 
-    Before deploying instances with API Key security you must first PUT the apikey required by the target server in the environment the instance will be deployed in. See below schema for `/apis/{api_name}/environments/{environment}/secrets/{secret_name}`
+    Before deploying instances with API Key security you must first PUT the apikey required by the target server in the environment the instance will be deployed in. See schema for `/apis/{api_name}/environments/{environment}/secrets/{secret_name}`
 
     For example:
     ```
@@ -329,7 +329,6 @@ info:
             UPSTREAM: 'https://internal-dev.api.service.nhs.uk'
             NODE_ENV: production
     ```
-
 
     See the schema definition below for a full list of available/required attributes.
 
@@ -406,7 +405,7 @@ x-spec-publication:
     disabled: true
 servers:
   - url: 'https://proxygen.prod.api.platform.nhs.uk'
-    description: Base url for proxygen
+    description: Base url for Proxy Generator API
 paths:
   /apis:
     get:
@@ -1730,7 +1729,7 @@ components:
             - $ref: '#/components/schemas/MTLSBackendSecurity'
     APIKeyBackendSecurity:
       type: object
-      description: A target back-end which is secured using an API key, which will be included in the configured HTTP request header.
+      description: A target back-end that is secured using an API key, which will be included in the configured HTTP request header.
       required:
         - type
         - header
@@ -1749,7 +1748,7 @@ components:
             - apikey
     MTLSBackendSecurity:
       type: object
-      description: A target back-end which is secured using mTLS, a handshake, which verifies that both the client (API platform) and server (target back-end) certificates have been signed by the same root certificate authority.
+      description: A target back-end that is secured using a mTLS handshake, which verifies that both the client (API platform) and server (target back-end) certificates have been signed by the same root certificate authority.
       required:
         - type
         - secret
