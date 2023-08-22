@@ -217,6 +217,8 @@ info:
 
     API resources are limited across the platform and in order to keep deployed resources manageable. API producer teams are allocated a limited number of conncurrently deployed API instances. Once this limit is reached, deployments will fail. In order to keep this manageable for producers, there are a number of batch jobs which delete API instances which are marked as `temporary` periodically, based on their `last_modified` date.
 
+    Temporary instances are limited to Internal path to live environments. See Environments section for more information on environments.
+
     Examples of when the `temporary` attribute would be appropriate include, but are not limited to:
     - on creation of a pull request (PR) - these instances are often used for automated testing
     - during penetration testing
@@ -1200,6 +1202,17 @@ paths:
                 failed-to-create-instance:
                   value:
                     detail: API hello-world already has an instance hello-world-123 in internal-dev
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                temporary-instance-is-external-env:
+                  value:
+                    detail:
+                      msg: 1 validation error for ApiInstance\nenvironment\n  Instances in int environment cannot be temporary. (type=value_error)
       description: |-
         Creating a new instance of the API, in the specified environment, will deploy it and make it available in that environment.
 
