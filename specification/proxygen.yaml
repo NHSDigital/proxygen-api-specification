@@ -228,7 +228,7 @@ info:
 
     Proxy Generator API can be used to store secret values - primarily for use in securing the connection to an External Target (see below).
     
-    Secrets have a `_type` attribute, which indicate their upstream use. Supported types are:
+    Secrets have a `type` attribute, which indicate their upstream use. Supported types are:
 
     - `apikey` - used when employing API Key security between the API platform and back-end 'target' servers - this will be added to HTTP requests to the target as the value of the 'apikey' header.
     - `mtls` - used when employing mTLS security between the API platform and back-end 'target' servers - this is a a combination of the client certificate and private key. Adding this secret creates or updates a keystore on the API platform, which is used in a handshake with the target server certificate and verifies that both the client and server certificates have been signed by the same root certificate authority. 
@@ -935,7 +935,7 @@ paths:
               - secret
             example: instance
           in: query
-          name: _type
+          name: type
       description: |-
         Get a list of the deployed resources for an API.
 
@@ -943,7 +943,7 @@ paths:
 
         Resource can be either 'secrets' or 'instances' (API proxies).
 
-        Retrieve instances of a specific type using the optional `_type` query parameter.
+        Retrieve instances of a specific type using the optional `type` query parameter.
 
         Resources in *all* environments are listed.
   '/apis/{api_name}/environments/{environment}':
@@ -1135,7 +1135,7 @@ paths:
               - apikey
               - mtls
           in: query
-          name: _type
+          name: type
       description: |-
         Create or update a secret, API Key or mTLS certificate and private key combination
 
@@ -1145,11 +1145,11 @@ paths:
 
         If the secret already exists it will be updated.
 
-        Optionally set the query parameter `_type=apikey` to mark this secret as an API Key which can be used to secure the connection between an instance (API Proxy) and back-end (target).
+        Optionally set the query parameter `type=apikey` to mark this secret as an API Key which can be used to secure the connection between an instance (API Proxy) and back-end (target).
 
-        Optionally set the query parameter `_type=mtls` if adding a certificate and private key combination. Adding this secret creates or updates a keystore on the API platform which is used in a handshake with the target server certificate, which verifies that both the client and server certificates have been signed by the same root certificate authority.
+        Optionally set the query parameter `type=mtls` if adding a certificate and private key combination. Adding this secret creates or updates a keystore on the API platform which is used in a handshake with the target server certificate, which verifies that both the client and server certificates have been signed by the same root certificate authority.
 
-        > * When setting the query parameter `_type=mtls` the certificate and private key files should be in PEM format and must be sent as `multipart/form-data` under fields of `key` and `cert`.
+        > * When setting the query parameter `type=mtls` the certificate and private key files should be in PEM format and must be sent as `multipart/form-data` under fields of `key` and `cert`.
         > * Updating an mtls secret will always update the keystore and will be used by any instances of the API in the specified environment. This is can be used for key rotation but should be done with caution for live environments.
     delete:
       summary: Delete a secret or API key
