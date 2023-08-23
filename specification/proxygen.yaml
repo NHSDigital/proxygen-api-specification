@@ -226,7 +226,7 @@ info:
 
     #### Secrets
 
-    Proxy Generator API can be used to store secret values - primarily for use in securing the connection to an External Target (see below).
+    Proxy Generator API can be used to store secret values - primarily for use in securing the connection to an external target (see below).
     
     Secrets have a `type` attribute, which indicate their upstream use. Supported types are:
 
@@ -275,25 +275,25 @@ info:
 
     ### `x-nhsd-apim` Specification Extension
 
-    This [extension to the OpenAPI specification](https://swagger.io/docs/specification/openapi-extensions/) is read during API Instance deployment and controls functionality specific to the API Platform.
+    This [extension to the OpenAPI specification](https://swagger.io/docs/specification/openapi-extensions/) is read during API instance deployment and controls functionality specific to the API Platform.
 
     #### Monitoring
 
     The `monitoring` key controls whether the instance will be monitored by the API platform. This is enabled by default (set to `true`).
 
-    #### Target Specification
+    #### Target specification
 
     The `target` key contains an object that defines the target (back-end) where your API proxy forwards requests.
 
-    ##### External Target
+    ##### External target
 
-    A service not hosted on the API Platform. (Contrast with Hosted Target, below.)
+    A service not hosted on the API Platform. (Contrast with hosted target, below.)
 
     Two methods of securing the connection between the API proxy and target service are supported: API Key and mTLS.
     
     Both methods depend on a named secret (`target.secret` property) existing in the relevant environment. See [Create or update a secret](#put-/apis/-api_name-/environments/-environment-/secrets/-secret_name-).
 
-    ###### mTLS Security
+    ###### mTLS security
 
     mTLS (Mutual TLS or sometimes termed TLS-MA) provides the strongest security between the API Platform and an externally hosted back-end.
 
@@ -312,11 +312,11 @@ info:
         secret: example-cert-key-pair-secret-name
     ```
 
-    ###### API Key external target
+    ###### API key external target
     
-    API Key back-end security is used for external back-ends with no or low sensitivity. The server is configured to only accept requests having the correct a shared secret (the API Key) in a HTTP header.
+    API key back-end security is used for external back-ends with no or low sensitivity. The server is configured to only accept requests having the correct a shared secret (the API key) in a HTTP header.
     
-    Before deploying instances with API Key security you must first PUT the apikey required by the target server in the environment the instance will be deployed in. See [Create or update a secret](#put-/apis/-api_name-/environments/-environment-/secrets/-secret_name-).
+    Before deploying instances with API key security you must first PUT the apikey required by the target server in the environment the instance will be deployed in. See [Create or update a secret](#put-/apis/-api_name-/environments/-environment-/secrets/-secret_name-).
 
     The `target.security.header` property specifies the HTTP Header name used to transmit the API key.
 
@@ -331,7 +331,7 @@ info:
         header: X-API-Key
         secret: example-apikey-secret-name
     ```
-    ##### Hosted Target
+    ##### Hosted target
 
     A hosted target is a container running on the API Platform.
     
