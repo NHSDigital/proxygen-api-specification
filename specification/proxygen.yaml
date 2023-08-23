@@ -354,7 +354,7 @@ info:
             UPSTREAM: 'https://internal-dev.api.service.nhs.uk'
             NODE_ENV: production
     ```
-    #### Rate Limiting
+    #### Rate limiting
 
     Add the `ratelimiting` key to protect your back-end service from being overwhelmed by too many requests.
     
@@ -375,7 +375,7 @@ info:
         timeunit: minute
     ```
     
-    #### API Products
+    #### API products
 
     Each object in the `x-nhsd-apim.access` array defines an API Product. API consumers subscribe their Applications to these in the developer portal.
 
