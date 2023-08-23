@@ -24,7 +24,7 @@ info:
 
     You can:
     * register new API definitions
-    * publish preview and live API specifications
+    * publish API specifications
     * manage containers and secrets
     * use your OAS specification to manage API proxies, products and security patterns
 
@@ -226,7 +226,9 @@ info:
 
     #### Secrets
 
-    Proxy Generator API can be used to store secret values - primarily for use by proxies which are configured for hosted containers. Secrets have a `_type` attribute, which indicate their upstream use. Currently supported secret types are:
+    Proxy Generator API can be used to store secret values - primarily for use in securing the connection to an External Target (see below).
+    
+    Secrets have a `_type` attribute, which indicate their upstream use. Supported types are:
 
     - `apikey` - used when employing API Key security between the API platform and back-end 'target' servers - this will be added to HTTP requests to the target as the value of the 'apikey' header.
     - `mtls` - used when employing mTLS security between the API platform and back-end 'target' servers - this is a a combination of the client certificate and private key. Adding this secret creates or updates a keystore on the API platform, which is used in a handshake with the target server certificate and verifies that both the client and server certificates have been signed by the same root certificate authority. 
@@ -271,19 +273,33 @@ info:
     ```
     Each item references a publically available JSON description object, which is rendered into the final specification document.
 
-    ### Extensions
-    #### x-nhsd-apim
-    This custom extension to the OpenAPI specification describes the API back-end and is the primary source of information for infrastructure to be deployed by Proxy Generator API.
+    ### `x-nhsd-apim` Specification Extension
 
-    The target field of the x-nhsd-apim schema is used to define one of three available API back-end security patterns
-    ##### mTLS external target
+    This [extension to the OpenAPI specification](https://swagger.io/docs/specification/openapi-extensions/) is read during API Instance deployment and controls functionality specific to the API Platform.
+
+    #### Monitoring
+
+    The `monitoring` key controls whether the instance will be monitored by the API platform. This is enabled by default (set to `true`).
+
+    #### Target Specification
+
+    The `target` key contains an object that defines the target (back-end) where your API proxy forwards requests.
+
+    ##### External Target
+
+    A service not hosted on the API Platform. (Contrast with Hosted Target, below.)
+
+    Two methods of securing the connection between the API proxy and target service are supported: API Key and mTLS.
+    
+    Both methods depend on a named secret (`target.secret` property) existing in the relevant environment. See [Create or update a secret](#put-/apis/-api_name-/environments/-environment-/secrets/-secret_name-).
+
+    ###### mTLS Security
+
     mTLS (Mutual TLS or sometimes termed TLS-MA) provides the strongest security between the API Platform and an externally hosted back-end.
 
     mTLS is a handshake, which verifies that both the client (API platform) and server (target back-end) certificates have been signed by the same root certificate authority.
 
-    Before deploying instances with mTLS security you must first PUT the client certificate and private key as a secret in the environment the instance will be deployed in. See schema for `/apis/{api_name}/environments/{environment}/secrets/{secret_name}`
-
-    An API can have one keystore per environment. Adding an mTLS secret will create or update the keystore in that environment with the provided certificate and private key to be used for the mTLS connection.
+    Before deploying instances with mTLS security you must first PUT the client certificate and private key as a secret in the instance's environment.
 
     For example:
     ```
@@ -295,10 +311,14 @@ info:
         type: mtls
         secret: example-cert-key-pair-secret-name
     ```
-    ##### API Key external target
-    API Key back-end security is used for external back-ends with no or low sensitivity. The server trusts HTTP requests to the target with a known API Key in the 'apikey' header.
 
-    Before deploying instances with API Key security you must first PUT the apikey required by the target server in the environment the instance will be deployed in. See schema for `/apis/{api_name}/environments/{environment}/secrets/{secret_name}`
+    ###### API Key external target
+    
+    API Key back-end security is used for external back-ends with no or low sensitivity. The server is configured to only accept requests having the correct a shared secret (the API Key) in a HTTP header.
+    
+    Before deploying instances with API Key security you must first PUT the apikey required by the target server in the environment the instance will be deployed in. See [Create or update a secret](#put-/apis/-api_name-/environments/-environment-/secrets/-secret_name-).
+
+    The `target.security.header` property specifies the HTTP Header name used to transmit the API key.
 
     For example:
     ```
@@ -308,13 +328,16 @@ info:
       url: https://example.external.apikey.secured.backend.com
       security:
         type: apikey
-        header: apikey
+        header: X-API-Key
         secret: example-apikey-secret-name
     ```
-    ##### Hosted container
-    Hosted containers are back-ends hosted by the API Platform.
+    ##### Hosted Target
 
-    An image name and tag of a registered container must be provided along with any environment variables used in the container.
+    A hosted target is a container running on the API Platform.
+    
+    Specify the `name` and `tag` of an image in your API Platform container registry (see [Get a container registry access token](#get-/apis/-api_name-/docker-token)) and Proxy Generator will create the service and route requests from your API proxy instance.
+
+    Environment variables for the service can be specified in the `target.containers[].environment` object.
 
     For example:
     ```
@@ -331,8 +354,41 @@ info:
             UPSTREAM: 'https://internal-dev.api.service.nhs.uk'
             NODE_ENV: production
     ```
+    #### Rate Limiting
 
-    See the schema definition below for a full list of available/required attributes.
+    Add the `ratelimiting` key to protect your back-end service from being overwhelmed by too many requests.
+    
+    When specified rate limit is exceeded the API Proxy will respond with a `HTTP 429` (too many requests).
+
+    Rate limits can be specified:
+    - for the entire API Proxy in `ratelimiting.proxy`
+    - per-application in `ratelimiting.app-default`
+
+    For example:
+    ```
+    ratelimiting:
+      proxy:
+        limit: 5
+        timeunit: minute
+      app-default:
+        limit: 10
+        timeunit: minute
+    ```
+    
+    #### API Products
+
+    Each object in the `x-nhsd-apim.access` array defines an API Product. API consumers subscribe their Applications to these in the developer portal.
+
+    For example:
+    ```
+    access:
+    - title: User Restricted
+      grants:
+        nhs-login-p5: []
+    - title: Application Restricted
+      grants:
+        app-level0: []
+    ```
 
   license:
     name: MIT

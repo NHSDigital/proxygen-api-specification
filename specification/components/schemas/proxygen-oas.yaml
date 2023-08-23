@@ -1276,7 +1276,7 @@ definitions:
   APIKeyBackendSecurity:
     type: object
     required:
-     - type is required...
+     - type
      - header
      - secret
     properties:
@@ -1292,7 +1292,7 @@ definitions:
   MTLSBackendSecurity:
     type: object
     required:
-     - type is required...
+     - type
      - secret
     properties:
       secret:
