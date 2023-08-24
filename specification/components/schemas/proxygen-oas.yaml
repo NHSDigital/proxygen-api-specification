@@ -1057,7 +1057,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level0
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
 
   AppLevel3Reference:
@@ -1068,7 +1068,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level3
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level3
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level3
 
   NhsLoginP0Reference:
@@ -1079,7 +1079,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p0
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p0
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p0
 
   NhsLoginP5Reference:
@@ -1090,7 +1090,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p5
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p5
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p5
 
   NhsLoginP9Reference:
@@ -1101,7 +1101,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p9
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p9
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p9
 
   NhsCis2Aal1Reference:
@@ -1112,7 +1112,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal1
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal1
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal1
 
   NhsCis2Aal3Reference:
@@ -1123,7 +1123,7 @@ definitions:
       '$ref':
         type: string
         enum:
-          - https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
+          - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
           - https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
 
   PaasSecurityRequirement:
@@ -1139,7 +1139,7 @@ definitions:
   _PaasSecurity:
     type: object
     title: _PaasSecurity
-    description: Some description
+    description: Authorisation and Authentication pattern of the path
     oneOf:
       - properties:
           app_level0:
@@ -1269,12 +1269,14 @@ definitions:
       type: string
       format: uri
     security:
-      $ref: '#/definitions/APIKeyBackendSecurity'
+      oneOf:
+        - $ref: '#/definitions/APIKeyBackendSecurity'
+        - $ref: '#/definitions/MTLSBackendSecurity'
   
   APIKeyBackendSecurity:
     type: object
     required:
-     - type is required...
+     - type
      - header
      - secret
     properties:
@@ -1286,6 +1288,19 @@ definitions:
         type: string
         enum:
           - 'apikey'
+
+  MTLSBackendSecurity:
+    type: object
+    required:
+     - type
+     - secret
+    properties:
+      secret:
+        type: string
+      type:
+        type: string
+        enum:
+          - 'mtls'
 
   Access:
     type: object

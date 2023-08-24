@@ -28,10 +28,6 @@ info:
     * manage containers and secrets
     * use your OAS specification to manage API proxies, products and security patterns
 
-    In the future, you will be able to:
-    * secure the connection to your target service (back-end) with mTLS (Mutual TLS or sometimes termed TLS-MA)
-    * manage preview and live versions of your API's specification
-
     ## Who can use this API
     This API is only for use by teams publishing APIs on our API platform. These are predominantly internal NHS England teams.
 
@@ -230,9 +226,12 @@ info:
 
     #### Secrets
 
-    Proxy Generator API can be used to store secret values - primarily for use by proxies which are configured for hosted containers. Secrets have a `_type` attribute, which indicate their upstream use. Currently supported secret types are:
+    Proxy Generator API can be used to store secret values - primarily for use in securing the connection to an external target (see below).
+    
+    Secrets have a `type` attribute, which indicate their upstream use. Supported types are:
 
     - `apikey` - used when employing API Key security between the API platform and back-end 'target' servers - this will be added to HTTP requests to the target as the value of the 'apikey' header.
+    - `mtls` - used when employing mTLS security between the API platform and back-end 'target' servers - this is a a combination of the client certificate and private key. Adding this secret creates or updates a keystore on the API platform, which is used in a handshake with the target server certificate and verifies that both the client and server certificates have been signed by the same root certificate authority. 
 
     ## OpenAPI specification constraints and extensions
 
@@ -258,26 +257,138 @@ info:
     ```
     securitySchemes:  # limit this to only those used in your API
       nhs-login-p0:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p0
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p0
     nhs-login-p5:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p5
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p5
     nhs-login-p9:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-login-p9
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-login-p9
     nhs-cis2-aal1:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal1
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal1
     nhs-cis2-aal3:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
     app-level0:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level0
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
     app-level3:
-      $ref: https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level3
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level3
     ```
     Each item references a publically available JSON description object, which is rendered into the final specification document.
 
-    ### Extensions
-    #### x-nhsd-apim
-    This custom extension to the OpenAPI specification describes the API back-end and is the primary source of information for infrastructure to be deployed by Proxy Generator API.
-    See the schema definition below for a full list of available/required attributes.
+    ### `x-nhsd-apim` Specification Extension
+
+    This [extension to the OpenAPI specification](https://swagger.io/docs/specification/openapi-extensions/) is read during API instance deployment and controls functionality specific to the API Platform.
+
+    #### Monitoring
+
+    The `monitoring` key controls whether the instance will be monitored by the API platform. This is enabled by default (set to `true`).
+
+    #### Target specification
+
+    The `target` key contains an object that defines the target (back-end) where your API proxy forwards requests.
+
+    ##### External target
+
+    A service not hosted on the API Platform. (Contrast with hosted target, below.)
+
+    Two methods of securing the connection between the API proxy and target service are supported: API Key and mTLS.
+    
+    Both methods depend on a named secret (`target.secret` property) existing in the relevant environment. See [Create or update a secret](#put-/apis/-api_name-/environments/-environment-/secrets/-secret_name-).
+
+    ###### mTLS security
+
+    mTLS (Mutual TLS or sometimes termed TLS-MA) provides the strongest security between the API Platform and an externally hosted back-end.
+
+    mTLS is a handshake, which verifies that both the client (API platform) and server (target back-end) certificates have been signed by the same root certificate authority.
+
+    Before deploying instances with mTLS security you must first PUT the client certificate and private key as a secret in the instance's environment.
+
+    For example:
+    ```
+    target:
+      type: external
+      healthcheck: /_status
+      url: https://example.external.mtls.secured.backend.com
+      security:
+        type: mtls
+        secret: example-cert-key-pair-secret-name
+    ```
+
+    ###### API key external target
+    
+    API key back-end security is used for external back-ends with no or low sensitivity. The server is configured to only accept requests having the correct a shared secret (the API key) in a HTTP header.
+    
+    Before deploying instances with API key security you must first PUT the apikey required by the target server in the environment the instance will be deployed in. See [Create or update a secret](#put-/apis/-api_name-/environments/-environment-/secrets/-secret_name-).
+
+    The `target.security.header` property specifies the HTTP Header name used to transmit the API key.
+
+    For example:
+    ```
+    target:
+      type: external
+      healthcheck: /_status
+      url: https://example.external.apikey.secured.backend.com
+      security:
+        type: apikey
+        header: X-API-Key
+        secret: example-apikey-secret-name
+    ```
+    ##### Hosted target
+
+    A hosted target is a container running on the API Platform.
+    
+    Specify the `name` and `tag` of an image in your API Platform container registry (see [Get a container registry access token](#get-/apis/-api_name-/docker-token)) and Proxy Generator will create the service and route requests from your API proxy instance.
+
+    Environment variables for the service can be specified in the `target.containers[].environment` object.
+
+    For example:
+    ```
+    target:
+      type: hosted
+      healthcheck: /_status
+      containers:
+        - name: hello-world
+          image:
+            name: hello-world_hello-world
+            tag: 72537-sha6c0ccdb
+          environment:
+            LOG_LEVEL: info
+            UPSTREAM: 'https://internal-dev.api.service.nhs.uk'
+            NODE_ENV: production
+    ```
+    #### Rate limiting
+
+    Add the `ratelimiting` key to protect your back-end service from being overwhelmed by too many requests.
+    
+    When specified rate limit is exceeded the API Proxy will respond with a `HTTP 429` (too many requests).
+
+    Rate limits can be specified:
+    - for the entire API Proxy in `ratelimiting.proxy`
+    - per-application in `ratelimiting.app-default`
+
+    For example:
+    ```
+    ratelimiting:
+      proxy:
+        limit: 5
+        timeunit: minute
+      app-default:
+        limit: 10
+        timeunit: minute
+    ```
+    
+    #### API products
+
+    Each object in the `x-nhsd-apim.access` array defines an API Product. API consumers subscribe their Applications to these in the developer portal.
+
+    For example:
+    ```
+    access:
+    - title: User Restricted
+      grants:
+        nhs-login-p5: []
+    - title: Application Restricted
+      grants:
+        app-level0: []
+    ```
 
   license:
     name: MIT
@@ -351,8 +462,8 @@ x-spec-publication:
   try-this-api:
     disabled: true
 servers:
-  - url: 'https://internal-dev.api.service.nhs.uk/proxygen-specification'
-    description: Dummy environment. Required to appease Proxy Generator API's OAS Parser which requires server URLs of a particular format.
+  - url: 'https://proxygen.prod.api.platform.nhs.uk'
+    description: Base url for Proxy Generator API
 paths:
   /apis:
     get:
@@ -463,6 +574,7 @@ paths:
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
                       apikey: false
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-dev
                       name: some-secret
@@ -475,6 +587,7 @@ paths:
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
                       apikey: false
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-qa
                       name: some-other-secret
@@ -795,6 +908,7 @@ paths:
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
                       apikey: false
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-dev
                       name: some-secret
@@ -807,6 +921,7 @@ paths:
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
                       apikey: false
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-qa
                       name: some-other-secret
@@ -820,7 +935,7 @@ paths:
               - secret
             example: instance
           in: query
-          name: _type
+          name: type
       description: |-
         Get a list of the deployed resources for an API.
 
@@ -828,7 +943,7 @@ paths:
 
         Resource can be either 'secrets' or 'instances' (API proxies).
 
-        Retrieve instances of a specific type using the optional `_type` query parameter.
+        Retrieve instances of a specific type using the optional `type` query parameter.
 
         Resources in *all* environments are listed.
   '/apis/{api_name}/environments/{environment}':
@@ -865,6 +980,7 @@ paths:
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
                       apikey: false
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-dev
                       name: some-secret
@@ -904,12 +1020,14 @@ paths:
                   value:
                     - type: secret
                       apikey: true
+                      mtls: false
                       version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                       environment: internal-dev
                       name: some-secret
                       last_modified: '2022-10-12T11:39:45+00:00'
                     - type: secret
-                      apikey: true
+                      apikey: false
+                      mtls: true
                       version_id: 4e03f1bd-f6d4-415e-bf04-10640136f031
                       environment: internal-dev
                       name: some-other-secret
@@ -958,6 +1076,7 @@ paths:
                     last_modified: '2019-08-24T14:15:22Z'
                     environment: internal-dev
                     apikey: false
+                    mtls: false
                     version_id: 9e94c502-ca41-4342-a7f7-af96b444512c
         '422':
           description: Unprocessable Entity
@@ -966,25 +1085,59 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPException'
               examples:
-                Example 1:
+                empty-request-body:
                   value:
                     detail: Request body cannot be empty
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                missing-key-file:
+                  value:
+                    detail: Missing key file in payload. Must include both key and cert files.
+                missing-cert-file:
+                  value:
+                    detail: Missing cert file in payload. Must include both key and cert files.
+                invalid-key-file:
+                  value:
+                    detail: Invalid key file in payload. Must be a PEM key file.
+                invalid-cert-file:
+                  value:
+                    detail: Invalid cert file in payload. Must be a PEM cert file.
+                password-protected-key-file:
+                  value:
+                    detail: Invalid key file in payload. key file cannot be password protected.
       requestBody:
+        required: true
         content:
           text/plain:
             schema:
               type: string
               minLength: 1
             examples: {}
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                key:
+                  type: string
+                  format: binary
+                cert:
+                  type: string
+                  format: binary
       parameters:
         - schema:
             type: string
             enum:
               - apikey
+              - mtls
           in: query
-          name: _type
+          name: type
       description: |-
-        Create or update a secret or API Key
+        Create or update a secret, API Key or mTLS certificate and private key combination
 
         > This operation requires the update permission for the specific API
 
@@ -992,7 +1145,12 @@ paths:
 
         If the secret already exists it will be updated.
 
-        Optionally set the query parameter `_type=apikey` to mark this secret as an API Key which can be used to secure the connection between an instance (API Proxy) and back-end (target).
+        Optionally set the query parameter `type=apikey` to mark this secret as an API Key which can be used to secure the connection between an instance (API Proxy) and back-end (target).
+
+        Optionally set the query parameter `type=mtls` if adding a certificate and private key combination. Adding this secret creates or updates a keystore on the API platform which is used in a handshake with the target server certificate, which verifies that both the client and server certificates have been signed by the same root certificate authority.
+
+        > * When setting the query parameter `type=mtls` the certificate and private key files should be in PEM format and must be sent as `multipart/form-data` under fields of `key` and `cert`.
+        > * Updating an mtls secret will always update the keystore and will be used by any instances of the API in the specified environment. This is can be used for key rotation but should be done with caution for live environments.
     delete:
       summary: Delete a secret or API key
       operationId: delete-apis-api_name-environments-environment-secrets-secret_name
@@ -1031,6 +1189,7 @@ paths:
                   value:
                     type: secret
                     apikey: false
+                    mtls: false
                     version_id: 106a9942-210f-4f43-9735-a9310a34daa7
                     environment: internal-dev
                     name: some-secret
@@ -1472,7 +1631,7 @@ components:
     _PaasSecurity:
       type: object
       title: _PaasSecurity
-      description: Some description
+      description: Authorisation and Authentication pattern of the path
       oneOf:
         - properties:
             app_level0:
@@ -1634,10 +1793,12 @@ components:
           type: string
           format: uri
         security:
-          $ref: '#/components/schemas/APIKeyBackendSecurity'
+          oneOf:
+            - $ref: '#/components/schemas/APIKeyBackendSecurity'
+            - $ref: '#/components/schemas/MTLSBackendSecurity'
     APIKeyBackendSecurity:
       type: object
-      description: A target back-end which is secured using an API key, which will be included in the configured HTTP request header.
+      description: A target back-end that is secured using an API key, which will be included in the configured HTTP request header.
       required:
         - type
         - header
@@ -1654,6 +1815,20 @@ components:
           type: string
           enum:
             - apikey
+    MTLSBackendSecurity:
+      type: object
+      description: A target back-end that is secured using a mTLS handshake, which verifies that both the client (API platform) and server (target back-end) certificates have been signed by the same root certificate authority.
+      required:
+        - type
+        - secret
+      properties:
+        secret:
+          type: string
+          description: The name of a `secret` resource, which must already be deployed into the relevant environment.
+        type:
+          type: string
+          enum:
+            - mtls
     RateLimiting:
       type: object
       description: Rate limits can be described per-proxy and/or a default for the entire app.
@@ -1717,6 +1892,8 @@ components:
                 - secret
             apikey:
               type: boolean
+            mtls:
+              type: boolean
             version_id:
               type: string
               format: uuid
@@ -1769,7 +1946,7 @@ components:
         components:
           securitySchemes:
             app-level0:
-              \$ref: 'https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level0'
+              \$ref: 'https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0'
         x-nhsd-apim:
           monitoring: true
           access:
