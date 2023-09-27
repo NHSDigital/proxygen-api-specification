@@ -401,7 +401,7 @@ info:
     ### API instance limits
 
      * 1 API instance in the `production` environment
-     * 10 API instances in the `internal-dev` and `internal-qa` environments
+     * 10 API instances in the `internal-dev` and `internal-dev-sandbox` environments
      * 5 API instances in all other environments
 
   license:
