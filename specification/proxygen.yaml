@@ -390,6 +390,20 @@ info:
         app-level0: []
     ```
 
+    ## Usage limits
+
+    To control the resource usage of the underlying services we apply the following usage limits.
+
+    Where a request would exceed these limts you will recieve a `HTTP 400` error with the response body detailing your current usage with respect to the limit.
+
+    The limits apply to all APIs equally and are reconfigurable. Contact us to request a limit change.
+
+    ### API instance limits
+
+     * 1 API instance in the `production` environment
+     * 10 API instances in the `internal-dev` and `internal-dev-sandbox` environments
+     * 5 API instances in all other environments
+
   license:
     name: MIT
   contact:
