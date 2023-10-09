@@ -947,6 +947,17 @@ paths:
 
         ### Disallowed environments
         A list of environments that are disallowed for an API to deploy to. By default 'prod' is disallowed which can be changed by API Management on request when ready to deploy to production.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiConfig'
+            examples:
+              update-api-config:
+                value:
+                  disallowed_environments:
+                    - prod
+                    - dev
       responses:
         '200':
           description: Api config udpated.
@@ -959,17 +970,22 @@ paths:
                   value:
                     disallowed_environments:
                       - prod
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApiConfig'
-            examples:
-              update-api-config:
-                value:
-                  disallowed_environments:
-                    - prod
-                    - dev
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                extra-fields-not-permitted:
+                  value:
+                    detail: extra fields not permitted
+                invalid-disallowed-environments-type:
+                  value:
+                    detail: value is not a valid list
+                invalid-environment-in-disallowed-environments:
+                  value:
+                    detail: "Invalid environment 'pord' in disallowed_environments. Must be one of: prod, int, sandbox, dev, ref, internal-qa, internal-qa-sandbox, internal-dev, internal-dev-sandbox"
   '/apis/{api_name}/environments':
     parameters:
       - schema:
