@@ -442,6 +442,12 @@ x-spec-publication:
           path: /apis/{api-name}/spec
         - method: DELETE
           path: /apis/{api-name}/spec/uat
+    - group: Config
+      operations:
+        - method: GET
+          path: /apis/{api-name}/config
+        - method: PUT
+          path: /apis/{api-name}/config
     - group: Resources
       operations:
         - method: GET
@@ -893,6 +899,38 @@ paths:
         Delete an the UAT version of an API's OpenAPI Specification (OAS).
 
         > This operation requires the delete permission for the specific API
+  '/apis/{api_name}/config':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+    get:
+      summary: Get an API's config
+      description: |-
+        Get an API's config
+
+        > This operation requires the **admin** permission.
+
+        API-level configuration currently includes:
+
+        ### Disallowed environments
+        A list of environments that are disallowed for an API to deploy to. By default 'prod' is disallowed which can be changed by API Management on request when ready to deploy to production.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiConfig'
+              examples:
+                disallowed-prod-config:
+                  value:
+                    disallowed_environments:
+                      - prod
+      operationId: get-api-config
+      parameters: []
   '/apis/{api_name}/environments':
     parameters:
       - schema:
@@ -1498,6 +1536,17 @@ components:
             example: hello-world
       required:
         - name
+    ApiConfig:
+      title: ApiConfig
+      type: object
+      properties:
+        disallowed_environments:
+          type: array
+          uniqueItems: true
+          description: "A list of environments the API is not allowed to deployed to. By default this includes 'prod' as there a pre-go-live activities that should first be completed. Contact the API Management team to change this."
+          items:
+            type: string
+            example: prod
     HTTPException:
       title: HTTPException
       type: object
