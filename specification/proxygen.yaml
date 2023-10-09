@@ -908,6 +908,7 @@ paths:
         required: true
     get:
       summary: Get an API's config
+      operationId: get-api-config
       description: |-
         Get an API's config
 
@@ -917,6 +918,7 @@ paths:
 
         ### Disallowed environments
         A list of environments that are disallowed for an API to deploy to. By default 'prod' is disallowed which can be changed by API Management on request when ready to deploy to production.
+      parameters: []
       responses:
         '200':
           description: Successful response
@@ -929,8 +931,45 @@ paths:
                   value:
                     disallowed_environments:
                       - prod
-      operationId: get-api-config
-      parameters: []
+    put:
+      summary: Update an API's config
+      operationId: put-api-config
+      description: |-
+        Updates an API's config
+
+        > This operation requires the **admin** permission.
+
+        You must provide the API's full config when updating.
+
+        The config is initially created with default values on creation of the API.
+
+        API-level configuration currently includes:
+
+        ### Disallowed environments
+        A list of environments that are disallowed for an API to deploy to. By default 'prod' is disallowed which can be changed by API Management on request when ready to deploy to production.
+      responses:
+        '200':
+          description: Api config udpated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiConfig'
+              examples:
+                disallowed-prod-config:
+                  value:
+                    disallowed_environments:
+                      - prod
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiConfig'
+            examples:
+              update-api-config:
+                value:
+                  disallowed_environments:
+                    - prod
+                    - dev
   '/apis/{api_name}/environments':
     parameters:
       - schema:
