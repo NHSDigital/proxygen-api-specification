@@ -1598,7 +1598,7 @@ components:
         disallowed_environments:
           type: array
           uniqueItems: true
-          description: "A list of environments the API is not allowed to deployed to. By default this includes 'prod' as there a pre-go-live activities that should first be completed. Contact the API Management team to change this."
+          description: "A list of environments the API is not allowed to deployed to. By default this includes 'prod' as there are pre-go-live activities that should first be completed. Contact the API Management team to change this."
           items:
             type: string
             example: prod
