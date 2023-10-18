@@ -487,6 +487,8 @@ paths:
   /apis:
     get:
       summary: List all APIs
+      tags:
+        - "APIs"
       description: |-
         Get a list of all API names.
 
@@ -510,6 +512,8 @@ paths:
       parameters: []
     post:
       summary: Register a new API
+      tags:
+        - "APIs"
       operationId: post-apis
       description: |-
         Register a new API with Proxy Generator API.
@@ -573,6 +577,8 @@ paths:
         required: true
     get:
       summary: Get an API's deployed resources
+      tags:
+        - "APIs"
       responses:
         '200':
           description: Successful response
@@ -622,6 +628,8 @@ paths:
         Resources in *all* environments are listed.
     put:
       summary: Update an existing API
+      tags:
+        - "APIs"
       operationId: put-apis-api_name
       responses:
         '200':
@@ -673,6 +681,8 @@ paths:
         See [POST /apis](#post-apis) for details of the semantics of the request.
     delete:
       summary: Delete an API
+      tags:
+        - "APIs"
       operationId: delete-apis-api_name
       responses:
         '200':
@@ -712,6 +722,8 @@ paths:
         required: true
     get:
       summary: Get a container registry access token
+      tags:
+        - "Resources"
       responses:
         '200':
           description: Successful response
@@ -756,6 +768,8 @@ paths:
         required: true
     get:
       summary: Get the Specification for an API
+      tags:
+        - "API Specifications"
       responses:
         '200':
           description: Successful response
@@ -789,6 +803,8 @@ paths:
         Note that this is distinct from the OAS files that drive the generation of API's 'instances' (deployed API proxies). Instance-specific OAS files are typically derived from this specification, but include Proxy Generator API-specific extensions.
     put:
       summary: Create or replace the specification for an API
+      tags:
+        - "API Specifications"
       operationId: put-apis-api_name-spec
       responses:
         '200':
@@ -818,6 +834,8 @@ paths:
         Note that this is distinct from the OAS files that drive the generation of API's 'instances' (deployed API proxies). Instance-specific OAS files are typically derived from this specification, but include Proxy Generator API-specific extensions.
     delete:
       summary: Delete the specification for an API
+      tags:
+        - "API Specifications"
       operationId: delete-apis-api_name-spec
       responses:
         '204':
@@ -837,6 +855,8 @@ paths:
         required: true
     get:
       summary: Get the UAT Specification for an API
+      tags:
+        - "API Specifications"
       responses:
         '200':
           description: Successful response
@@ -865,6 +885,8 @@ paths:
         this will be returned instead.
     put:
       summary: Create or replace the UAT specification for an API
+      tags:
+        - "API Specifications"
       operationId: put-apis-api_name-spec-uat
       responses:
         '200':
@@ -890,6 +912,8 @@ paths:
         > This operation requires the update permission for the specific API
     delete:
       summary: Delete the UAT specification for an API
+      tags:
+        - "API Specifications"
       operationId: delete-apis-api_name-spec-uat
       responses:
         '204':
@@ -907,6 +931,8 @@ paths:
         required: true
     get:
       summary: Get an API's config
+      tags:
+        - "APIs"
       operationId: get-api-config
       description: |-
         Get an API's config
@@ -932,6 +958,8 @@ paths:
                       - prod
     put:
       summary: Update an API's config
+      tags:
+        - "APIs"
       operationId: put-api-config
       description: |-
         Updates an API's config
@@ -994,6 +1022,8 @@ paths:
         required: true
     get:
       summary: Get an API's deployed resources (optionally just a specific type)
+      tags:
+        - "Resources"
       responses:
         '200':
           description: Successful response
@@ -1066,6 +1096,8 @@ paths:
         required: true
     get:
       summary: Get an API's deployed resources for a specific environment
+      tags:
+        - "Resources"
       responses:
         '200':
           description: Successful response
@@ -1112,6 +1144,8 @@ paths:
         required: true
     get:
       summary: Get the secrets for an API in a specific environment
+      tags:
+        - "Resources"
       responses:
         '200':
           description: OK
@@ -1166,6 +1200,8 @@ paths:
         required: true
     put:
       summary: Create or update a secret
+      tags:
+        - "Resources"
       operationId: put-apis-api_name-environments-environment-secrets-secret_name
       responses:
         '200':
@@ -1259,6 +1295,8 @@ paths:
         > * Updating an mtls secret will always update the keystore and will be used by any instances of the API in the specified environment. This is can be used for key rotation but should be done with caution for live environments.
     delete:
       summary: Delete a secret or API key
+      tags:
+        - "Resources"
       operationId: delete-apis-api_name-environments-environment-secrets-secret_name
       responses:
         '200':
@@ -1282,6 +1320,8 @@ paths:
         > This operation requires the delete permission for the specific API
     get:
       summary: Get the metadata for a specific secret
+      tags:
+        - "Resources"
       operationId: get-apis-api_name-environments-environment-secrets-secret_name
       responses:
         '200':
@@ -1318,6 +1358,8 @@ paths:
         required: true
     get:
       summary: Get the instances of an API in a specific environment
+      tags:
+        - "API Instances"
       responses:
         '200':
           description: Successful response
@@ -1343,6 +1385,8 @@ paths:
         > This operations requires the read permission for the specific API
     post:
       summary: Create an API instance in a specific environment
+      tags:
+        - "API Instances"
       operationId: post-apis-api_name-environments-environment-instances
       responses:
         '201':
@@ -1408,6 +1452,8 @@ paths:
         required: true
     get:
       summary: Get a specific API instance
+      tags:
+        - "API Instances"
       responses:
         '200':
           description: Successful response
@@ -1425,6 +1471,8 @@ paths:
         > This operation requires the read permission for the specific API
     put:
       summary: Update or create an API instance
+      tags:
+        - "API Instances"
       operationId: put-apis-api_name-environments-environment-instances-instance_name
       responses:
         '200':
@@ -1456,6 +1504,8 @@ paths:
                 $ref: '#/components/examples/instance-oas'
     delete:
       summary: Delete an API instance
+      tags:
+        - "API Instances"
       operationId: delete-apis-api_name-environments-environment-instances-instance_name
       responses:
         '200':
@@ -1477,6 +1527,8 @@ paths:
   /specs:
     get:
       summary: Get all specifications
+      tags:
+        - "API Specification Bulk Retrieval"
       responses:
         '200':
           description: Successful response
@@ -1519,6 +1571,8 @@ paths:
         required: true
     get:
       summary: Get an API specification
+      tags:
+        - "API Specification Bulk Retrieval"
       responses:
         '200':
           description: OK
@@ -1545,6 +1599,8 @@ paths:
         required: true
     get:
       summary: Get the UAT version of an API specification
+      tags:
+        - "API Specification Bulk Retrieval"
       responses:
         '200':
           description: OK
