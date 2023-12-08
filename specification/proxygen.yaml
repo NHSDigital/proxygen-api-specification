@@ -759,6 +759,8 @@ paths:
         ```
         $ docker login --username <user> --password <password> <registry>
         ```
+        
+        In the unlikely event that your response is an empty object instead of the example response shown below, please contact us to update your API.
   '/apis/{api_name}/spec':
     parameters:
       - schema:
