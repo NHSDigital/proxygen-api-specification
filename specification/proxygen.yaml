@@ -759,6 +759,8 @@ paths:
         ```
         $ docker login --username <user> --password <password> <registry>
         ```
+
+        If your API was not initially configured with Docker repositories, this endpoint will receive a successful request with an empty object. If you need to set up Docker repositories for working with hosted containers, please reach out to us to update your API.
   '/apis/{api_name}/spec':
     parameters:
       - schema:
