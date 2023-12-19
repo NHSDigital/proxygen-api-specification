@@ -390,6 +390,33 @@ info:
         app-level0: []
     ```
 
+    #### Target Attributes
+
+    Add the `target-attributes` key to add any attributes you want API consumers to provide you through the Applications they connect to you with. 
+
+    Each object within the attributes array relates to an individual attribute and whether you consider it required or not, you can put either a name or a path.
+
+    The values declared will be forwarded on as headers on the request, with the name being the name of the attribute declared here with attribute prefixed to it eg `attribute-party-key`.
+
+    Currently it does not base64 encode the header values due to time constraints and technology restrictions, until the time that it can be done please be aware of this caveat when using this feature.
+    
+    When you declare a path, it will assume the parent attribute is the first part of the path. eg service.metadata requires a service attribute, with an object called metadata at the first level.
+
+    If you put the field as `required` the proxy will reject the request if that attribute is missing, indicating which value needs to be populated - if it is false it will continue processing the request regardless.
+
+
+    For example:
+    ```
+    target-attributes:
+      attributes:
+        - name: party-key
+          required: true
+        - name: ods-code
+          required: true
+        - name: service.metadata
+          required: false
+    ```
+
     ## Usage limits
 
     To control the resource usage of the underlying services we apply the following usage limits.
