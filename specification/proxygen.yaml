@@ -1902,6 +1902,12 @@ components:
         temporary:
           type: boolean
           default: false
+        target-attributes:
+          type: array
+          description: Describes attributes that must be provided by API consumers via request headers.
+          items:
+            $ref: '#/components/schemas/TargetAttribute'
+            
     Target:
       description: Describes the API back-end and therefore associated infrastructure for deployment.
       allOf:
@@ -2055,6 +2061,16 @@ components:
         limit:
           type: integer
           minimum: 0
+    TargetAttribute:
+      type: object
+      required:
+        - name
+        - required
+      properties:
+        name:
+          type: string
+        required:
+          type: boolean
     instance:
       title: instance
       allOf:
