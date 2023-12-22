@@ -5,20 +5,19 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - name: Check the branch name references a Jira ticket
-      env:
-        REF: ${{ github.event.pull_request.head.ref }}
-      run: echo "$REF" | grep -i -E -q "(apm-[0-9]+)|(apmspii-[0-9]+)|(adz-[0-9]+)|(amb-[0-9]+)|(amp-[0-9]+)|(dependabot\/)"
-
-    - name: Set TICKET_NAME environment variable
+    - name: Set TICKET_NAME environment variable if branch name references a Jira ticket
       env:
         REF: ${{ github.event.pull_request.head.ref }}
       run: |
-        TICKET_NAME=$(echo "$REF" | grep -i -o '\(apm-[0-9]\+\)\|\(apmspii-[0-9]\+\)\|\(adz-[0-9]\+\)\|\(amb-[0-9]\+\)\|\(amp-[0-9]\+\)' | tr '[:lower:]' '[:upper:]')
-        echo "TICKET_NAME=$TICKET_NAME" >> "$GITHUB_ENV"
+        OUTPUT=$(echo "$REF" | { grep -i -E -q "(apm-[0-9]+)|(apmspii-[0-9]+)|(adz-[0-9]+)|(amb-[0-9]+)|(amp-[0-9]+)|(dependabot\/)" || test $? = 1; })
+        if [ ! -z "$OUTPUT" -a "$OUTPUT" != " " ]; then
+          TICKET_NAME=$(echo $OUTPUT | tr '[:lower:]' '[:upper:]')
+          echo "TICKET_NAME=$TICKET_NAME" >> "$GITHUB_ENV"
+        fi
 
     - name: Comment on PR with link to JIRA ticket
       uses: thollander/actions-comment-pull-request@v2
+      if: ${{ env.TICKET_NAME }}
       with:
         message: |
           This branch is work on a ticket in the NHS England's API Management JIRA Project:

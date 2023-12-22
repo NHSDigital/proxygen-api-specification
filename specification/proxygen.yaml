@@ -390,6 +390,34 @@ info:
         app-level0: []
     ```
 
+    #### Target Attributes
+
+    Each object in the `x-nhsd-apim.target-attributes` array describes an attribute you expect to be attached to Applications connecting to your API. 
+
+    Each object within the array relates to an individual attribute, both naming the attribute and describing whether it is required or not.
+
+    If you set `required` to `true` for an attribute, the proxy will reject any requests from applications missing that attribute - if you set it to `false`, the proxy will continue processing the request regardless.
+
+    Example usage:
+    ```
+    target-attributes:
+      attributes:
+        - name: party-key
+          required: true
+        - name: ods-code
+          required: true
+        - name: service.metadata
+          required: false
+    ```
+
+    Attributes may be strings, arrays, or objects. If you declare an object in this array, you may specify nested attributes as part of this object.
+
+    For example `service.metadata` refers to an object with the following JSON representation `{"service": {"metadata": <some value>}}`. You can similarly describe attributes in deeper nested objects, e.g. `service.metadata.timestamp`.
+    
+    The values declared will be forwarded on as headers on the request. The name of this header is derived from the name you have provided for each attribute, and is formatted as `attribute-<your attribute name>`, e.g. `attribute-party-key`.
+
+    Please be aware that these headers are not base64 encoded before they are forwarded and take this into consideration before attaching sensitive data to consumer applications as attributes.
+
     ## Usage limits
 
     To control the resource usage of the underlying services we apply the following usage limits.
@@ -1874,6 +1902,12 @@ components:
         temporary:
           type: boolean
           default: false
+        target-attributes:
+          type: array
+          description: Describes attributes that are expected to be attached to Applications consuming your API.
+          items:
+            $ref: '#/components/schemas/TargetAttribute'
+            
     Target:
       description: Describes the API back-end and therefore associated infrastructure for deployment.
       allOf:
@@ -2027,6 +2061,16 @@ components:
         limit:
           type: integer
           minimum: 0
+    TargetAttribute:
+      type: object
+      required:
+        - name
+        - required
+      properties:
+        name:
+          type: string
+        required:
+          type: boolean
     instance:
       title: instance
       allOf:
