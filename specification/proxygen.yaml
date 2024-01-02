@@ -480,9 +480,11 @@ x-spec-publication:
         path: '/apis/{api_name}/environments/{environment}'
       - method: GET
         path: '/apis/{api_name}/environments/{environment}/secrets'
-      - method: GET
-        path: '/apis/{api_name}/environments/{environment}/secrets/{secret_type}/{secret_name}'
       - method: PUT
+        path: '/apis/{api_name}/environments/{environment}/secrets/apikey/{secret_name}'
+      - method: PUT
+        path: '/apis/{api_name}/environments/{environment}/secrets/mtls/{secret_name}'
+      - method: GET
         path: '/apis/{api_name}/environments/{environment}/secrets/{secret_type}/{secret_name}'
       - method: DELETE
         path: '/apis/{api_name}/environments/{environment}/secrets/{secret_type}/{secret_name}'
