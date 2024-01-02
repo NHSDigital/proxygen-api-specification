@@ -291,7 +291,7 @@ info:
 
     Two methods of securing the connection between the API proxy and target service are supported: API Key and mTLS.
     
-    Both methods depend on a named secret (`target.secret` property) existing in the relevant environment. See [Create or update a secret](#put-/apis/-api_name-/environments/-environment-/secrets/-secret_name-).
+    Both methods depend on a named secret (`target.secret` property) existing in the relevant environment. See [Create or update an API Key secret](#put-/apis/-api_name-/environments/-environment-/secrets/apikey/-secret_name-) and [Create or update an mTLS secret](#put-/apis/-api_name-/environments/-environment-/secrets/mtls/-secret_name-).
 
     ###### mTLS security
 
@@ -316,7 +316,7 @@ info:
     
     API key back-end security is used for external back-ends with no or low sensitivity. The server is configured to only accept requests having the correct a shared secret (the API key) in a HTTP header.
     
-    Before deploying instances with API key security you must first PUT the apikey required by the target server in the environment the instance will be deployed in. See [Create or update a secret](#put-/apis/-api_name-/environments/-environment-/secrets/-secret_name-).
+    Before deploying instances with API key security you must first PUT the apikey required by the target server in the environment the instance will be deployed in. See [Create or update an API Key secret](#put-/apis/-api_name-/environments/-environment-/secrets/apikey/-secret_name-) and [Create or update an mTLS secret](#put-/apis/-api_name-/environments/-environment-/secrets/mtls/-secret_name-).
 
     The `target.security.header` property specifies the HTTP Header name used to transmit the API key.
 
@@ -481,11 +481,11 @@ x-spec-publication:
       - method: GET
         path: '/apis/{api_name}/environments/{environment}/secrets'
       - method: GET
-        path: '/apis/{api_name}/environments/{environment}/secrets/{secret_name}'
+        path: '/apis/{api_name}/environments/{environment}/secrets/{secret_type}/{secret_name}'
       - method: PUT
-        path: '/apis/{api_name}/environments/{environment}/secrets/{secret_name}'
+        path: '/apis/{api_name}/environments/{environment}/secrets/{secret_type}/{secret_name}'
       - method: DELETE
-        path: '/apis/{api_name}/environments/{environment}/secrets/{secret_name}'
+        path: '/apis/{api_name}/environments/{environment}/secrets/{secret_type}/{secret_name}'
     - group: API Instances
       operations:
       - method: GET
@@ -1207,7 +1207,7 @@ paths:
         Get a list of stored secrets for an API, in a specific environment.
 
         > This operations requires the read permission for the specific API
-  '/apis/{api_name}/environments/{environment}/secrets/{secret_name}':
+  '/apis/{api_name}/environments/{environment}/secrets/apikey/{secret_name}':
     parameters:
       - schema:
           type: string
@@ -1220,6 +1220,14 @@ paths:
         in: path
         required: true
       - in: path
+        name: secret_type
+        - schema:
+            type: string
+            enum:
+              - apikey
+              - mtls
+        required: true
+      - in: path
         name: secret_name
         schema:
           type: string
@@ -1229,10 +1237,102 @@ paths:
           example: some-secret
         required: true
     put:
-      summary: Create or update a secret
+      summary: Create or update an API Key secret
       tags:
         - "Resources"
-      operationId: put-apis-api_name-environments-environment-secrets-secret_name
+      operationId: put-apis-api_name-environments-environment-secrets-apikey-secret_name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/secret'
+              examples:
+                put-secret-response:
+                  value:
+                    name: my-secret
+                    type: secret
+                    last_modified: '2019-08-24T14:15:22Z'
+                    environment: internal-dev
+                    apikey: true
+                    mtls: false
+                    version_id: 9e94c502-ca41-4342-a7f7-af96b444512c
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                empty-request-body:
+                  value:
+                    detail: Request body cannot be empty
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPException'
+              examples:
+                invalid-key-file:
+                  value:
+                    detail: Invalid key file in payload. Must be a PEM key file.
+                password-protected-key-file:
+                  value:
+                    detail: Invalid key file in payload. key file cannot be password protected.
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              minLength: 1
+            examples: {}
+      description: |-
+        Create or update an API Key secret
+
+        > This operation requires the update permission for the specific API
+
+        Create a named secret using this operation, specifying the secret name (key) in the path and secret value to be stored in the body of the request.
+
+        If the secret already exists it will be updated.
+        
+        API Keys can be used to secure the connection between an instance (API Proxy) and back-end (target).
+  '/apis/{api_name}/environments/{environment}/secrets/mtls/{secret_name}':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: environment
+        in: path
+        required: true
+      - in: path
+        name: secret_type
+        - schema:
+            type: string
+            enum:
+              - apikey
+              - mtls
+        required: true
+      - in: path
+        name: secret_name
+        schema:
+          type: string
+          pattern: '^[a-zA-Z0-9_-]+$'
+          minLength: 1
+          maxLength: 400
+          example: some-secret
+        required: true
+    put:
+      summary: Create or update an mTLS secret
+      tags:
+        - "Resources"
+      operationId: put-apis-api_name-environments-environment-secrets-mtls-secret_name
       responses:
         '200':
           description: OK
@@ -1248,7 +1348,7 @@ paths:
                     last_modified: '2019-08-24T14:15:22Z'
                     environment: internal-dev
                     apikey: false
-                    mtls: false
+                    mtls: true
                     version_id: 9e94c502-ca41-4342-a7f7-af96b444512c
         '422':
           description: Unprocessable Entity
@@ -1285,11 +1385,6 @@ paths:
       requestBody:
         required: true
         content:
-          text/plain:
-            schema:
-              type: string
-              minLength: 1
-            examples: {}
           multipart/form-data:
             schema:
               type: object
@@ -1300,16 +1395,8 @@ paths:
                 cert:
                   type: string
                   format: binary
-      parameters:
-        - schema:
-            type: string
-            enum:
-              - apikey
-              - mtls
-          in: query
-          name: type
       description: |-
-        Create or update a secret, API Key or mTLS certificate and private key combination
+        Create or update an mTLS certificate and private key combination secret.
 
         > This operation requires the update permission for the specific API
 
@@ -1317,12 +1404,39 @@ paths:
 
         If the secret already exists it will be updated.
 
-        Optionally set the query parameter `type=apikey` to mark this secret as an API Key which can be used to secure the connection between an instance (API Proxy) and back-end (target).
+        Adding this secret creates or updates a keystore on the API platform which is used in a handshake with the target server certificate, which verifies that both the client and server certificates have been signed by the same root certificate authority.
 
-        Optionally set the query parameter `type=mtls` if adding a certificate and private key combination. Adding this secret creates or updates a keystore on the API platform which is used in a handshake with the target server certificate, which verifies that both the client and server certificates have been signed by the same root certificate authority.
-
-        > * When setting the query parameter `type=mtls` the certificate and private key files should be in PEM format and must be sent as `multipart/form-data` under fields of `key` and `cert`.
+        > * The certificate and private key files should be in PEM format and must be sent as `multipart/form-data` under fields of `key` and `cert`.
         > * Updating an mtls secret will always update the keystore and will be used by any instances of the API in the specified environment. This is can be used for key rotation but should be done with caution for live environments.
+  '/apis/{api_name}/environments/{environment}/secrets/{secret_type}/{secret_name}':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: environment
+        in: path
+        required: true
+      - in: path
+        name: secret_type
+        - schema:
+            type: string
+            enum:
+              - apikey
+              - mtls
+        required: true
+      - in: path
+        name: secret_name
+        schema:
+          type: string
+          pattern: '^[a-zA-Z0-9_-]+$'
+          minLength: 1
+          maxLength: 400
+          example: some-secret
+        required: true
     delete:
       summary: Delete a secret or API key
       tags:
