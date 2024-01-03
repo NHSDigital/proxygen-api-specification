@@ -1282,7 +1282,7 @@ paths:
             schema:
               type: string
               minLength: 1
-            examples: {}
+            examples: fc0875d7-65ad-4e68-bff8-2fa1d3130bf7
       description: |-
         Create or update an API Key secret
 
