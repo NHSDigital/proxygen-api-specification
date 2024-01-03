@@ -1223,11 +1223,11 @@ paths:
         required: true
       - in: path
         name: secret_type
-        - schema:
-            type: string
-            enum:
-              - apikey
-              - mtls
+        schema:
+          type: string
+          enum:
+            - apikey
+            - mtls
         required: true
       - in: path
         name: secret_name
