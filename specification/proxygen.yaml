@@ -1262,19 +1262,6 @@ paths:
                 empty-request-body:
                   value:
                     detail: Request body cannot be empty
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPException'
-              examples:
-                invalid-key-file:
-                  value:
-                    detail: Invalid key file in payload. Must be a PEM key file.
-                password-protected-key-file:
-                  value:
-                    detail: Invalid key file in payload. key file cannot be password protected.
       requestBody:
         required: true
         content:
