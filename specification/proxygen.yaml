@@ -1222,14 +1222,6 @@ paths:
         in: path
         required: true
       - in: path
-        name: secret_type
-        schema:
-          type: string
-          enum:
-            - apikey
-            - mtls
-        required: true
-      - in: path
         name: secret_name
         schema:
           type: string
@@ -1312,14 +1304,6 @@ paths:
           type: string
         name: environment
         in: path
-        required: true
-      - in: path
-        name: secret_type
-        - schema:
-            type: string
-            enum:
-              - apikey
-              - mtls
         required: true
       - in: path
         name: secret_name
