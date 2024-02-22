@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "proxygen-api-specification"
+name = "digital-staff-passport"
 version = "0.1.0"
-description = "Proxygen API Specification"
-authors = ["Alex Hawdon <alex.hawdon1@nhs.net>"]
+description = "Digital staff passport API specification"
+authors = ["Tony Heap <tony.heap1@nhs.net>"]
 license = "MIT"
 readme = "README.md"
 

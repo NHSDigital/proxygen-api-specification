@@ -23,12 +23,12 @@ jobs:
       run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
 
     - name: Set OAS info.version to ${{ env.SPEC_VERSION }}
-      run: sed -i 's/__VERSION__/${{ env.SPEC_VERSION }}/g' specification/proxygen.yaml
+      run: sed -i 's/__VERSION__/${{ env.SPEC_VERSION }}/g' specification/digital-staff-passport-api-standard.yaml
 
     - name: Vacuum OpenAPI Spec linter
       uses: eduelias/gha-vacuum@v0.0.1
       with:
-        cmd: vacuum lint -d specification/proxygen.yaml
+        cmd: vacuum lint -d specification/digital-staff-passport-api-standard.yaml
 
     - name: Create Release ${{ env.SPEC_VERSION }}
       uses: softprops/action-gh-release@v1
@@ -51,4 +51,4 @@ jobs:
         proxygen status
 
     - name: Publish spec
-      run: proxygen spec publish specification/proxygen.yaml --no-confirm
+      run: proxygen spec publish specification/digital-staff-passport-api-standard.yaml --no-confirm

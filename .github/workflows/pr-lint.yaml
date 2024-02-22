@@ -28,7 +28,7 @@ jobs:
       uses: thollander/actions-comment-pull-request@v2
       with:
         message: |
-          Manually run the [Publish Spec to Bloomreach UAT Portal](https://github.com/NHSDigital/proxygen-api-specification/actions/workflows/publish-uat.yml) to preview specification on the [UAT Portal](https://uat2.nhsd.io/developer/api-catalogue/proxy-generator) (requires VPN).
+          Manually run the [Publish Spec to Bloomreach UAT Portal](https://github.com/NHSDigital/digital-staff-passport/actions/workflows/publish-uat.yml) to preview specification on the [UAT Portal](https://uat2.nhsd.io/developer/api-catalogue/digital-staff-passport-api-standard) (requires VPN).
         comment_tag: uat-deploy
         
     - name: Checkout
@@ -37,5 +37,5 @@ jobs:
     - name: Vacuum OpenAPI Spec linter
       uses: eduelias/gha-vacuum@v0.0.1
       with:
-        cmd: vacuum lint -d specification/proxygen.yaml
+        cmd: vacuum lint -d specification/digital-staff-passport-api-standard.yaml
   

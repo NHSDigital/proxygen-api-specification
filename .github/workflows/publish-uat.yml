@@ -10,12 +10,12 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set OAS info.version to ${{ github.ref_name}}-${{github.sha}}
-      run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/proxygen.yaml
+      run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/digital-staff-passport-api-standard.yaml
 
     - name: Vacuum OpenAPI Spec linter
       uses: eduelias/gha-vacuum@v0.0.1
       with:
-        cmd: vacuum lint -d specification/proxygen.yaml
+        cmd: vacuum lint -d specification/digital-staff-passport-api-standard.yaml
 
     - name: Setup proxygen-cli
       env:
@@ -24,6 +24,7 @@ jobs:
         PROXYGEN_CLIENT_ID: ${{ secrets.PROXYGEN_CLIENT_ID }}
       run: |
         pipx install proxygen-cli
+        pipx update proxygen-cli
 
         # Setup proxygen auth and settings
         mkdir -p ${HOME}/.proxygen
@@ -33,9 +34,9 @@ jobs:
         proxygen status
 
     - name: Publish spec
-      run: proxygen spec publish specification/proxygen.yaml --uat --no-confirm
+      run: proxygen spec publish specification/digital-staff-passport-api-standard.yaml --uat --no-confirm
 
     - name: Instructions for viewing UAT Specification
       run: |
-        echo "View uat spec changes at https://uat2.nhsd.io/developer/api-catalogue/proxy-generator"
+        echo "View uat spec changes at https://uat2.nhsd.io/developer/api-catalogue/digital-staff-passport-api-standard"
         echo "Remember Bloomreach pulls UAT changes every 5-10 minutes so changes may not appear right away. You must be connected to the VPN."
