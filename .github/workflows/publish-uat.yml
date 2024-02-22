@@ -24,7 +24,7 @@ jobs:
         PROXYGEN_CLIENT_ID: ${{ secrets.PROXYGEN_CLIENT_ID }}
       run: |
         pipx install proxygen-cli
-        pipx update proxygen-cli
+        pipx upgrade proxygen-cli
 
         # Setup proxygen auth and settings
         mkdir -p ${HOME}/.proxygen
