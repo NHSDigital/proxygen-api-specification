@@ -426,6 +426,27 @@ info:
 
     The limits apply to all APIs equally and are reconfigurable. Contact us to request a limit change.
 
+
+    #### Target Identity Headers
+
+    Each item under `x-nhsd-apim.target-identity` is the name of an identity header that you intend to pass through to the backend.
+
+    These headers will only be present when the request to your proxy has been authenticated using CIS2.
+    
+    The headers will have their values populated with the User ID and Role ID associated with the CIS2 authentication.
+
+    If a header with the same name as that defined for `cis2-urid-header-name` is present in the request, it will flow through to the backend.
+
+    Example usage:
+    ```
+    target-identity:
+      cis2-uuid-header-name: "nhsd-identity-uuid"
+      cis2-urid-header-name: "nhsd-session-urid"
+    ```
+
+    The values of the two fields under target-identity must be strings.
+
+
     ### API instance limits
 
      * 1 API instance in the `production` environment
@@ -1996,7 +2017,8 @@ components:
           description: Describes attributes that are expected to be attached to Applications consuming your API.
           items:
             $ref: '#/components/schemas/TargetAttribute'
-            
+        target-identity:
+            $ref: '#/components/schemas/TargetIdentity'
     Target:
       description: Describes the API back-end and therefore associated infrastructure for deployment.
       allOf:
@@ -2160,6 +2182,13 @@ components:
           type: string
         required:
           type: boolean
+    TargetIdentity:
+      type: object
+      properties:
+        cis2-urid-header-name:
+          type: string
+        cis2-uuid-header-name:
+          type: string
     instance:
       title: instance
       allOf:
