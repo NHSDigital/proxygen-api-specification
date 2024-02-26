@@ -62,111 +62,185 @@ x-spec-publication:
   try-this-api:
     disabled: true
 paths:
-  /Person:
+  /Employees:
     get:
       tags:
-        - Person
+        - Employees
+      summary: Get Employee details
+      description: This call returns the employee details matching the supplied parameters.
       parameters:
-        - name: personId
-          in: query
-          schema:
-            type: string
         - name: firstName
           in: query
+          description: The First name of the employee
           schema:
             type: string
         - name: lastName
           in: query
-          schema:
-            type: string
-        - name: identifier
-          in: query
-          schema:
-            type: string
-        - name: email
-          in: query
+          description: The last name of the employee
           schema:
             type: string
         - name: dateOfBirth
           in: query
+          description: The date of birth of the employee
           schema:
             type: string
         - name: orgCode
           in: header
+          description: The organisation code
           schema:
             type: string
       responses:
         '200':
-          description: Success
+          description: Successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Person'
+                  $ref: '#/components/schemas/Employee'
+              example:
+                employeeId: '999'
+                firstName: John
+                lastName: Smith
+                identifier: 5e8fe03f-8cc6-4220-ba18-511c9c47366d
+                dateOfBirth: '2024-02-23'
+                email: another@mail.com
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '401':
+          description: Unauthorized
         '405':
-          description: Method Not Allowed
+          description: Invalid input
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
         '500':
-          description: Server Error
-  /PersonData/{personId}:
+          description: Internal server error
+  /Employees/{employeeId}/Records:
     get:
       tags:
-        - Person
+        - Employees
+      summary: Get Employee Data
+      description: This call returns the employee data matching the supplied employeeId
       parameters:
-        - name: personId
+        - name: employeeId
           in: path
+          description: The id of the employee
           required: true
-          schema:
-            type: string
-        - name: scope
-          in: query
-          schema:
-            type: string
-        - name: timestamp
-          in: query
           schema:
             type: string
         - name: orgCode
           in: header
+          description: The organisation code
           schema:
             type: string
       responses:
         '200':
-          description: Success
+          description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonData'
+                $ref: '#/components/schemas/EmployeeData'
+              example:
+                employeeId: 1f9a7bb6-6fc7-45ec-9334-03feaed520b4
+                timeStamp: '2024-02-23T14:07:36.0390356+00:00'
+                records:
+                  - statMandSubject: Information Governance and Data Security
+                    level: '1'
+                    attainmentStatus: ACHIEVED
+                    competencyFramework: CSTF
+                    competencyName: Information  Governance and Data Security
+                    awardingOrg: RHQ
+                    renewalPeriod: '2'
+                    units: Year
+                    learningMethod: Test
+                    dateTo: 2023-03-20T00:00Z
+                    lastDateAwarded: 2023-11-01T00:00Z
+                    proficiencyLevel: 0 - Not Assessed
+                    type: CoreSkillsTraining
+                  - statMandSubject: Resuscitation
+                    level: '2'
+                    attainmentStatus: ACHIEVED
+                    competencyFramework: CSTF
+                    competencyName: Resuscitation Adult Basic Life Support
+                    awardingOrg: RHQ
+                    renewalPeriod: '1'
+                    units: Year
+                    learningMethod: Test
+                    dateTo: 2024-11-20T00:00Z
+                    lastDateAwarded: 2023-11-20T00:00Z
+                    proficiencyLevel: 0 - Not Assessed
+                    type: CoreSkillsTraining
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '401':
+          description: Unauthorized
         '405':
-          description: Method Not Allowed
+          description: Invalid input
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
         '500':
-          description: Server Error
+          description: Internal server error
 components:
   schemas:
-    Person:
+    CoreSkillsTraining:
       type: object
       properties:
-        personId:
+        type:
+          type: string
+          nullable: true
+        statMandSubject:
+          type: string
+          nullable: true
+        level:
+          type: string
+          nullable: true
+        attainmentStatus:
+          type: string
+          nullable: true
+        competencyFramework:
+          type: string
+          nullable: true
+        competencyName:
+          type: string
+          nullable: true
+        awardingOrg:
+          type: string
+          nullable: true
+        renewalPeriod:
+          type: string
+          nullable: true
+        units:
+          type: string
+          nullable: true
+        learningMethod:
+          type: string
+          nullable: true
+        dateTo:
+          type: string
+          nullable: true
+        lastDateAwarded:
+          type: string
+          nullable: true
+        proficiencyLevel:
+          type: string
+          nullable: true
+      additionalProperties: false
+    Employee:
+      type: object
+      properties:
+        employeeId:
           type: string
           nullable: true
         firstName:
@@ -185,18 +259,19 @@ components:
           type: string
           nullable: true
       additionalProperties: false
-    PersonData:
+    EmployeeData:
       type: object
       properties:
-        dataType:
+        employeeId:
           type: string
           nullable: true
         timeStamp:
           type: string
           nullable: true
-        payload:
+        records:
           type: array
-          items: {}
+          items:
+            $ref: '#/components/schemas/CoreSkillsTraining'
           nullable: true
       additionalProperties: false
     ProblemDetails:
