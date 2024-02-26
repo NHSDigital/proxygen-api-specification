@@ -64,10 +64,12 @@ x-spec-publication:
 paths:
   /Employees:
     get:
+      operation-id: search-for-employee
+      summary: Search for an employee
+      description: |
+        This operation returns a list of employees that match the supplied search parameters.
       tags:
         - Employees
-      summary: Get Employee details
-      description: This call returns the employee details matching the supplied parameters.
       parameters:
         - name: firstName
           in: query
@@ -123,10 +125,14 @@ paths:
           description: Internal server error
   /Employees/{employeeId}/Records:
     get:
+      operation-id: get-employee-records
+      summary: Get employee records
+      description: |
+        This operation returns a list of all data records available for a given employee.
+        The type of records returned depends on the type of system.
+        For example, a learning management system would return training records.
       tags:
         - Employees
-      summary: Get Employee Data
-      description: This call returns the employee data matching the supplied employeeId
       parameters:
         - name: employeeId
           in: path
