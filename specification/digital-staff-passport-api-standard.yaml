@@ -64,7 +64,7 @@ x-spec-publication:
 paths:
   /Employees:
     get:
-      operation-id: search-for-employee
+      operationId: search-for-employee
       summary: Search for an employee
       description: |
         This operation returns a list of employees that match the supplied search parameters.
@@ -125,7 +125,7 @@ paths:
           description: Internal server error
   /Employees/{employeeId}/Records:
     get:
-      operation-id: get-employee-records
+      operationId: get-employee-records
       summary: Get employee records
       description: |
         This operation returns a list of all data records available for a given employee.
