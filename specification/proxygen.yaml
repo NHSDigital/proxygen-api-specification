@@ -429,22 +429,26 @@ info:
 
     #### Target Identity Headers
 
-    Each item under `x-nhsd-apim.target-identity` is the name of an identity header that you intend to pass through to the backend.
+    Each item under `x-nhsd-apim.target-identity` is the name of an authentication mechanism for which you intend to pass identity headers through to the backend. Currently, only CIS2 authentication is supported.
 
-    These headers will only be present when the request to your proxy has been authenticated using CIS2.
-    
+    Under the `x-nhsd-apim.target-identity.cis2` the `included` boolean will determine whether the identity headers will be present in the request to the backend.
+
+    The individual header names are optional. In their absence, defaults of NHSD-Session-URID and NHSD-Session-UUID will be used.
+
     The headers will have their values populated with the User ID and Role ID associated with the CIS2 authentication.
 
-    If a header with the same name as that defined for `cis2-urid-header-name` is present in the request, it will flow through to the backend.
+    If a header with the same name as that defined for `urid-header-name` is present in the request, it will flow through to the backend.
 
     Example usage:
     ```
     target-identity:
-      cis2-uuid-header-name: "nhsd-identity-uuid"
-      cis2-urid-header-name: "nhsd-session-urid"
+      cis2:
+        included: true
+        uuid-header-name: "nhsd-identity-uuid"
+        urid-header-name: "nhsd-session-urid"
     ```
 
-    The values of the two fields under target-identity must be strings.
+    The value of the included field must be a boolean and the two header-name fields must be strings.
 
 
     ### API instance limits
@@ -2185,10 +2189,15 @@ components:
     TargetIdentity:
       type: object
       properties:
-        cis2-urid-header-name:
-          type: string
-        cis2-uuid-header-name:
-          type: string
+        cis2:
+          type: object
+          properties:
+            included:
+              type: boolean  
+            urid-header-name:
+              type: string
+            uuid-header-name:
+              type: string
     instance:
       title: instance
       allOf:
