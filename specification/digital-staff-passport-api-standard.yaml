@@ -88,39 +88,41 @@ paths:
           in: query
           description: The employee's first name.
           required: false
-          example: "Jane"
+          example: 'Jane'
           schema:
             type: string
         - name: surname
           in: query
           description: The employee's surname.
           required: false
-          example: "Smith"
+          example: 'Smith'
           schema:
             type: string
         - name: birthDate
           in: query
           description: The employee's date of birth, in the format `yyyy-mm-dd`.
           required: false
-          example: "1998-10-22"
+          example: '1998-10-22'
           schema:
             type: string
       responses:
         '200':
-          description: Successful operation
+          description: A completed search. This might contain zero, one or many matching patients, or it might contain a 'too many matches' error.
           content:
             application/json:
               schema:
                 type: array
+                minItems: 0
+                maxItems: 50
                 items:
                   $ref: '#/components/schemas/Employee'
               example:
-                employeeId: '999'
-                firstName: John
-                lastName: Smith
-                identifier: 5e8fe03f-8cc6-4220-ba18-511c9c47366d
-                dateOfBirth: '2024-02-23'
-                email: another@mail.com
+                - id: '12345'
+                  firstName: Jane
+                  surname: Smith
+                  birthDate: '1998-10-22'
+                  email: jane.smith@example.com
+                  esrIdentifier: 5e8fe03f-8cc6-4220-ba18-511c9c47366d
         '400':
           description: Bad Request
           content:
@@ -137,7 +139,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Internal server error
-  /employees/{employeeId}/records:
+  /employees/{id}/records:
     get:
       operationId: get-employee-records
       summary: Get employee records
@@ -260,24 +262,30 @@ components:
     Employee:
       type: object
       properties:
-        employeeId:
+        id:
+          description: A unique identifier for the employee, as used by the source system.
           type: string
-          nullable: true
+          required: true
         firstName:
+          description: The employee's first name.
           type: string
-          nullable: true
-        lastName:
+          required: true
+        surname:
+          description: The employee's surname.
           type: string
-          nullable: true
-        identifier:
+          required: true
+        birthDate:
+          description: The employee's date of birth, in the format `yyyy-mm-dd`.
           type: string
-          nullable: true
-        dateOfBirth:
-          type: string
-          nullable: true
+          required: false
         email:
+          description: The employee's email address.
           type: string
-          nullable: true
+          required: false
+        esrIdentifier:
+          description: The employee's unique identifier in the ESR system.
+          type: string
+          required: false
       additionalProperties: false
     EmployeeData:
       type: object
