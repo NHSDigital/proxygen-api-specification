@@ -70,6 +70,17 @@ paths:
       summary: Search for an employee
       description: |
         This operation returns a list of employees that match the supplied search parameters.
+
+        The following search parameters are supported:
+        - first name
+        - surname
+        - date of birth
+
+        The operation returns a maximum of 50 matching employees.
+        If there are more than 50 matches, it returns an error, and the user should be told to refine their search criteria.
+
+        All search parameters are optional, but if they are all omitted it is likely to result in a 'too many matches' error.
+
       tags:
         - Employees
       parameters:
