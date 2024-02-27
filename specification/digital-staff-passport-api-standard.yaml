@@ -92,13 +92,6 @@ paths:
           example: "1998-10-22"
           schema:
             type: string
-        - name: orgCode
-          in: header
-          description: The employee's organisation's ODS code.
-          required: true
-          example: 'RZW'
-          schema:
-            type: string
       responses:
         '200':
           description: Successful operation
