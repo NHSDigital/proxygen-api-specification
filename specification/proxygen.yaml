@@ -433,11 +433,11 @@ info:
 
     Under the `x-nhsd-apim.target-identity.cis2` the `included` boolean will determine whether the identity headers will be present in the request to the backend.
 
-    The individual header names are optional. In their absence, defaults of NHSD-Session-URID and NHSD-Session-UUID will be used.
+    The individual header names are optional. In their absence, defaults of `NHSD-Session-URID` and `NHSD-Session-UUID` will be used.
 
-    The headers will have their values populated with the User ID and Role ID associated with the CIS2 authentication.
+    The headers will have their values populated with the User ID and Role ID associated with the CIS2 authentication. These values are obtained via the shared UserRoleService.
 
-    If a header with the same name as that defined for `urid-header-name` is present in the request, it will flow through to the backend.
+    If a header named `NHSD-Session-URID` (the default `urid-header-name`) is present in the request, it will flow through to the backend as that defined in your specification.
 
     Example usage:
     ```
