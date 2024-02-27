@@ -73,22 +73,30 @@ paths:
       parameters:
         - name: firstName
           in: query
-          description: The First name of the employee
+          description: The employee's first name.
+          required: false
+          example: "Jane"
           schema:
             type: string
-        - name: lastName
+        - name: surname
           in: query
-          description: The last name of the employee
+          description: The employee's surname.
+          required: false
+          example: "Smith"
           schema:
             type: string
-        - name: dateOfBirth
+        - name: birthDate
           in: query
-          description: The date of birth of the employee
+          description: The employee's date of birth, in the format `yyyy-mm-dd`.
+          required: false
+          example: "1998-10-22"
           schema:
             type: string
         - name: orgCode
           in: header
-          description: The organisation code
+          description: The employee's organisation's ODS code.
+          required: true
+          example: 'RZW'
           schema:
             type: string
       responses:
