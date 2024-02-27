@@ -117,7 +117,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Employee'
               example:
-                $ref: /specification/components/examples/SearchForAnEmployeeHappyPathResponse.json
+                $ref: components/examples/SearchForAnEmployeeHappyPathResponse.json
         '400':
           description: Bad Request
           content:
