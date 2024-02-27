@@ -62,7 +62,7 @@ x-spec-publication:
   try-this-api:
     disabled: true
 paths:
-  /Employees:
+  /employees:
     get:
       operationId: search-for-employee
       summary: Search for an employee
@@ -123,7 +123,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Internal server error
-  /Employees/{employeeId}/Records:
+  /employees/{employeeId}/records:
     get:
       operationId: get-employee-records
       summary: Get employee records
