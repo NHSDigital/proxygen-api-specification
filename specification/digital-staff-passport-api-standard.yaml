@@ -150,7 +150,7 @@ paths:
       tags:
         - Employees
       parameters:
-        - name: employeeId
+        - name: id
           in: path
           description: The id of the employee
           required: true
@@ -261,31 +261,29 @@ components:
       additionalProperties: false
     Employee:
       type: object
+      required:
+        - id
+        - firstName
+        - surname
       properties:
         id:
           description: A unique identifier for the employee, as used by the source system.
           type: string
-          required: true
         firstName:
           description: The employee's first name.
           type: string
-          required: true
         surname:
           description: The employee's surname.
           type: string
-          required: true
         birthDate:
           description: The employee's date of birth, in the format `yyyy-mm-dd`.
           type: string
-          required: false
         email:
           description: The employee's email address.
           type: string
-          required: false
         esrIdentifier:
           description: The employee's unique identifier in the ESR system.
           type: string
-          required: false
       additionalProperties: false
     EmployeeData:
       type: object
