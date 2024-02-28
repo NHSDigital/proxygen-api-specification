@@ -185,48 +185,70 @@ components:
   schemas:
     CoreSkillsTraining:
       type: object
+      description: A record of a core skill attained by the employee, as per the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
       required:
         - type
+        - statMandSubject
+# TBC other required fields?        
       properties:
         type:
-          description: Type of record
+          description: Type of record.
           type: string
           enum:
             - CoreSkillsTraining
         statMandSubject:
-          description: TBC
+# TBC rename to something more readable?
+# TBC would we be better using coded values for this?
+          description: Statutary or mandatory subject name as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
           type: string
         level:
-          description: TBC
+# TBC enumarated?
+          description: Subject level as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
           type: string
         attainmentStatus:
-          description: TBC
+# TBC what are the possible values - should it be "Attained" only?
+          description: Attainment status.
           type: string
+          enum:
+            - Attained
+            - Failed
+            - Lapsed
         competencyFramework:
-          description: TBC
+# Do we even need this?        
+          description: TBC framework - surely this is always CSTF?
           type: string
         competencyName:
-          description: TBC
+# Feels like a duplicate attribute - or could a core skill be one that's not listed in the CSTF guide?        
+          description: TBC probably the same as statMandSubject
           type: string
         awardingOrg:
-          description: TBC
+# TBC should this be employer?        
+          description: The ODS code for the 
           type: string
         renewalPeriod:
+# TBC what is this? Simon's example is "2"       
           description: TBC
           type: string
         units:
+# TBC is this the units for the renewal period? Simon's example is "Year"
+# TBC what are the possible values?
+# TBC rename as renewalPeriodUnits? Make into an object renewalPeriod with two sub-fields amount and unit?
           description: TBC
           type: string
         learningMethod:
+# TBC possible values e.g. "Test"        
           description: TBC
           type: string
         dateTo:
+# TBC is this when the training runs out?        
           description: TBC
           type: string
         lastDateAwarded:
+# TBC        
           description: TBC
           type: string
         proficiencyLevel:
+# TBC        
           description: TBC
           type: string
     Employee:
