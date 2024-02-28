@@ -162,35 +162,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeData'
               example:
-                employeeId: 1f9a7bb6-6fc7-45ec-9334-03feaed520b4
-                timeStamp: '2024-02-23T14:07:36.0390356+00:00'
-                records:
-                  - statMandSubject: Information Governance and Data Security
-                    level: '1'
-                    attainmentStatus: ACHIEVED
-                    competencyFramework: CSTF
-                    competencyName: Information  Governance and Data Security
-                    awardingOrg: RHQ
-                    renewalPeriod: '2'
-                    units: Year
-                    learningMethod: Test
-                    dateTo: 2023-03-20T00:00Z
-                    lastDateAwarded: 2023-11-01T00:00Z
-                    proficiencyLevel: 0 - Not Assessed
-                    type: CoreSkillsTraining
-                  - statMandSubject: Resuscitation
-                    level: '2'
-                    attainmentStatus: ACHIEVED
-                    competencyFramework: CSTF
-                    competencyName: Resuscitation Adult Basic Life Support
-                    awardingOrg: RHQ
-                    renewalPeriod: '1'
-                    units: Year
-                    learningMethod: Test
-                    dateTo: 2024-11-20T00:00Z
-                    lastDateAwarded: 2023-11-20T00:00Z
-                    proficiencyLevel: 0 - Not Assessed
-                    type: CoreSkillsTraining
+                $ref: components/examples/GetEmployeeRecordsHappyPathResponse.json
         '400':
           description: Bad Request
           content:
