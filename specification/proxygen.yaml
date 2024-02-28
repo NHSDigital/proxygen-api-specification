@@ -2191,6 +2191,8 @@ components:
       properties:
         cis2:
           type: object
+          required:
+            - included
           properties:
             included:
               type: boolean  
