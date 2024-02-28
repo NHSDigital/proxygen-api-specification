@@ -20,10 +20,10 @@ info:
     - the ability to update employee records in the source system
     
     ## Who can use this API standard
-    You can only use this API standard if you are integrating your system with the Digital Staff Passport service.
+    You can only use this API standard if you are integrating your system with Digital Staff Passport.
 
     ## Status
-    This API standard is [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
+    This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
     meaning it is under development and might be subject to breaking changes.
 
     We are currently running a pilot with one external system and iterating the standard as we proceed.
