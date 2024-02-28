@@ -15,7 +15,8 @@ jobs:
     - name: Vacuum OpenAPI Spec linter
       uses: eduelias/gha-vacuum@v0.0.1
       with:
-        cmd: vacuum lint -d specification/digital-staff-passport-api-standard.yaml
+        cmd: |
+          vacuum lint -d --base specification/ specification/digital-staff-passport-api-standard.yaml
 
     - name: Setup proxygen-cli
       env:

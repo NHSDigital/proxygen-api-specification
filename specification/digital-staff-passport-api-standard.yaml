@@ -3,48 +3,46 @@ info:
   title: Digital Staff Passport API
   version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
   description: |
-    <div class="nhsd-m-emphasis-box nhsd-m-emphasis-box--emphasis nhsd-!t-margin-bottom-6" aria-label="Highlighted Information">
-        <div class="nhsd-a-box nhsd-a-box--border-blue">
-            <div class="nhsd-m-emphasis-box__image-box">
-                <figure class="nhsd-a-image">
-                    <picture class="nhsd-a-image__picture">
-                        <img src="http://digital.nhs.uk/binaries/content/gallery/icons/info.svg?colour=231f20" alt="" style="object-fit:fill">
-                    </picture>
-                </figure>
-            </div>
-            <div class="nhsd-m-emphasis-box__content-box">
-                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is <a href="https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses">in production, beta but internal</a>, meaning the API is not currently available for integration by external third parties. If you want to use it, <a href="https://digital.nhs.uk/developer/help-and-support">contact us</a> and we'll look at making it available.</p></div>
-            </div>
-        </div>
-    </div>
-
     ## Overview
-    TBC
+    Use this API standard to build an API that Digital Staff Passport (DSP) can use to get NHS employee records from your system.
 
-    ## Who can use this API
-    TBC
+    DSP can then allow the employee to pass the information on to their new employer.
 
-    ## API status and roadmap
-    TBC
+    The standard includes:
+    - searching for an employee in the source system
+    - getting employee records from the source system
+
+    The standard currently does not include:
+    - details of how security will work
+    - details of the required service level for the source system
+    - support for multiple organisations - it assumes the source system only holds data for a single NHS organisation
+    - support for 'pagination' of search results in the event of there being more than 50 matching employees
+    - the ability to update employee records in the source system
+    
+    ## Who can use this API standard
+    You can only use this API standard if you are integrating your system with Digital Staff Passport.
+
+    ## Status
+    This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
+    meaning it is under development and might be subject to breaking changes.
+
+    We are currently running a pilot with one external system and iterating the standard as we proceed.
 
     ## Service level
-    TBC
+    Details to follow.
 
     ## Technology
-    TBC
+    This API standard is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
+
+    It does not conform to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir)
+    global standard for health care data exchance because it is not a clinical API, it relates to workforce.
 
     ## Network access
-    TBC
+    Your API must be available on the internet.
     
     ## Security and authorisation
-    TBC
+    Details to follow.
 
-    ## Environments and testing
-    TBC
-
-    ## Onboarding
-    TBC
-    
     ## Errors
     We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
 
@@ -52,8 +50,16 @@ info:
     * 400 to 499 if it failed because of a client error by your application
     * 500 to 599 if it failed because of an error on our server
 
-    Errors specific to each API are shown in the Endpoints section, under Response. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
+    For details of specific errors, see the 'Response' section for each operation. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
 
+    ## Environments and testing
+    You'll need to:
+    - deploy your API into an environment that we can use for integration testing
+    - populate that environment with suitable test data
+
+    ## Onboarding
+    We are currently running a pilot with one external system, so the API standard is not available for anyone else to onboard just yet. 
+    
   contact:
     name: API Management Support
     email: api.management@nhs.net
@@ -62,51 +68,60 @@ x-spec-publication:
   try-this-api:
     disabled: true
 paths:
-  /Employees:
+  /employees:
     get:
       operationId: search-for-employee
       summary: Search for an employee
       description: |
         This operation returns a list of employees that match the supplied search parameters.
-      tags:
-        - Employees
+
+        The following search parameters are supported:
+        - first name
+        - surname
+        - date of birth
+
+        The operation returns a maximum of 50 matching employees.
+        If there are more than 50 matches, it returns the first 50.
+        There is currently no way of knowing whether there are more than 50 matches.
+        In the future we might add pagination.
+
+        All search parameters are optional, but if they are all omitted it is likely to result in a 'too many matches' error.
+
       parameters:
         - name: firstName
           in: query
-          description: The First name of the employee
+          description: The employee's first name.
+          required: false
+          example: 'Jane'
           schema:
             type: string
-        - name: lastName
+        - name: surname
           in: query
-          description: The last name of the employee
+          description: The employee's surname.
+          required: false
+          example: 'Smith'
           schema:
             type: string
-        - name: dateOfBirth
+        - name: birthDate
           in: query
-          description: The date of birth of the employee
-          schema:
-            type: string
-        - name: orgCode
-          in: header
-          description: The organisation code
+          description: The employee's date of birth, in the format `yyyy-mm-dd`.
+          required: false
+          example: '1998-10-22'
           schema:
             type: string
       responses:
         '200':
-          description: Successful operation
+          description: A completed search. This might contain zero, one or many matching patients.
           content:
             application/json:
               schema:
                 type: array
+                minItems: 0
+                maxItems: 50
                 items:
                   $ref: '#/components/schemas/Employee'
               example:
-                employeeId: '999'
-                firstName: John
-                lastName: Smith
-                identifier: 5e8fe03f-8cc6-4220-ba18-511c9c47366d
-                dateOfBirth: '2024-02-23'
-                email: another@mail.com
+                $ref: components/examples/SearchForAnEmployeeHappyPathResponse.json
         '400':
           description: Bad Request
           content:
@@ -123,7 +138,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Internal server error
-  /Employees/{employeeId}/Records:
+  /employees/{id}/records:
     get:
       operationId: get-employee-records
       summary: Get employee records
@@ -131,18 +146,12 @@ paths:
         This operation returns a list of all data records available for a given employee.
         The type of records returned depends on the type of system.
         For example, a learning management system would return training records.
-      tags:
-        - Employees
       parameters:
-        - name: employeeId
+        - name: id
           in: path
-          description: The id of the employee
+          description: The employee's primary unique identifier, as used by the source system.
           required: true
-          schema:
-            type: string
-        - name: orgCode
-          in: header
-          description: The organisation code
+          example: '12345'
           schema:
             type: string
       responses:
@@ -245,25 +254,29 @@ components:
       additionalProperties: false
     Employee:
       type: object
+      required:
+        - id
+        - firstName
+        - surname
       properties:
-        employeeId:
+        id:
+          description: The employee's primary unique identifier, as used by the source system.
           type: string
-          nullable: true
         firstName:
+          description: The employee's first name.
           type: string
-          nullable: true
-        lastName:
+        surname:
+          description: The employee's surname.
           type: string
-          nullable: true
-        identifier:
+        birthDate:
+          description: The employee's date of birth, in the format `yyyy-mm-dd`.
           type: string
-          nullable: true
-        dateOfBirth:
-          type: string
-          nullable: true
         email:
+          description: The employee's email address.
           type: string
-          nullable: true
+        esrIdentifier:
+          description: The employee's unique identifier in the ESR system.
+          type: string
       additionalProperties: false
     EmployeeData:
       type: object
