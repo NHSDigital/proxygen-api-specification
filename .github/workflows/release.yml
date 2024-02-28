@@ -29,8 +29,7 @@ jobs:
       uses: eduelias/gha-vacuum@v0.0.1
       with:
         cmd: |
-          cd specification
-          vacuum lint -d digital-staff-passport-api-standard.yaml
+          vacuum lint -d --base specification/ digital-staff-passport-api-standard.yaml
 
     - name: Create Release ${{ env.SPEC_VERSION }}
       uses: softprops/action-gh-release@v1
