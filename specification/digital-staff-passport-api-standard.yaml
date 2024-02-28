@@ -117,7 +117,17 @@ paths:
                 items:
                   $ref: '#/components/schemas/Employee'
               example:
-                $ref: components/examples/SearchForAnEmployeeHappyPathResponse.json
+#                $ref: components/examples/SearchForAnEmployeeHappyPathResponse.json
+                [
+                  {
+                    "id": "12345",
+                    "firstName": "Jane",
+                    "surname": "Smith"
+                    "birthDate": "1998-10-22",
+                    "email": "jane.smith@example.com",
+                    "esrIdentifier": "5e8fe03f-8cc6-4220-ba18-511c9c47366d"
+                  }
+                ]
         '400':
           description: Bad Request
           content:
