@@ -38,7 +38,7 @@ info:
 
     It does not conform to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir)
     global standard for health care data exchance because it is not a clinical API, it relates to workforce.
-    This was agreed with the [HL7 FHIR UK Board](https://www.hl7.org.uk/register/about-hl7-uk/management-board-members/).
+    This has been agreed with the [HL7 FHIR UK Board](https://www.hl7.org.uk/register/about-hl7-uk/management-board-members/).
 
     ## Network access
     Your API must be available on the internet.
