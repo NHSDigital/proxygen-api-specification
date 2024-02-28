@@ -3,28 +3,22 @@ info:
   title: Digital Staff Passport API
   version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
   description: |
-    <div class="nhsd-m-emphasis-box nhsd-m-emphasis-box--emphasis nhsd-!t-margin-bottom-6" aria-label="Highlighted Information">
-        <div class="nhsd-a-box nhsd-a-box--border-blue">
-            <div class="nhsd-m-emphasis-box__image-box">
-                <figure class="nhsd-a-image">
-                    <picture class="nhsd-a-image__picture">
-                        <img src="http://digital.nhs.uk/binaries/content/gallery/icons/info.svg?colour=231f20" alt="" style="object-fit:fill">
-                    </picture>
-                </figure>
-            </div>
-            <div class="nhsd-m-emphasis-box__content-box">
-                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is <a href="https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses">in production, beta but internal</a>, meaning the API is not currently available for integration by external third parties. If you want to use it, <a href="https://digital.nhs.uk/developer/help-and-support">contact us</a> and we'll look at making it available.</p></div>
-            </div>
-        </div>
-    </div>
-
     ## Overview
-    Use this API standard to build an API that the Digital Staff Passport (DSP) service can use to get NHS employee records from your system.
+    Use this API standard to build an API that Digital Staff Passport (DSP) can use to get NHS employee records from your system.
 
     DSP can then allow the employee to pass the information on to their new employer.
-    
-    TBC mention that the API is currently not organisation aware.
 
+    The standard includes:
+    - searching for an employee in the source system
+    - getting employee records from the source system
+
+    The standard currently does not include:
+    - details of how security will work
+    - details of the required service level for the source system
+    - support for multiple organisations - it assumes the source system only holds data for a single NHS organisation
+    - support for 'pagination' of search results in the event of there being more than 50 matching employees
+    - the ability to update employee records in the source system
+    
     ## Who can use this API standard
     You can only use this API standard if you are integrating your system with the Digital Staff Passport service.
 
