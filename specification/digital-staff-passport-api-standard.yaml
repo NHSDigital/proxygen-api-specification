@@ -19,34 +19,36 @@ info:
     </div>
 
     ## Overview
-    TBC
+    Use this API standard to build an API that the Digital Staff Passport (DSP) service can use to get NHS employee records from your system.
+
+    DSP can then allow the employee to pass the information on to their new employer.
     
     TBC mention that the API is currently not organisation aware.
 
-    ## Who can use this API
-    TBC
+    ## Who can use this API standard
+    You can only use this API standard if you are integrating your system with the Digital Staff Passport service.
 
-    ## API status and roadmap
-    TBC
+    ## Status
+    This API standard is [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
+    meaning it is under development and might be subject to breaking changes.
+
+    We are currently running a pilot with one external system and iterating the standard as we proceed.
 
     ## Service level
-    TBC
+    Details to follow.
 
     ## Technology
-    TBC
+    This API standard is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
+
+    It does not conform to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir)
+    global standard for health care data exchance because it is not a clinical API, it relates to workforce.
 
     ## Network access
-    TBC
+    Your API must be available on the internet.
     
     ## Security and authorisation
-    TBC
+    Details to follow.
 
-    ## Environments and testing
-    TBC
-
-    ## Onboarding
-    TBC
-    
     ## Errors
     We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
 
@@ -54,8 +56,16 @@ info:
     * 400 to 499 if it failed because of a client error by your application
     * 500 to 599 if it failed because of an error on our server
 
-    Errors specific to each API are shown in the Endpoints section, under Response. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
+    For details of specific errors, see the 'Response' section for each operation. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
 
+    ## Environments and testing
+    You'll need to:
+    - deploy your API into an environment that we can use for integration testing
+    - populate that environment with suitable test data
+
+    ## Onboarding
+    We are currently running a pilot with one external system, so the API standard is not available for anyone else to onboard just yet. 
+    
   contact:
     name: API Management Support
     email: api.management@nhs.net
