@@ -145,13 +145,9 @@ paths:
       parameters:
         - name: id
           in: path
-          description: The id of the employee
+          description: The employee's primary unique identifier, as used by the source system.
           required: true
-          schema:
-            type: string
-        - name: orgCode
-          in: header
-          description: The organisation code
+          example: '12345'
           schema:
             type: string
       responses:
@@ -260,7 +256,7 @@ components:
         - surname
       properties:
         id:
-          description: A unique identifier for the employee, as used by the source system.
+          description: The employee's primary unique identifier, as used by the source system.
           type: string
         firstName:
           description: The employee's first name.
