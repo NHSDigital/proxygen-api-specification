@@ -77,12 +77,12 @@ paths:
         - date of birth
 
         The operation returns a maximum of 50 matching employees.
-        If there are more than 50 matches, it returns an error, and the user should be told to refine their search criteria.
+        If there are more than 50 matches, it returns the first 50.
+        There is currently no way of knowing whether there are more than 50 matches.
+        In the future we might add pagination.
 
         All search parameters are optional, but if they are all omitted it is likely to result in a 'too many matches' error.
 
-      tags:
-        - Employees
       parameters:
         - name: firstName
           in: query
@@ -107,7 +107,7 @@ paths:
             type: string
       responses:
         '200':
-          description: A completed search. This might contain zero, one or many matching patients, or it might contain a 'too many matches' error.
+          description: A completed search. This might contain zero, one or many matching patients.
           content:
             application/json:
               schema:
@@ -142,8 +142,6 @@ paths:
         This operation returns a list of all data records available for a given employee.
         The type of records returned depends on the type of system.
         For example, a learning management system would return training records.
-      tags:
-        - Employees
       parameters:
         - name: id
           in: path
