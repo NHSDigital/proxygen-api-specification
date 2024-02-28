@@ -435,17 +435,19 @@ info:
 
     The individual header names are optional. In their absence, defaults of `NHSD-Session-URID` and `NHSD-Session-UUID` will be used.
 
-    The headers will have their values populated with the User ID and Role ID associated with the CIS2 authentication. These values are obtained via the shared UserRoleService.
+    The headers will have their values populated with the User ID and Role ID associated with the CIS2 authentication.
+    
+    The User ID value is obtained from the access token in the request, with the Role ID value being obtained via the shared UserRoleServiceV2.
 
-    If a header named `NHSD-Session-URID` (the default `urid-header-name`) is present in the request, it will flow through to the backend as that defined in your specification.
+    If the request to the _proxy_ includes the default Role ID header `NHSD-Session-URID`, this will flow through to the backend as the urid-header-name defined in your specification (or remain as the default header name, in the absence of a provided header name).
 
     Example usage:
     ```
     target-identity:
       cis2:
         included: true
-        uuid-header-name: "nhsd-identity-uuid"
-        urid-header-name: "nhsd-session-urid"
+        uuid-header-name: "custom-uuid-header-name"
+        urid-header-name: "custom-urid-header-name"
     ```
 
     The value of the included field must be a boolean and the two header-name fields must be strings.
