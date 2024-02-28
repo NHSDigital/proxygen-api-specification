@@ -15,7 +15,7 @@ jobs:
     - name: Vacuum OpenAPI Spec linter
       uses: eduelias/gha-vacuum@v0.0.1
       with:
-        cmd: vacuum lint -d specification/proxygen.yaml
+        cmd: vacuum lint -d --base specification/ specification/proxygen.yaml
 
     - name: Setup proxygen-cli
       env:
@@ -24,6 +24,7 @@ jobs:
         PROXYGEN_CLIENT_ID: ${{ secrets.PROXYGEN_CLIENT_ID }}
       run: |
         pipx install proxygen-cli
+        pipx upgrade proxygen-cli
 
         # Setup proxygen auth and settings
         mkdir -p ${HOME}/.proxygen
