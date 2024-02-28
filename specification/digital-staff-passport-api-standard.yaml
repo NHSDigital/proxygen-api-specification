@@ -183,47 +183,50 @@ components:
   schemas:
     CoreSkillsTraining:
       type: object
+      required:
+        - type
       properties:
         type:
+          description: Type of record
           type: string
-          nullable: true
+          enum:
+            - CoreSkillsTraining
         statMandSubject:
+          description: TBC
           type: string
-          nullable: true
         level:
+          description: TBC
           type: string
-          nullable: true
         attainmentStatus:
+          description: TBC
           type: string
-          nullable: true
         competencyFramework:
+          description: TBC
           type: string
-          nullable: true
         competencyName:
+          description: TBC
           type: string
-          nullable: true
         awardingOrg:
+          description: TBC
           type: string
-          nullable: true
         renewalPeriod:
+          description: TBC
           type: string
-          nullable: true
         units:
+          description: TBC
           type: string
-          nullable: true
         learningMethod:
+          description: TBC
           type: string
-          nullable: true
         dateTo:
+          description: TBC
           type: string
-          nullable: true
         lastDateAwarded:
+          description: TBC
           type: string
-          nullable: true
         proficiencyLevel:
+          description: TBC
           type: string
-          nullable: true
-      additionalProperties: false
     Employee:
       type: object
       required:
@@ -249,22 +252,22 @@ components:
         esrIdentifier:
           description: The employee's unique identifier in the ESR system.
           type: string
-      additionalProperties: false
     EmployeeData:
       type: object
+      required:
+        - id
+        - records
       properties:
-        employeeId:
+        id:
+          description: The employee's primary unique identifier, as used by the source system.
           type: string
-          nullable: true
-        timeStamp:
-          type: string
-          nullable: true
         records:
+          description: The employee's records.
           type: array
+          minItems: 0
           items:
             $ref: '#/components/schemas/CoreSkillsTraining'
           nullable: true
-      additionalProperties: false
     ProblemDetails:
       type: object
       properties:
@@ -284,4 +287,3 @@ components:
         instance:
           type: string
           nullable: true
-      additionalProperties: {}
