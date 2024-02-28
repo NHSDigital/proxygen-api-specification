@@ -29,7 +29,9 @@ info:
     We are currently running a pilot with one external system and iterating the standard as we proceed.
 
     ## Service level
-    Details to follow.
+    Your API must be a bronze service, meaning it is operational and supported during business hours.
+
+    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
 
     ## Technology
     This API standard is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
