@@ -38,5 +38,5 @@ jobs:
       uses: eduelias/gha-vacuum@v0.0.1
       with:
         cmd: |
-          vacuum lint -d --base specification/ digital-staff-passport-api-standard.yaml
+          vacuum lint -d --base specification/ specification/digital-staff-passport-api-standard.yaml
   
