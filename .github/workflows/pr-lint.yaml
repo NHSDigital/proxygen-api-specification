@@ -36,9 +36,9 @@ jobs:
 
     - name: Vacuum OpenAPI Spec linter
       uses: eduelias/gha-vacuum@v0.0.1
-      run: |
-        cd specification
       with:
 #        cmd: vacuum lint -d specification/digital-staff-passport-api-standard.yaml
-        cmd: vacuum lint -d digital-staff-passport-api-standard.yaml
+        cmd: |
+          cd specification
+          vacuum lint -d digital-staff-passport-api-standard.yaml
   
