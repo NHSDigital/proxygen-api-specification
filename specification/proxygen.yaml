@@ -418,14 +418,6 @@ info:
 
     Please be aware that these headers are not base64 encoded before they are forwarded and take this into consideration before attaching sensitive data to consumer applications as attributes.
 
-    ## Usage limits
-
-    To control the resource usage of the underlying services we apply the following usage limits.
-
-    Where a request would exceed these limts you will recieve a `HTTP 400` error with the response body detailing your current usage with respect to the limit.
-
-    The limits apply to all APIs equally and are reconfigurable. Contact us to request a limit change.
-
 
     #### Target Identity Headers
 
@@ -451,6 +443,15 @@ info:
     ```
 
     The value of the included field must be a boolean and the two header-name fields must be strings.
+
+
+    ## Usage limits
+
+    To control the resource usage of the underlying services we apply the following usage limits.
+
+    Where a request would exceed these limts you will recieve a `HTTP 400` error with the response body detailing your current usage with respect to the limit.
+
+    The limits apply to all APIs equally and are reconfigurable. Contact us to request a limit change.
 
 
     ### API instance limits
