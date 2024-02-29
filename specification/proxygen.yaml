@@ -426,6 +426,33 @@ info:
 
     The limits apply to all APIs equally and are reconfigurable. Contact us to request a limit change.
 
+
+    #### Target Identity Headers
+
+    Each item under `x-nhsd-apim.target-identity` is the name of an authentication mechanism for which you intend to pass identity headers through to the backend. Currently, only CIS2 authentication is supported.
+
+    Under the `x-nhsd-apim.target-identity.cis2` the `included` boolean will determine whether the identity headers will be present in the request to the backend.
+
+    The individual header names are optional. In their absence, defaults of `NHSD-Session-URID` and `NHSD-Session-UUID` will be used.
+
+    The headers will have their values populated with the User ID and Role ID associated with the CIS2 authentication.
+    
+    The User ID value is obtained from the access token in the request, with the Role ID value being obtained via the shared UserRoleServiceV2.
+
+    If the request to the _proxy_ includes the default Role ID header `NHSD-Session-URID`, this will flow through to the backend as the urid-header-name defined in your specification (or remain as the default header name, in the absence of a provided header name).
+
+    Example usage:
+    ```
+    target-identity:
+      cis2:
+        included: true
+        uuid-header-name: "custom-uuid-header-name"
+        urid-header-name: "custom-urid-header-name"
+    ```
+
+    The value of the included field must be a boolean and the two header-name fields must be strings.
+
+
     ### API instance limits
 
      * 1 API instance in the `production` environment
@@ -1996,7 +2023,8 @@ components:
           description: Describes attributes that are expected to be attached to Applications consuming your API.
           items:
             $ref: '#/components/schemas/TargetAttribute'
-            
+        target-identity:
+            $ref: '#/components/schemas/TargetIdentity'
     Target:
       description: Describes the API back-end and therefore associated infrastructure for deployment.
       allOf:
@@ -2160,6 +2188,20 @@ components:
           type: string
         required:
           type: boolean
+    TargetIdentity:
+      type: object
+      properties:
+        cis2:
+          type: object
+          required:
+            - included
+          properties:
+            included:
+              type: boolean  
+            urid-header-name:
+              type: string
+            uuid-header-name:
+              type: string
     instance:
       title: instance
       allOf:
