@@ -198,8 +198,8 @@ components:
           enum:
             - CoreSkillsTraining
         statMandSubject:
-# TBC rename to something more readable?
-# TBC would we be better using coded values for this?
+# TBC rename to something more readable? YES
+# TBC would we be better using coded values for this? yes, maybe both, discuss with simon and CLS
           description: Statutary or mandatory subject name as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
           type: string
         level:
@@ -207,11 +207,11 @@ components:
           description: Subject level as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
           type: string
         attainmentStatus:
-# TBC what are the possible values - should it be "Attained" only?
+# TBC what are the possible values - should it be "Attained" only? Achieved
           description: Attainment status.
           type: string
           enum:
-            - Attained
+            - Achieved
             - Failed
             - Lapsed
         competencyFramework:
@@ -219,11 +219,11 @@ components:
           description: TBC framework - surely this is always CSTF?
           type: string
         competencyName:
-# Feels like a duplicate attribute - or could a core skill be one that's not listed in the CSTF guide?        
+# Feels like a duplicate attribute - or could a core skill be one that's not listed in the CSTF guide? not the same - find better example   
           description: TBC probably the same as statMandSubject
           type: string
         awardingOrg:
-# TBC should this be employer?        
+# TBC should this be employer? no
           description: The ODS code for the 
           type: string
         renewalPeriod:
@@ -237,7 +237,7 @@ components:
           description: TBC
           type: string
         learningMethod:
-# TBC possible values e.g. "Test"        
+# TBC possible values e.g. "Test"  online/in person/hybrid?      
           description: TBC
           type: string
         dateTo:
@@ -275,6 +275,7 @@ components:
           description: The employee's email address.
           type: string
         esrIdentifier:
+# TBC is the example esr ID a valid example?        
           description: The employee's unique identifier in the ESR system.
           type: string
     EmployeeData:
