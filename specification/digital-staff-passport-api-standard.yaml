@@ -114,7 +114,7 @@ paths:
             type: string
       responses:
         '200':
-          description: A completed search. This might contain zero, one or many matching patients.
+          description: A completed search. This might contain zero, one or many matching employees.
           content:
             application/json:
               schema:
@@ -122,15 +122,30 @@ paths:
                 minItems: 0
                 maxItems: 50
                 items:
-                  $ref: '#/components/schemas/Employee'
+                  $ref: '#/components/schemas/EmployeePersonalDetails'
               example:
                 $ref: components/examples/SearchForAnEmployeeHappyPathResponse.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code                 | Description |
+            | ----------- | -------------------------- | --------------------------------------------- |
+            | 400         | INVALID_SEARCH_PARAMETERS  | 
+            | 401         | ACCESS_DENIED              | Access token missing, invalid or expired, or calling application not enabled for this operation. |
+            | TBC         | TBC           | TBC	|
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: components/examples/ErrorResponse.json              
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
+                $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
         '405':
@@ -138,10 +153,47 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal server error
-  /employees/{id}/records:
+  /employees/{id}:
+    get:
+      operationId: get-employee-personal-details
+      summary: Get employee personal details
+      description: |
+        This operation returns personal details for a given employee.
+        Use this operation if you already have the employee's ID but want to check it's the right ID.
+      parameters:
+        - name: id
+          in: path
+          description: The employee's primary unique identifier, as used by the source system.
+          required: true
+          example: '12345'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee exists for the given ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeePersonalDetails'
+              example:
+                $ref: components/examples/GetEmployeePersonalDetailsHappyPathResponse.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code                 | Description |
+            | ----------- | -------------------------- | --------------------------------------------- |
+            | TBC         | TBC           | TBC	|
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: components/examples/ErrorResponse.json              
+/employees/{id}/records:
     get:
       operationId: get-employee-records
       summary: Get employee records
@@ -163,15 +215,28 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmployeeData'
+                $ref: '#/components/schemas/EmployeeRecords'
               example:
                 $ref: components/examples/GetEmployeeRecordsHappyPathResponse.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code                 | Description |
+            | ----------- | -------------------------- | --------------------------------------------- |
+            | TBC         | TBC           | TBC	|
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: components/examples/ErrorResponse.json              
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
+                $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
         '405':
@@ -179,7 +244,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal server error
 components:
@@ -252,7 +317,7 @@ components:
 # TBC        
           description: TBC
           type: string
-    Employee:
+    EmployeePersonalDetails:
       type: object
       required:
         - id
@@ -278,7 +343,7 @@ components:
 # TBC is the example esr ID a valid example?        
           description: The employee's unique identifier in the ESR system.
           type: string
-    EmployeeData:
+    EmployeeRecords:
       type: object
       required:
         - id
@@ -294,7 +359,7 @@ components:
           items:
             $ref: '#/components/schemas/CoreSkillsTraining'
           nullable: true
-    ProblemDetails:
+    Error:
       type: object
       properties:
         type:
