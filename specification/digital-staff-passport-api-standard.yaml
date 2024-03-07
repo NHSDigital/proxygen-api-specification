@@ -193,7 +193,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 $ref: components/examples/ErrorResponse.json              
-/employees/{id}/records:
+  /employees/{id}/records:
     get:
       operationId: get-employee-records
       summary: Get employee records
