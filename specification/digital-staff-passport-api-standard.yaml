@@ -129,33 +129,16 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code                 | Description |
-            | ----------- | -------------------------- | --------------------------------------------- |
-            | 400         | INVALID_SEARCH_PARAMETERS  | 
-            | 401         | ACCESS_DENIED              | Access token missing, invalid or expired, or calling application not enabled for this operation. |
-            | TBC         | TBC           | TBC	|
+            | HTTP status | Error code   | Description |
+            | ----------- | ------------ | - |
+            | 400         | invalid      | Invalid query parameter(s). |
+            | 401         | forbidden    | Access token missing, invalid or expired, or calling application not enabled for this operation. |
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
                 $ref: components/examples/ErrorResponse.json              
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
   /employees/{id}:
     get:
       operationId: get-employee-personal-details
@@ -184,9 +167,9 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code                 | Description |
-            | ----------- | -------------------------- | --------------------------------------------- |
-            | TBC         | TBC           | TBC	|
+            | HTTP status | Error code   | Description |
+            | ----------- | ------------ | --------------------------------------------- |
+            | 404         | not-found    | Employee not found for the given ID |
           content:
             application/json:
               schema:
@@ -222,9 +205,9 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code                 | Description |
-            | ----------- | -------------------------- | --------------------------------------------- |
-            | TBC         | TBC           | TBC	|
+            | HTTP status | Error code   | Description |
+            | ----------- | ------------ | - |
+            | 404         | not-found    | Employee not found for the given ID |
           content:
             application/json:
               schema:
@@ -361,20 +344,42 @@ components:
           nullable: true
     Error:
       type: object
+      required:
+        - resourceType
+        - issue
       properties:
-        type:
+        resourceType:
+          description: The resource type.
           type: string
-          nullable: true
-        title:
-          type: string
-          nullable: true
-        status:
-          type: integer
-          format: int32
-          nullable: true
-        detail:
-          type: string
-          nullable: true
-        instance:
-          type: string
-          nullable: true
+          enum:
+            - OperationOutcome
+        issue:
+          description: List of issues that have occurred. Usually there will be just one.
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - severity
+              - code
+            properties:
+              severity:
+                description: Issue severity, as per [https://hl7.org/fhir/R4/valueset-issue-severity.html](https://hl7.org/fhir/R4/valueset-issue-severity.html).
+                type: string
+                enum:
+                  - fatal
+                  - error
+                  - warning
+                  - information
+              code:
+                description: Error or warning code, as per [https://hl7.org/fhir/R4/valueset-issue-type.html](https://hl7.org/fhir/R4/valueset-issue-type.html).
+                type: string
+              details:
+                description: Additional details about the error or warning.
+                type: object
+                required:
+                  - text
+                properties:
+                  text:
+                    description: A text description of the error or warning.
+                    type: string
