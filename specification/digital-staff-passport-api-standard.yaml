@@ -52,6 +52,8 @@ info:
     * 200 to 299 if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action
     * 400 to 499 if it failed because of a client error by your application
     * 500 to 599 if it failed because of an error on our server
+    
+    Although this is not a FHIR API, errors are returned as FHIR [OperationOutcome](https://hl7.org/fhir/R4/operationoutcome.html) resources, in line with our API design guidance.
 
     For details of specific errors, see the 'Response' section for each operation. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
 
@@ -214,22 +216,6 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 $ref: components/examples/ErrorResponse.json              
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
 components:
   schemas:
     CoreSkillsTraining:
