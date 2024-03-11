@@ -29,13 +29,16 @@ info:
     We are currently running a pilot with one external system and iterating the standard as we proceed.
 
     ## Service level
-    Details to follow.
+    Your API must be a bronze service, meaning it is operational and supported during business hours.
+
+    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
 
     ## Technology
     This API standard is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
 
     It does not conform to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir)
     global standard for health care data exchance because it is not a clinical API, it relates to workforce.
+    This has been agreed with the [HL7 FHIR UK Board](https://www.hl7.org.uk/register/about-hl7-uk/management-board-members/).
 
     ## Network access
     Your API must be available on the internet.
@@ -49,6 +52,8 @@ info:
     * 200 to 299 if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action
     * 400 to 499 if it failed because of a client error by your application
     * 500 to 599 if it failed because of an error on our server
+    
+    Although this is not a FHIR API, errors are returned as FHIR [OperationOutcome](https://hl7.org/fhir/R4/operationoutcome.html) resources, in line with our API design guidance.
 
     For details of specific errors, see the 'Response' section for each operation. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
 
@@ -111,7 +116,7 @@ paths:
             type: string
       responses:
         '200':
-          description: A completed search. This might contain zero, one or many matching patients.
+          description: A completed search. This might contain zero, one or many matching employees.
           content:
             application/json:
               schema:
@@ -119,25 +124,60 @@ paths:
                 minItems: 0
                 maxItems: 50
                 items:
-                  $ref: '#/components/schemas/Employee'
+                  $ref: '#/components/schemas/EmployeePersonalDetails'
               example:
                 $ref: components/examples/SearchForAnEmployeeHappyPathResponse.json
-        '400':
-          description: Bad Request
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code   | Description |
+            | ----------- | ------------ | - |
+            | 400         | invalid      | Invalid query parameter(s). |
+            | 401         | forbidden    | Access token missing, invalid or expired, or calling application not enabled for this operation. |
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid input
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: components/examples/ErrorResponse.json              
+  /employees/{id}:
+    get:
+      operationId: get-employee-personal-details
+      summary: Get employee personal details
+      description: |
+        This operation returns personal details for a given employee.
+        Use this operation if you already have the employee's ID but want to check it's the right ID.
+      parameters:
+        - name: id
+          in: path
+          description: The employee's primary unique identifier, as used by the source system.
+          required: true
+          example: '12345'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee exists for the given ID.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '500':
-          description: Internal server error
+                $ref: '#/components/schemas/EmployeePersonalDetails'
+              example:
+                $ref: components/examples/GetEmployeePersonalDetailsHappyPathResponse.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code   | Description |
+            | ----------- | ------------ | --------------------------------------------- |
+            | 404         | not-found    | Employee not found for the given ID. |
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: components/examples/ErrorResponse.json              
   /employees/{id}/records:
     get:
       operationId: get-employee-records
@@ -160,99 +200,93 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmployeeData'
+                $ref: '#/components/schemas/EmployeeRecords'
               example:
-                employeeId: 1f9a7bb6-6fc7-45ec-9334-03feaed520b4
-                timeStamp: '2024-02-23T14:07:36.0390356+00:00'
-                records:
-                  - statMandSubject: Information Governance and Data Security
-                    level: '1'
-                    attainmentStatus: ACHIEVED
-                    competencyFramework: CSTF
-                    competencyName: Information  Governance and Data Security
-                    awardingOrg: RHQ
-                    renewalPeriod: '2'
-                    units: Year
-                    learningMethod: Test
-                    dateTo: 2023-03-20T00:00Z
-                    lastDateAwarded: 2023-11-01T00:00Z
-                    proficiencyLevel: 0 - Not Assessed
-                    type: CoreSkillsTraining
-                  - statMandSubject: Resuscitation
-                    level: '2'
-                    attainmentStatus: ACHIEVED
-                    competencyFramework: CSTF
-                    competencyName: Resuscitation Adult Basic Life Support
-                    awardingOrg: RHQ
-                    renewalPeriod: '1'
-                    units: Year
-                    learningMethod: Test
-                    dateTo: 2024-11-20T00:00Z
-                    lastDateAwarded: 2023-11-20T00:00Z
-                    proficiencyLevel: 0 - Not Assessed
-                    type: CoreSkillsTraining
-        '400':
-          description: Bad Request
+                $ref: components/examples/GetEmployeeRecordsHappyPathResponse.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code   | Description |
+            | ----------- | ------------ | - |
+            | 404         | not-found    | Employee not found for the given ID. |
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '500':
-          description: Internal server error
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: components/examples/ErrorResponse.json              
 components:
   schemas:
     CoreSkillsTraining:
       type: object
+      description: A record of a core skill attained by the employee, as per the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+      required:
+        - type
+        - statMandSubject
+# TBC other required fields?        
       properties:
         type:
+          description: Type of record.
           type: string
-          nullable: true
+          enum:
+            - CoreSkillsTraining
         statMandSubject:
+# TBC rename to something more readable? YES
+# TBC would we be better using coded values for this? yes, maybe both, discuss with simon and CLS
+          description: Statutary or mandatory subject name as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
           type: string
-          nullable: true
         level:
+# TBC enumarated?
+          description: Subject level as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
           type: string
-          nullable: true
         attainmentStatus:
+# TBC what are the possible values - should it be "Attained" only? Achieved
+          description: Attainment status.
           type: string
-          nullable: true
+          enum:
+            - Achieved
+            - Failed
+            - Lapsed
         competencyFramework:
+# Do we even need this?        
+          description: TBC framework - surely this is always CSTF?
           type: string
-          nullable: true
         competencyName:
+# Feels like a duplicate attribute - or could a core skill be one that's not listed in the CSTF guide? not the same - find better example   
+          description: TBC probably the same as statMandSubject
           type: string
-          nullable: true
         awardingOrg:
+# TBC should this be employer? no
+          description: The ODS code for the 
           type: string
-          nullable: true
         renewalPeriod:
+# TBC what is this? Simon's example is "2"       
+          description: TBC
           type: string
-          nullable: true
         units:
+# TBC is this the units for the renewal period? Simon's example is "Year"
+# TBC what are the possible values?
+# TBC rename as renewalPeriodUnits? Make into an object renewalPeriod with two sub-fields amount and unit?
+          description: TBC
           type: string
-          nullable: true
         learningMethod:
+# TBC possible values e.g. "Test"  online/in person/hybrid?      
+          description: TBC
           type: string
-          nullable: true
         dateTo:
+# TBC is this when the training runs out?        
+          description: TBC
           type: string
-          nullable: true
         lastDateAwarded:
+# TBC        
+          description: TBC
           type: string
-          nullable: true
         proficiencyLevel:
+# TBC        
+          description: TBC
           type: string
-          nullable: true
-      additionalProperties: false
-    Employee:
+    EmployeePersonalDetails:
       type: object
       required:
         - id
@@ -275,41 +309,63 @@ components:
           description: The employee's email address.
           type: string
         esrIdentifier:
+# TBC is the example esr ID a valid example?        
           description: The employee's unique identifier in the ESR system.
           type: string
-      additionalProperties: false
-    EmployeeData:
+    EmployeeRecords:
       type: object
+      required:
+        - id
+        - records
       properties:
-        employeeId:
+        id:
+          description: The employee's primary unique identifier, as used by the source system.
           type: string
-          nullable: true
-        timeStamp:
-          type: string
-          nullable: true
         records:
+          description: The employee's records.
           type: array
+          minItems: 0
           items:
             $ref: '#/components/schemas/CoreSkillsTraining'
           nullable: true
-      additionalProperties: false
-    ProblemDetails:
+    Error:
       type: object
+      required:
+        - resourceType
+        - issue
       properties:
-        type:
+        resourceType:
+          description: The resource type.
           type: string
-          nullable: true
-        title:
-          type: string
-          nullable: true
-        status:
-          type: integer
-          format: int32
-          nullable: true
-        detail:
-          type: string
-          nullable: true
-        instance:
-          type: string
-          nullable: true
-      additionalProperties: {}
+          enum:
+            - OperationOutcome
+        issue:
+          description: List of issues that have occurred. Usually there will be just one.
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - severity
+              - code
+            properties:
+              severity:
+                description: Issue severity, as per [https://hl7.org/fhir/R4/valueset-issue-severity.html](https://hl7.org/fhir/R4/valueset-issue-severity.html).
+                type: string
+                enum:
+                  - fatal
+                  - error
+                  - warning
+                  - information
+              code:
+                description: Error or warning code, as per [https://hl7.org/fhir/R4/valueset-issue-type.html](https://hl7.org/fhir/R4/valueset-issue-type.html).
+                type: string
+              details:
+                description: Additional details about the error or warning.
+                type: object
+                required:
+                  - text
+                properties:
+                  text:
+                    description: A text description of the error or warning.
+                    type: string
