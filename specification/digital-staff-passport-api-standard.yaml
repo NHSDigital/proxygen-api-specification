@@ -167,7 +167,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeePersonalDetails'
               example:
-                $ref: components/examples/GetEmployeePersonalDetailsErrorResponse.json
+                $ref: components/examples/GetEmployeePersonalDetailsHappyPathResponse.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -180,7 +180,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                $ref: components/examples/SearchForAnEmployeeErrorResponse.json              
+                $ref: components/examples/GetEmployeePersonalDetailsErrorResponse.json              
   /employees/{id}/records:
     get:
       operationId: get-employee-records
@@ -218,7 +218,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                $ref: components/examples/ErrorResponse.json              
+                $ref: components/examples/GetEmployeeRecordsErrorResponse.json              
 components:
   schemas:
     CoreSkillsTraining:
