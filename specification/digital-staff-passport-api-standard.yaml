@@ -248,9 +248,7 @@ components:
           description: Attainment status.
           type: string
           enum:
-            - Achieved
-            - Failed
-            - Lapsed
+            - ACHIEVED
         competencyFramework:
 # Do we even need this?        
           description: TBC framework - surely this is always CSTF?
@@ -329,8 +327,8 @@ components:
           type: array
           minItems: 0
           items:
-            $ref: '#/components/schemas/CoreSkillsTraining'
-          nullable: true
+            oneOf:
+              - $ref: '#/components/schemas/CoreSkillsTraining'
     Error:
       type: object
       required:
