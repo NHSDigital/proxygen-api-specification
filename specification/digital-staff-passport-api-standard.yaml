@@ -334,9 +334,9 @@ components:
             - ACHIEVED
           example: ACHIEVED
         learningMethod:
-# TBC possible values e.g. "Test"  online/in person/hybrid?      
-          description: TBC
+          description: The method by which the core skill was obtained.
           type: string
+          example: 'Examination'
         awardingOrganisation:
           description: The ODS code for the NHS organisation that awarded the core skill.
           type: string
