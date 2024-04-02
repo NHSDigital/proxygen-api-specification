@@ -225,8 +225,15 @@ components:
       type: object
       description: A record of a core skill attained by the employee, as per the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
       required:
-        - type
+        - recordType
+        - competencyFramework
         - statMandSubject
+        - competencyName
+        - subjectLevel
+        - proficiencyLevel
+        - attainmentStatus
+        - awardingOrganisation
+        - dateLastAwarded
 # TBC other required fields?
       properties:
         recordType:
@@ -290,7 +297,7 @@ components:
           type: string
           example: '2023-11-01'
         dateTo:
-          description: The date when the core skill expires, in the format yyyy-mm-dd.
+          description: The date when the core skill expires, if appropriate, in the format yyyy-mm-dd.
           type: string
           example: '2024-10-31'
     EmployeePersonalDetails:
@@ -316,7 +323,6 @@ components:
           description: The employee's email address.
           type: string
         esrIdentifier:
-# TBC is the example esr ID a valid example?        
           description: The employee's unique identifier in the ESR system.
           type: string
     EmployeeRecords:
