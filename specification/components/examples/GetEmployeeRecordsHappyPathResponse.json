@@ -1,35 +1,34 @@
 {
-  "employeeId": "1f9a7bb6-6fc7-45ec-9334-03feaed520b4",
+  "id": "12345",
   "records": [
     {
-      "attainmentStatus": "ACHIEVED",
-      "awardingOrg": "RHQ",
+      "recordType": "CoreSkillsTraining",
       "competencyFramework": "CSTF",
-      "competencyName": "Information Governance and Data Security", 
-      "dateTo": "2023-03-20T00:00Z",
-      "lastDateAwarded": "2023-11-01T00:00Z",
-      "learningMethod": "Test",
-      "level": "1",
-      "proficiencyLevel": "0 - Not Assessed",
-      "renewalPeriod": "2",
       "statMandSubject": "Information Governance and Data Security",
-      "type": "CoreSkillsTraining",
-      "units": "Year"
+      "competencyName": "Information Governance and Data Security", 
+      "subjectLevel": "1",
+      "renewalPeriodNumber": "2",
+      "renewalPeriodUnits": "Years"
+      "proficiencyLevel": "0 - Not Assessed",
+      "attainmentStatus": "ACHIEVED",
+      "learningMethod": "Test",
+      "awardingOrganisation": "RHQ",
+      "dateLastAwarded": "2023-11-01",
+      "dateTo": "2025-10-31",
     },
     {
-      "attainmentStatus": "ACHIEVED",
-      "awardingOrg": "RHQ",
+      "recordType": "CoreSkillsTraining",
       "competencyFramework": "CSTF",
-      "competencyName": "Resuscitation Adult Basic Life Support",
-      "dateTo": "2024-11-20T00:00Z",
-      "lastDateAwarded": "2023-11-20T00:00Z",
-      "learningMethod": "Test",
-      "level": "2",
-      "proficiencyLevel": "0 - Not Assessed",
-      "renewalPeriod": "1",
       "statMandSubject": "Resuscitation",
-      "type": "CoreSkillsTraining",
-      "units": "Year"
+      "competencyName": "Resuscitation Adult Basic Life Support",
+      "subjectLevel": "2",
+      "renewalPeriodNumber": "1",
+      "renewalPeriodUnits": "Year"
+      "proficiencyLevel": "1 - Assessed",
+      "attainmentStatus": "ACHIEVED",
+      "learningMethod": "Test",
+      "awardingOrganisation": "RHQ",
+      "dateLastAwarded": "2023-11-20",
+      "dateTo": "2024-11-19",
     }],
-  "timeStamp": "2024-02-23T14:07:36.0390356+00:00"
 }
