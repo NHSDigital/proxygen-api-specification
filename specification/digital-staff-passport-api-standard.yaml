@@ -322,9 +322,11 @@ components:
           type: string
           example: 'Years'
         proficiencyLevel:
-# TBC        
-          description: TBC
+          description: Whether the core skill was assessed by the awarding organisation.
           type: string
+          enum:
+            - '0 - Not Assessed'
+            - '1 - Assessed'
         attainmentStatus:
           description: Attainment status.
           type: string
