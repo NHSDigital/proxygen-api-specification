@@ -8,13 +8,13 @@
       "competencyName": "Information Governance and Data Security", 
       "subjectLevel": "1",
       "renewalPeriodNumber": "2",
-      "renewalPeriodUnits": "Years"
+      "renewalPeriodUnits": "Years",
       "proficiencyLevel": "0 - Not Assessed",
       "attainmentStatus": "ACHIEVED",
       "learningMethod": "Test",
       "awardingOrganisation": "RHQ",
       "dateLastAwarded": "2023-11-01",
-      "dateTo": "2025-10-31",
+      "dateTo": "2025-10-31"
     },
     {
       "recordType": "CoreSkillsTraining",
@@ -23,12 +23,12 @@
       "competencyName": "Resuscitation Adult Basic Life Support",
       "subjectLevel": "2",
       "renewalPeriodNumber": "1",
-      "renewalPeriodUnits": "Year"
+      "renewalPeriodUnits": "Year",
       "proficiencyLevel": "1 - Assessed",
       "attainmentStatus": "ACHIEVED",
       "learningMethod": "Test",
       "awardingOrganisation": "RHQ",
       "dateLastAwarded": "2023-11-20",
-      "dateTo": "2024-11-19",
-    }],
+      "dateTo": "2024-11-19"
+    }]
 }
