@@ -85,12 +85,15 @@ paths:
         - surname
         - date of birth
 
-        The operation returns a maximum of 50 matching employees.
-        If there are more than 50 matches, it returns the first 50.
+        All search parameters are optional.
+
+        Matches on first name and surname are case insensitive.
+        
+        If there are no matches, the operation returns an empty array, not an error.
+
+        If there are more than 50 matches, the operation only returns the first 50.
         There is currently no way of knowing whether there are more than 50 matches.
         In the future we might add pagination.
-
-        All search parameters are optional, but if they are all omitted it is likely to result in a 'too many matches' error.
 
       parameters:
         - name: firstName
@@ -140,7 +143,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                $ref: components/examples/ErrorResponse.json              
+                $ref: components/examples/SearchForAnEmployeeErrorResponse.json              
   /employees/{id}:
     get:
       operationId: get-employee-personal-details
@@ -164,7 +167,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeePersonalDetails'
               example:
-                $ref: components/examples/GetEmployeePersonalDetailsHappyPathResponse.json
+                $ref: components/examples/GetEmployeePersonalDetailsErrorResponse.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -177,7 +180,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                $ref: components/examples/ErrorResponse.json              
+                $ref: components/examples/SearchForAnEmployeeErrorResponse.json              
   /employees/{id}/records:
     get:
       operationId: get-employee-records
