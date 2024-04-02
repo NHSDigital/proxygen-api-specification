@@ -87,8 +87,6 @@ paths:
 
         All search parameters are optional.
 
-        Matches on first name and surname are case insensitive.
-        
         If there are no matches, the operation returns an empty array, not an error.
 
         If there are more than 50 matches, the operation only returns the first 50.
@@ -98,14 +96,14 @@ paths:
       parameters:
         - name: firstName
           in: query
-          description: The employee's first name.
+          description: The employee's first name. Case insensitive.
           required: false
           example: 'Jane'
           schema:
             type: string
         - name: surname
           in: query
-          description: The employee's surname.
+          description: The employee's surname. Case insensitive.
           required: false
           example: 'Smith'
           schema:
@@ -187,6 +185,7 @@ paths:
       summary: Get employee records
       description: |
         This operation returns a list of all data records available for a given employee.
+
         The type of records returned depends on the type of system.
         For example, a learning management system would return training records.
       parameters:
@@ -199,7 +198,7 @@ paths:
             type: string
       responses:
         '200':
-          description: Successful operation
+          description: Successful operation.
           content:
             application/json:
               schema:
