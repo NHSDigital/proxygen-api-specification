@@ -11,7 +11,7 @@
       "renewalPeriodUnits": "Years",
       "proficiencyLevel": "0 - Not Assessed",
       "attainmentStatus": "ACHIEVED",
-      "learningMethod": "Test",
+      "learningMethod": "Examination",
       "awardingOrganisation": "RHQ",
       "dateLastAwarded": "2023-11-01",
       "dateTo": "2025-10-31"
@@ -26,7 +26,7 @@
       "renewalPeriodUnits": "Year",
       "proficiencyLevel": "1 - Assessed",
       "attainmentStatus": "ACHIEVED",
-      "learningMethod": "Test",
+      "learningMethod": "Observation",
       "awardingOrganisation": "RHQ",
       "dateLastAwarded": "2023-11-20",
       "dateTo": "2024-11-19"
