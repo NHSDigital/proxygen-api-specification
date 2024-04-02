@@ -5,7 +5,7 @@
       "severity": "error",
       "code": "invalid",
       "details": {
-        "text": "The query parameter 'bananas' is invalid."
+        "text": "Invalid format for birthDate query parameter - must be yyyy-mm-dd."
       }
     }
   ]
