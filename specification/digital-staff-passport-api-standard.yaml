@@ -85,7 +85,7 @@ paths:
         - surname
         - date of birth
 
-        All search parameters are optional.
+        All search parameters are optional, but at least one must be provided.
 
         If there are no matches, the operation returns an empty array, not an error.
 
@@ -184,10 +184,21 @@ paths:
       operationId: get-employee-records
       summary: Get employee records
       description: |
+        ## Overview
         This operation returns a list of all data records available for a given employee.
 
         The type of records returned depends on the type of system.
         For example, a learning management system would return training records.
+
+        ## Core skills
+        Core skills records have a `recordType` of `CoreSkillsTraining`.
+
+        They are generally recorded in a learning management system (LMS).
+        Core skills records are typically a subset of all training records held in the LMS.
+        This operation only returns training records that are flagged as being core skills in the LMS.
+        Core skills are generally those that are listed in the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+        However, there might be exceptions. For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for DSP.
+        Therefore, it should be possible to easily configure specific training courses to be included in this operation.
       parameters:
         - name: id
           in: path
