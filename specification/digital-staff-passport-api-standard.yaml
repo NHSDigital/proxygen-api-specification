@@ -240,7 +240,8 @@ components:
       in: header
       name: Authorization
       description: |
-        An [OAuth 2.0 bearer token](https://digital.nhs.uk/developer/TBC).
+        An [OAuth 2.0 bearer token](https://digital.nhs.uk/developer/TBC) that authorises the calling system to perform the operation.
+        For details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-signed-JWT).
       required: false
       schema:
         type: string
