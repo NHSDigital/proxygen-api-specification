@@ -208,10 +208,10 @@ paths:
         This operation returns a list of all data records available for a given employee.
 
         The type of records returned depends on the type of system.
-        For example, a learning management system would return training records.
+        For example, a learning management system would return core skills records.
 
         ### Core skills
-        Core skills records have a `recordType` of `CoreSkillsTraining`.
+        Core skills records have a `recordType` of `CoreSkillsTraining` and are typically held in a learning managements system (LMS).
 
         Core skills are a specific type of mandatory training that are common across all NHS organisations,
         and are generally aligned with the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
