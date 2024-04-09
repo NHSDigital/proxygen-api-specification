@@ -75,7 +75,7 @@ x-spec-publication:
   try-this-api:
     disabled: true
 paths:
-  /employees:
+  /organisations/{org-id}/employees:
     get:
       operationId: search-for-employee
       summary: Search for an employee
@@ -138,14 +138,14 @@ paths:
             | HTTP status | Error code   | Description |
             | ----------- | ------------ | - |
             | 400         | invalid      | Invalid query parameter(s). |
-            | 401         | forbidden    | Access token missing, invalid or expired, or calling application not enabled for this operation. |
+            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation. |
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
                 $ref: components/examples/SearchForAnEmployeeErrorResponse.json              
-  /employees/{id}:
+  /organisations/{org-id}/employees/{employee-id}:
     get:
       operationId: get-employee-personal-details
       summary: Get employee personal details
@@ -153,13 +153,7 @@ paths:
         This operation returns personal details for a given employee.
         Use this operation if you already have the employee's ID but want to check it's the right ID.
       parameters:
-        - name: id
-          in: path
-          description: The employee's primary unique identifier, as used by the source system.
-          required: true
-          example: '12345'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/EmployeeId'
         - $ref: '#/components/parameters/BearerAuthorization'
       responses:
         '200':
@@ -176,6 +170,7 @@ paths:
 
             | HTTP status | Error code   | Description |
             | ----------- | ------------ | --------------------------------------------- |
+            | 401         | forbidden    | Access token missing, invalid or expired, or calling application not enabled for this operation. |
             | 404         | not-found    | Employee not found for the given ID. |
           content:
             application/json:
@@ -183,7 +178,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 $ref: components/examples/GetEmployeePersonalDetailsErrorResponse.json              
-  /employees/{id}/records:
+  /organisations/{org-id}/employees/{employee-id}/records:
     get:
       operationId: get-employee-records
       summary: Get employee records
@@ -204,13 +199,7 @@ paths:
         However, there might be exceptions. For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for DSP.
         Therefore, it should be possible to easily configure specific training courses to be included in this operation.
       parameters:
-        - name: id
-          in: path
-          description: The employee's primary unique identifier, as used by the source system.
-          required: true
-          example: '12345'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/EmployeeId'
         - $ref: '#/components/parameters/BearerAuthorization'
       responses:
         '200':
@@ -227,6 +216,7 @@ paths:
 
             | HTTP status | Error code   | Description |
             | ----------- | ------------ | - |
+            | 401         | forbidden    | Access token missing, invalid or expired, or calling application not enabled for this operation. |
             | 404         | not-found    | Employee not found for the given ID. |
           content:
             application/json:
@@ -240,13 +230,29 @@ components:
       in: header
       name: Authorization
       description: |
-        An [OAuth 2.0 bearer token](https://digital.nhs.uk/developer/TBC) that authorises the calling system to perform the operation.
+        The calling system's access token - an OAuth 2.0 bearer token.
         For details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-signed-JWT).
       required: false
       schema:
         type: string
         format: '^Bearer\ [[:ascii:]]+$'
         example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
+    OrganisationId:
+      in: path
+      name: org-id
+      description: The ODS code for the employing organisation.
+      required: true
+      example: 'RHQ'
+      schema:
+        type: string
+    EmployeeId:
+      in: path
+      name: employee-id
+      description: The employee's primary unique identifier, as used by the source system.
+      required: true
+      example: '12345'
+      schema:
+        type: string
   schemas:
     EmployeePersonalDetails:
       type: object
