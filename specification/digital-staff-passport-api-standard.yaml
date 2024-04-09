@@ -44,8 +44,10 @@ info:
     Your API must be available on the internet.
     
     ## Security and authorisation
-    Details to follow.
-
+    Your API must use OAuth 2.0 'signed JWT' to authenticate and authorise Digital Staff Passport as the calling system.
+    
+    For more details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-signed-JWT).
+    
     ## Errors
     We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
 
@@ -115,6 +117,7 @@ paths:
           example: '1998-10-22'
           schema:
             type: string
+        - $ref: '#/components/parameters/BearerAuthorization'
       responses:
         '200':
           description: A completed search. This might contain zero, one or many matching employees.
@@ -157,6 +160,7 @@ paths:
           example: '12345'
           schema:
             type: string
+        - $ref: '#/components/parameters/BearerAuthorization'
       responses:
         '200':
           description: Employee exists for the given ID.
@@ -207,6 +211,7 @@ paths:
           example: '12345'
           schema:
             type: string
+        - $ref: '#/components/parameters/BearerAuthorization'
       responses:
         '200':
           description: Successful operation.
@@ -230,6 +235,17 @@ paths:
               example:
                 $ref: components/examples/GetEmployeeRecordsErrorResponse.json              
 components:
+  parameters:
+    BearerAuthorization:
+      in: header
+      name: Authorization
+      description: |
+        An [OAuth 2.0 bearer token](https://digital.nhs.uk/developer/TBC).
+      required: false
+      schema:
+        type: string
+        format: '^Bearer\ [[:ascii:]]+$'
+        example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
   schemas:
     EmployeePersonalDetails:
       type: object
