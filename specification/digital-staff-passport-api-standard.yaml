@@ -213,12 +213,13 @@ paths:
         ### Core skills
         Core skills records have a `recordType` of `CoreSkillsTraining`.
 
-        They are generally recorded in a learning management system (LMS).
-        Core skills records are typically a subset of all training records held in the LMS.
-        This operation only returns training records that are flagged as being core skills in the LMS.
-        Core skills are generally those that are listed in the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
-        However, there might be exceptions. For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for DSP.
-        Therefore, it should be possible to easily configure specific training courses to be included in this operation.
+        Core skills are a specific type of mandatory training that are common across all NHS organisations,
+        and are generally aligned with the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+
+        Core skills are not always part of the CSTF.
+        For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for Digital Staff Passport.
+
+        This operation returns all training records that are flagged as in scope for DSP, regardless of whether they are part of the CSTF.
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
         - $ref: '#/components/parameters/EmployeeId'
@@ -252,7 +253,7 @@ components:
       in: header
       name: Authorization
       description: |
-        The calling system's access token - an OAuth 2.0 bearer token.
+        The calling system's access token, which must be an OAuth 2.0 bearer token.
         For details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-signed-JWT).
       required: false
       schema:
