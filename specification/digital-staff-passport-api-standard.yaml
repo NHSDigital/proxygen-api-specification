@@ -96,6 +96,7 @@ paths:
         In the future we might add pagination.
 
       parameters:
+        - $ref: '#/components/parameters/OrganisationId'
         - name: firstName
           in: query
           description: The employee's first name. Case insensitive.
@@ -153,6 +154,7 @@ paths:
         This operation returns personal details for a given employee.
         Use this operation if you already have the employee's ID but want to check it's the right ID.
       parameters:
+        - $ref: '#/components/parameters/OrganisationId'
         - $ref: '#/components/parameters/EmployeeId'
         - $ref: '#/components/parameters/BearerAuthorization'
       responses:
@@ -199,6 +201,7 @@ paths:
         However, there might be exceptions. For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for DSP.
         Therefore, it should be possible to easily configure specific training courses to be included in this operation.
       parameters:
+        - $ref: '#/components/parameters/OrganisationId'
         - $ref: '#/components/parameters/EmployeeId'
         - $ref: '#/components/parameters/BearerAuthorization'
       responses:
