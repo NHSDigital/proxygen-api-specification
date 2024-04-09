@@ -60,9 +60,27 @@ info:
     For details of specific errors, see the 'Response' section for each operation. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
 
     ## Environments and testing
-    You'll need to:
-    - deploy your API into an environment that we can use for integration testing
-    - populate that environment with suitable test data
+    You'll need to provide the following environments:
+
+    |---|---|
+    | Environment | Suggested base URL |
+    |---|---|
+    | Integration test | `integration-test.<your domain>/dsp-api` |
+    | Integration test | `<your domain>/dsp-api` |
+
+    ### Single versus multiple instance systems
+    If your system runs as a single instance supporting multiple employer organisations (sometimes called 'multiple tenant'), you should deploy it as per the suggested base URLs suggested above.
+
+    If you have a separate instance of your system per employer organisation, you should deploy each instance at the following base URL:
+
+    `<your domain>/dsp-api/organisations/<org ODS code>`
+
+    In this case, you should alter the URL for the individual operations to exclude the `organisations\{org-id}` part, so that it isn't repeated.
+
+    ### Integration testing
+    Your integration test environment needs to include:
+    - at least two organisations, so we can test cross-organisation security
+    - sufficient test data to support a reasonable set of test scenarios - for example multiple people with the same surname or date of birth
 
     ## Onboarding
     We are currently running a pilot with one external system, so the API standard is not available for anyone else to onboard just yet. 
@@ -139,7 +157,8 @@ paths:
             | HTTP status | Error code   | Description |
             | ----------- | ------------ | - |
             | 400         | invalid      | Invalid query parameter(s). |
-            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation. |
+            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
+            | 404         | not-found    | Organisation not found for the given organisation ID. |
           content:
             application/json:
               schema:
@@ -172,8 +191,8 @@ paths:
 
             | HTTP status | Error code   | Description |
             | ----------- | ------------ | --------------------------------------------- |
-            | 401         | forbidden    | Access token missing, invalid or expired, or calling application not enabled for this operation. |
-            | 404         | not-found    | Employee not found for the given ID. |
+            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
+            | 404         | not-found    | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
           content:
             application/json:
               schema:
@@ -185,13 +204,13 @@ paths:
       operationId: get-employee-records
       summary: Get employee records
       description: |
-        ## Overview
+        ### Overview
         This operation returns a list of all data records available for a given employee.
 
         The type of records returned depends on the type of system.
         For example, a learning management system would return training records.
 
-        ## Core skills
+        ### Core skills
         Core skills records have a `recordType` of `CoreSkillsTraining`.
 
         They are generally recorded in a learning management system (LMS).
@@ -219,8 +238,8 @@ paths:
 
             | HTTP status | Error code   | Description |
             | ----------- | ------------ | - |
-            | 401         | forbidden    | Access token missing, invalid or expired, or calling application not enabled for this operation. |
-            | 404         | not-found    | Employee not found for the given ID. |
+            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
+            | 404         | not-found    | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
           content:
             application/json:
               schema:
@@ -307,7 +326,7 @@ components:
               - $ref: '#/components/schemas/CoreSkillsTraining'
     CoreSkillsTraining:
       type: object
-      description: A record of a core skill attained by the employee, as per the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+      description: A record of a core skill attained by the employee. In most cases this will be part of the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
       required:
         - recordType
         - competencyFramework
