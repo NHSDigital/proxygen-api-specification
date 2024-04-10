@@ -44,8 +44,10 @@ info:
     Your API must be available on the internet.
     
     ## Security and authorisation
-    Details to follow.
-
+    Your API must use OAuth 2.0 'signed JWT' to authenticate and authorise Digital Staff Passport as the calling system.
+    
+    For more details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-signed-jwt).
+    
     ## Errors
     We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
 
@@ -58,9 +60,27 @@ info:
     For details of specific errors, see the 'Response' section for each operation. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
 
     ## Environments and testing
-    You'll need to:
-    - deploy your API into an environment that we can use for integration testing
-    - populate that environment with suitable test data
+    You'll need to provide the following environments:
+
+    |---|---|
+    | Environment | Suggested base URL |
+    |---|---|
+    | Integration test | `integration-test.<your domain>/dsp-api` |
+    | Integration test | `<your domain>/dsp-api` |
+
+    ### Single versus multiple instance systems
+    If your system runs as a single instance supporting multiple employer organisations (sometimes called 'multiple tenant'), you should deploy it as per the suggested base URLs suggested above.
+
+    If you have a separate instance of your system per employer organisation, you should deploy each instance at the following base URL:
+
+    `<your domain>/dsp-api/organisations/<org ODS code>`
+
+    In this case, you should alter the URL for the individual operations to exclude the `organisations\{org-id}` part, so that it isn't repeated.
+
+    ### Integration testing
+    Your integration test environment needs to include:
+    - at least two organisations, so we can test cross-organisation security
+    - sufficient test data to support a reasonable set of test scenarios - for example multiple people with the same surname or date of birth
 
     ## Onboarding
     We are currently running a pilot with one external system, so the API standard is not available for anyone else to onboard just yet. 
@@ -73,7 +93,7 @@ x-spec-publication:
   try-this-api:
     disabled: true
 paths:
-  /employees:
+  /organisations/{org-id}/employees:
     get:
       operationId: search-for-employee
       summary: Search for an employee
@@ -85,7 +105,7 @@ paths:
         - surname
         - date of birth
 
-        All search parameters are optional.
+        All search parameters are optional, but at least one must be provided.
 
         If there are no matches, the operation returns an empty array, not an error.
 
@@ -94,6 +114,7 @@ paths:
         In the future we might add pagination.
 
       parameters:
+        - $ref: '#/components/parameters/OrganisationId'
         - name: firstName
           in: query
           description: The employee's first name. Case insensitive.
@@ -115,6 +136,7 @@ paths:
           example: '1998-10-22'
           schema:
             type: string
+        - $ref: '#/components/parameters/BearerAuthorization'
       responses:
         '200':
           description: A completed search. This might contain zero, one or many matching employees.
@@ -135,14 +157,15 @@ paths:
             | HTTP status | Error code   | Description |
             | ----------- | ------------ | - |
             | 400         | invalid      | Invalid query parameter(s). |
-            | 401         | forbidden    | Access token missing, invalid or expired, or calling application not enabled for this operation. |
+            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
+            | 404         | not-found    | Organisation not found for the given organisation ID. |
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
                 $ref: components/examples/SearchForAnEmployeeErrorResponse.json              
-  /employees/{id}:
+  /organisations/{org-id}/employees/{employee-id}:
     get:
       operationId: get-employee-personal-details
       summary: Get employee personal details
@@ -150,13 +173,9 @@ paths:
         This operation returns personal details for a given employee.
         Use this operation if you already have the employee's ID but want to check it's the right ID.
       parameters:
-        - name: id
-          in: path
-          description: The employee's primary unique identifier, as used by the source system.
-          required: true
-          example: '12345'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/OrganisationId'
+        - $ref: '#/components/parameters/EmployeeId'
+        - $ref: '#/components/parameters/BearerAuthorization'
       responses:
         '200':
           description: Employee exists for the given ID.
@@ -172,30 +191,39 @@ paths:
 
             | HTTP status | Error code   | Description |
             | ----------- | ------------ | --------------------------------------------- |
-            | 404         | not-found    | Employee not found for the given ID. |
+            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
+            | 404         | not-found    | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
                 $ref: components/examples/GetEmployeePersonalDetailsErrorResponse.json              
-  /employees/{id}/records:
+  /organisations/{org-id}/employees/{employee-id}/records:
     get:
       operationId: get-employee-records
       summary: Get employee records
       description: |
+        ### Overview
         This operation returns a list of all data records available for a given employee.
 
         The type of records returned depends on the type of system.
-        For example, a learning management system would return training records.
+        For example, a learning management system would return core skills records.
+
+        ### Core skills
+        Core skills records have a `recordType` of `CoreSkillsTraining` and are typically held in a learning managements system (LMS).
+
+        Core skills are a specific type of mandatory training that are common across all NHS organisations,
+        and are generally aligned with the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+
+        Core skills are not always part of the CSTF.
+        For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for Digital Staff Passport.
+
+        This operation returns all training records that are flagged as in scope for DSP, regardless of whether they are part of the CSTF.
       parameters:
-        - name: id
-          in: path
-          description: The employee's primary unique identifier, as used by the source system.
-          required: true
-          example: '12345'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/OrganisationId'
+        - $ref: '#/components/parameters/EmployeeId'
+        - $ref: '#/components/parameters/BearerAuthorization'
       responses:
         '200':
           description: Successful operation.
@@ -211,7 +239,8 @@ paths:
 
             | HTTP status | Error code   | Description |
             | ----------- | ------------ | - |
-            | 404         | not-found    | Employee not found for the given ID. |
+            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
+            | 404         | not-found    | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
           content:
             application/json:
               schema:
@@ -219,6 +248,34 @@ paths:
               example:
                 $ref: components/examples/GetEmployeeRecordsErrorResponse.json              
 components:
+  parameters:
+    BearerAuthorization:
+      in: header
+      name: Authorization
+      description: |
+        The calling system's access token, which must be an OAuth 2.0 bearer token.
+        For details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-signed-jwt).
+      required: false
+      schema:
+        type: string
+        format: '^Bearer\ [[:ascii:]]+$'
+        example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
+    OrganisationId:
+      in: path
+      name: org-id
+      description: The ODS code for the employing organisation.
+      required: true
+      example: 'RHQ'
+      schema:
+        type: string
+    EmployeeId:
+      in: path
+      name: employee-id
+      description: The employee's primary unique identifier, as used by the source system.
+      required: true
+      example: '12345'
+      schema:
+        type: string
   schemas:
     EmployeePersonalDetails:
       type: object
@@ -270,7 +327,7 @@ components:
               - $ref: '#/components/schemas/CoreSkillsTraining'
     CoreSkillsTraining:
       type: object
-      description: A record of a core skill attained by the employee, as per the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+      description: A record of a core skill attained by the employee. In most cases this will be part of the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
       required:
         - recordType
         - competencyFramework
