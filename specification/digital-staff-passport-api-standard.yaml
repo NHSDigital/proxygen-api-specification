@@ -4,7 +4,7 @@ info:
   version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
   description: |
     ## Overview
-    Use this API standard to build an API that Digital Staff Passport (DSP) can use to get NHS employee records from your system.
+    Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to get NHS employee records from your system.
 
     DSP can then allow the employee to pass the information on to their new employer.
 
