@@ -46,7 +46,7 @@ info:
     ## Security and authorisation
     Your API must use OAuth 2.0 'signed JWT' to authenticate and authorise Digital Staff Passport as the calling system.
     
-    For more details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-signed-jwt).
+    For more details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-private-key-jwt).
     
     ## Errors
     We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
@@ -62,7 +62,6 @@ info:
     ## Environments and testing
     You'll need to provide the following environments:
 
-    |---|---|
     | Environment | Suggested base URL |
     |---|---|
     | Integration test | `integration-test.<your domain>/dsp-api` |
@@ -254,7 +253,7 @@ components:
       name: Authorization
       description: |
         The calling system's access token, which must be an OAuth 2.0 bearer token.
-        For details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-signed-jwt).
+        For details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-private-key-jwt).
       required: false
       schema:
         type: string
