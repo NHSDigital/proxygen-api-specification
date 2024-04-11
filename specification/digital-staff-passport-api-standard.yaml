@@ -359,7 +359,7 @@ components:
           type: array
           minItems: 0
           items:
-            - $ref: '#/components/schemas/CoreSkillsTraining'
+            $ref: '#/components/schemas/EmployeeRecord'
     EmployeeRecord:
       oneOf:
         - $ref: '#/components/schemas/CoreSkillsTraining'
