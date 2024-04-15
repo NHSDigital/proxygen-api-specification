@@ -384,10 +384,14 @@ components:
           enum:
             - 'CoreSkillsTraining'
         competencyFramework:
-          description: Training framework.
+          description: |
+            Training framework. One of:
+            * `CSTF` - Core Skills Training Framework
+            * `MAND` - mandatory training outside of CSTF
           type: string
           enum:
            - 'CSTF'
+           - 'MAND'
         statMandSubject:
 # TBC rename to something more readable? YES
           description: |
