@@ -282,9 +282,9 @@ paths:
 
             | HTTP status | Error code   | Description |
             | ----------- | ------------ | - |
+            | 400         | invalid      | Invalid data in request body, for example, missing mandatory field or invalid date format. |
             | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
             | 404         | not-found    | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
-            | TBC         | TBC          | TBC |
           content:
             application/json:
               schema:
