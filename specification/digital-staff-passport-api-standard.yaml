@@ -252,13 +252,21 @@ paths:
       description: |
         This operation adds a data record for a given employee.
 
-        The type of records that can be added depends on the type of system.
+        The type of record that can be added depends on the type of system.
         For example, core skills records can be added to a learning management system.
 
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
         - $ref: '#/components/parameters/EmployeeId'
         - $ref: '#/components/parameters/BearerAuthorization'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeRecord'
+            example:
+              $ref: components/examples/AddEmployeeRecordRequest.json
       responses:
         '201':
           description: Record created.
