@@ -4,7 +4,7 @@ info:
   version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
   description: |
     ## Overview
-    Use this API standard to build an API that Digital Staff Passport (DSP) can use to get NHS employee records from your system.
+    Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to get NHS employee records from your system.
 
     DSP can then allow the employee to pass the information on to their new employer.
 
@@ -44,9 +44,9 @@ info:
     Your API must be available on the internet.
     
     ## Security and authorisation
-    Your API must use OAuth 2.0 'signed JWT' to authenticate and authorise Digital Staff Passport as the calling system.
+    Your API must use OAuth 2.0 'private key JWT' to authenticate and authorise Digital Staff Passport as the calling system.
     
-    For more details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-signed-jwt).
+    For more details, see [Authorisation using OAuth 2.0 private key JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-private-key-jwt).
     
     ## Errors
     We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
@@ -62,7 +62,6 @@ info:
     ## Environments and testing
     You'll need to provide the following environments:
 
-    |---|---|
     | Environment | Suggested base URL |
     |---|---|
     | Integration test | `integration-test.<your domain>/dsp-api` |
@@ -247,6 +246,51 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 $ref: components/examples/GetEmployeeRecordsErrorResponse.json              
+    post:
+      operationId: add-employee-record
+      summary: Add an employee record
+      description: |
+        This operation adds a data record for a given employee.
+
+        The type of record that can be added depends on the type of system.
+        For example, core skills records can be added to a learning management system.
+
+      parameters:
+        - $ref: '#/components/parameters/OrganisationId'
+        - $ref: '#/components/parameters/EmployeeId'
+        - $ref: '#/components/parameters/BearerAuthorization'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeRecord'
+            example:
+              $ref: components/examples/AddEmployeeRecordRequest.json
+      responses:
+        '201':
+          description: Record created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeRecord'
+              example:
+                $ref: components/examples/AddEmployeeRecordHappyPathResponse.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code   | Description |
+            | ----------- | ------------ | - |
+            | 400         | invalid      | Invalid data in request body, for example, missing mandatory field or invalid date format. |
+            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
+            | 404         | not-found    | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: components/examples/AddEmployeeRecordErrorResponse.json
 components:
   parameters:
     BearerAuthorization:
@@ -254,7 +298,7 @@ components:
       name: Authorization
       description: |
         The calling system's access token, which must be an OAuth 2.0 bearer token.
-        For details, see [Authorisation using OAuth 2.0 signed JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-signed-jwt).
+        For details, see [Authorisation using OAuth 2.0 private key JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-private-key-jwt).
       required: false
       schema:
         type: string
@@ -323,8 +367,10 @@ components:
           type: array
           minItems: 0
           items:
-            oneOf:
-              - $ref: '#/components/schemas/CoreSkillsTraining'
+            $ref: '#/components/schemas/EmployeeRecord'
+    EmployeeRecord:
+      oneOf:
+        - $ref: '#/components/schemas/CoreSkillsTraining'
     CoreSkillsTraining:
       type: object
       description: A record of a core skill attained by the employee. In most cases this will be part of the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
@@ -346,10 +392,14 @@ components:
           enum:
             - 'CoreSkillsTraining'
         competencyFramework:
-          description: Training framework.
+          description: |
+            Training framework. One of:
+            * `CSTF` - Core Skills Training Framework
+            * `MAND` - mandatory training outside of CSTF
           type: string
           enum:
            - 'CSTF'
+           - 'MAND'
         statMandSubject:
 # TBC rename to something more readable? YES
           description: |
