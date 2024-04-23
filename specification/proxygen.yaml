@@ -233,6 +233,16 @@ info:
     - `apikey` - used when employing API Key security between the API platform and back-end 'target' servers - this will be added to HTTP requests to the target as the value of the 'apikey' header.
     - `mtls` - used when employing mTLS security between the API platform and back-end 'target' servers - this is a a combination of the client certificate and private key. Adding this secret creates or updates a keystore on the API platform, which is used in a handshake with the target server certificate and verifies that both the client and server certificates have been signed by the same root certificate authority. 
 
+    #### Resources for testing
+
+    For testing deployed proxies we recommend using the [pytest-nhsd-apim python testing package](https://github.com/NHSDigital/pytest-nhsd-apim). This is a pytest plugin that provides a set of fixtures and utilities to help you test your API proxies with simple integration and automatic authentication.
+
+    To use the package you must first export `APIGEE_ACCESS_TOKEN` as an environment variable so that the package can interact with the API platform's underlying functionality.
+
+    You can use proxygen to retrieve this token by calling the [GET /apis/{api_name}/pytest-nhsd-apim-token](#get-apis-api_name-pytest-nhsd-apim-token) endpoint.
+
+    For full detail on how to use the package, see the [pytest-nhsd-apim documentation](https://nhsd-confluence.digital.nhs.uk/display/APM/Test+Utils+2.0%3A+pytest+plugin+for+APIM)
+
     ## OpenAPI specification constraints and extensions
 
     ### Constraints
@@ -502,6 +512,8 @@ x-spec-publication:
       operations:
       - method: GET
         path: '/apis/{api_name}/docker-token'
+      - method: GET
+        path: '/apis/{api_name}/pytest-nhsd-apim-token'
       - method: GET
         path: '/apis/{api_name}/environments'
       - method: GET
@@ -819,6 +831,39 @@ paths:
         ```
 
         If your API was not initially configured with Docker repositories, this endpoint will receive a successful request with an empty object. If you need to set up Docker repositories for working with hosted containers, please reach out to us to update your API.
+  '/apis/{api_name}/pytest-nhsd-apim-token':
+    parameters:
+      - schema:
+          type: string
+        name: api_name
+        in: path
+        required: true
+    get:
+      summary: Get a token for use with the pytest-nhsd-apim python testing package
+      tags:
+        - "Resources"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pytest_nhsd_apim_token:
+                    type: string
+                  expires_in:
+                    type: string
+              examples:
+                pytest-nhsd-apim-token:
+                  value:
+                    pytest_nhsd_apim_token: '**********************'
+                    expires_in: '43199'
+      operationId: get-apis-api_name-pytest-nhsd-apim-token
+      description: |
+        Use to retrieve a token to supply `APIGEE_ACCESS_TOKEN` as an environment variable when using using the [pytest-nhsd-apim python testing package](https://github.com/NHSDigital/pytest-nhsd-apim). This is a pytest plugin that provides a set of fixtures and utilities to help you test your API proxies with simple integration and automatic authentication.
+
+        For full detail on how to use the package, see the [pytest-nhsd-apim documentation](https://nhsd-confluence.digital.nhs.uk/display/APM/Test+Utils+2.0%3A+pytest+plugin+for+APIM)
   '/apis/{api_name}/spec':
     parameters:
       - schema:
