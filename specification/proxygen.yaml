@@ -239,7 +239,7 @@ info:
 
     To use the package you must first export `APIGEE_ACCESS_TOKEN` as an environment variable so that the package can interact with the API platform's underlying functionality.
 
-    You can use proxygen to retrieve this token by calling the [GET /apis/{api_name}/pytest-nhsd-apim-token](#get-apis-api_name-pytest-nhsd-apim-token) endpoint.
+    You can use proxygen to retrieve this token by calling the [GET /apis/{api_name}/pytest-nhsd-apim-token](#get-/apis/-api_name-/pytest-nhsd-apim-token) endpoint.
 
     For full detail on how to use the package, see the [pytest-nhsd-apim documentation](https://nhsd-confluence.digital.nhs.uk/display/APM/Test+Utils+2.0%3A+pytest+plugin+for+APIM)
 
