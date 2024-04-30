@@ -390,7 +390,17 @@ components:
             $ref: '#/components/schemas/EmployeeRecord'
     EmployeeRecord:
       oneOf:
+        - $ref: '#/components/schemas/Identity'
         - $ref: '#/components/schemas/CoreSkillsTraining'
+    Identity:
+      type: object
+      description: TBC.
+      required:
+        - TBC
+      properties:
+        TBC:
+          description: TBC.
+          type: string
     CoreSkillsTraining:
       type: object
       description: A record of a core skill attained by the employee. In most cases this will be part of the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
@@ -400,11 +410,9 @@ components:
         - statMandSubject
         - competencyName
         - subjectLevel
-        - proficiencyLevel
         - attainmentStatus
         - awardingOrganisation
         - dateLastAwarded
-# TBC other required fields?
       properties:
         recordType:
           description: Type of record.
@@ -444,7 +452,6 @@ components:
           type: string
           example: '2'
         renewalPeriodUnits:
-# TBC Make into an object renewalPeriod with two sub-fields amount and unit?
           description: The unit of measure associated with the core skill's renewal period. For example if the core skill renewal period is `2 Years`, this will be `Years`. If the renewal period is `1 Year`, this will be `Year` (singular).
           type: string
           example: 'Years'
