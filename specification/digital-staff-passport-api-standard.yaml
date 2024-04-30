@@ -15,7 +15,7 @@ info:
     The standard currently does not include:
     - support for 'pagination' of search results in the event of there being more than 50 matching employees
 
-    The standard currently supports the following information types:
+    The standard currently supports the following types of information:
     - core skills
     - identity
     - right to work
@@ -25,22 +25,22 @@ info:
 
     ## How this API standard works
     DSP needs to interact with a variety of external systems, to send and receive a variety of information.
-    This API standard provides a common integration approach regardless of the type of external system, as explained below
+    This API standard provides a common approach regardless of the type of external system, as explained below.
 
     ### Employee linking
-    Before DSP can send or receive information to or from an external system, it needs to 'link' the employee record by discovering the external's unique identifier for that employee.
+    Before DSP can exchange information with an external system, it needs to 'link' the employee record using the external systems's unique identifier for that employee.
 
     There are two ways DSP can do this:
-    - if the DSP user knows the employee's ID, DSP can use the [Get employee personal details](#get-/organisations/-org-id-/employees/-employee-id-) operation to allow the user to check it's the right ID
-    - if the DSP user doesn't know the employee's ID, DSP can use the [Search for an employee](#get-/organisations/-org-id-/employees) operation to find the ID based on employee details such as name and date of birth
+    - if the DSP user knows the employee's external system ID, DSP can use the [Get employee personal details](#get-/organisations/-org-id-/employees/-employee-id-) operation to allow the user to check it's the right ID
+    - if the DSP user doesn't know the employee's external system ID, DSP can use the [Search for an employee](#get-/organisations/-org-id-/employees) operation to find the ID based on employee details such as name and date of birth
 
     ### Getting employee information
-    Given the employee's ID, DSP can get information from the external system using the [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation.
+    Given the employee's external system ID, DSP can get information from the external system using the [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation.
 
     The type of information returned depends on the type of system. For example, a learning management system would return core skills records.
     
     ### Sending employee information
-    Given the employee's ID, DSP can send information to the external system using the [Add an employee record](#post-/organisations/-org-id-/employees/-employee-id-/records) operation.
+    Given the employee's external system ID, DSP can send information to the external system using the [Add an employee record](#post-/organisations/-org-id-/employees/-employee-id-/records) operation.
 
     The type of information sent depends on the type of system. For example, DSP might send identity information to a recruitment system in order to support varioius employment checks.
     
