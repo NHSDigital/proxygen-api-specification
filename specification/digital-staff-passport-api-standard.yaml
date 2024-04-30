@@ -417,23 +417,27 @@ components:
           enum:
             - 'RightToWork'
         legalFirstName:
-          description: TBC
+          description: The employee's legal first name, as it appears on their identity document.
           type: string
         middleNames:
-          description: TBC
+          description: The employee's middle names, as they appear on their identity document.
           type: string
         legalSurname:
-          description: TBC
+          description: The employee's legal surname, as it appears on their identity document.
           type: string
         birthDate:
-          description: TBC
+          description: The employee's date of birth, in the format `yyyy-mm-dd`.
           type: string
         biometricPageImage:
-          description: TBC
+          description: An image of the biometric page of the employee's identity document.
           type: string
+# TBC encoding - presume base64
+# TBC image type - JPG? PNG?
         photograph:
-          description: TBC
+          description: A photograph of the employee, as it appears on their identity document.
           type: string
+# TBC encoding - presume base64
+# TBC image type - JPG? PNG?
         identityVerified:
           description: TBC
           type: string
@@ -441,7 +445,7 @@ components:
           description: TBC
           type: string
         dateOfIdCheck:
-          description: TBC
+          description: The date the ID check was performed, in the format `yyyy-mm-dd`.
           type: string
         GPG45profile:
           description: TBC
