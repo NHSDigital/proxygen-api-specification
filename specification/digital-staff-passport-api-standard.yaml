@@ -4,29 +4,49 @@ info:
   version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
   description: |
     ## Overview
-    Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to get NHS employee records from your system.
+    Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to interact with your system.
 
-    DSP can then allow the employee to pass the information on to their new employer.
-
-    The standard includes:
-    - searching for an employee in the source system
-    - getting employee records from the source system
+    The standard includes the following operations:
+    - searching for an employee in the external system
+    - getting an employee's personal details from the external system
+    - getting employee information from the external system
+    - sending employee information to the external system
 
     The standard currently does not include:
-    - details of how security will work
-    - details of the required service level for the source system
-    - support for multiple organisations - it assumes the source system only holds data for a single NHS organisation
     - support for 'pagination' of search results in the event of there being more than 50 matching employees
-    - the ability to update employee records in the source system
+
+    The standard currently supports the following information types:
+    - core skills
+    - identity
+    - right to work
     
     ## Who can use this API standard
     You can only use this API standard if you are integrating your system with Digital Staff Passport.
 
+    ## How this API standard works
+    DSP needs to interact with a variety of external systems, to send and receive a variety of information.
+    This API standard provides a common integration approach regardless of the type of external system, as explained below
+
+    ### Employee linking
+    Before DSP can send or receive information to or from an external system, it needs to 'link' the employee record by discovering the external's unique identifier for that employee.
+
+    There are two ways DSP can do this:
+    - if the DSP user knows the employee's ID, DSP can use the [Get employee personal details](#get-/organisations/-org-id-/employees/-employee-id-) operation to allow the user to check it's the right ID
+    - if the DSP user doesn't know the employee's ID, DSP can use the [Search for an employee](#get-/organisations/-org-id-/employees) operation to find the ID based on employee details such as name and date of birth
+
+    ### Getting employee information
+    Given the employee's ID, DSP can get information from the external system using the [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation.
+
+    The type of information returned depends on the type of system. For example, a learning management system would return core skills records.
+    
+    ### Sending employee information
+    Given the employee's ID, DSP can send information to the external system using the [Add an employee record](#post-/organisations/-org-id-/employees/-employee-id-/records) operation.
+
+    The type of information sent depends on the type of system. For example, DSP might send identity information to a recruitment system in order to support varioius employment checks.
+    
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
     meaning it is under development and might be subject to breaking changes.
-
-    We are currently running a pilot with one external system and iterating the standard as we proceed.
 
     ## Service level
     Your API must be a bronze service, meaning it is operational and supported during business hours.
