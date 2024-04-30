@@ -391,15 +391,60 @@ components:
     EmployeeRecord:
       oneOf:
         - $ref: '#/components/schemas/Identity'
+        - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/CoreSkillsTraining'
     Identity:
       type: object
       description: TBC.
       required:
-        - TBC
+        - recordType
       properties:
-        TBC:
-          description: TBC.
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'Identity'
+    RightToWork:
+      type: object
+      description: TBC.
+      required:
+        - recordType
+# TBC other required fields        
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'RightToWork'
+        legalFirstName:
+          description: TBC
+          type: string
+        middleNames:
+          description: TBC
+          type: string
+        legalSurname:
+          description: TBC
+          type: string
+        birthDate:
+          description: TBC
+          type: string
+        biometricPageImage:
+          description: TBC
+          type: string
+        photograph:
+          description: TBC
+          type: string
+        identityVerified:
+          description: TBC
+          type: string
+        evidenceCheckedBy:
+          description: TBC
+          type: string
+        dateOfIdCheck:
+          description: TBC
+          type: string
+        GPG45profile:
+          description: TBC
           type: string
     CoreSkillsTraining:
       type: object
