@@ -436,7 +436,7 @@ components:
         subjectLevel:
           description: |
             Subject level as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
-            If the core skill has no subject level, it defailts to `1`.
+            If the core skill has no subject level, it defaults to `1`.
           type: string
           example: '2'
         renewalPeriodNumber:
