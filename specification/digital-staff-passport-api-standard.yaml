@@ -4,29 +4,49 @@ info:
   version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
   description: |
     ## Overview
-    Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to get NHS employee records from your system.
+    Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to interact with your system.
 
-    DSP can then allow the employee to pass the information on to their new employer.
-
-    The standard includes:
-    - searching for an employee in the source system
-    - getting employee records from the source system
+    The standard includes the following operations:
+    - search for an employee
+    - get an employee's personal details
+    - get employee information
+    - send employee information
 
     The standard currently does not include:
-    - details of how security will work
-    - details of the required service level for the source system
-    - support for multiple organisations - it assumes the source system only holds data for a single NHS organisation
     - support for 'pagination' of search results in the event of there being more than 50 matching employees
-    - the ability to update employee records in the source system
+
+    The standard currently supports the following types of information:
+    - core skills
+    - right to work check
+    - DBS check
     
     ## Who can use this API standard
     You can only use this API standard if you are integrating your system with Digital Staff Passport.
 
+    ## How this API standard works
+    DSP needs to interact with a variety of external systems, to send and receive a variety of information.
+    This API standard provides a common approach regardless of the type of external system, as explained below.
+
+    ### Employee linking
+    Before DSP can exchange information with an external system, it needs to 'link' the employee record using the external systems's unique identifier for that employee.
+
+    There are two ways DSP can do this:
+    - if the DSP user knows the employee's external system ID, DSP can use the [Get employee personal details](#get-/organisations/-org-id-/employees/-employee-id-) operation to allow the user to check it's the right ID
+    - if the DSP user doesn't know the employee's external system ID, DSP can use the [Search for an employee](#get-/organisations/-org-id-/employees) operation to find the ID based on employee details such as name and date of birth
+
+    ### Getting employee information
+    Given the employee's external system ID, DSP can get information from the external system using the [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation.
+
+    The type of information returned depends on the type of system. For example, a learning management system would return core skills records.
+    
+    ### Sending employee information
+    Given the employee's external system ID, DSP can send information to the external system using the [Add an employee record](#post-/organisations/-org-id-/employees/-employee-id-/records) operation.
+
+    The type of information sent depends on the type of system. For example, DSP might send identity information to a recruitment system in order to support varioius employment checks.
+    
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
     meaning it is under development and might be subject to breaking changes.
-
-    We are currently running a pilot with one external system and iterating the standard as we proceed.
 
     ## Service level
     Your API must be a bronze service, meaning it is operational and supported during business hours.
@@ -130,7 +150,7 @@ paths:
             type: string
         - name: birthDate
           in: query
-          description: The employee's date of birth, in the format `yyyy-mm-dd`.
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
           required: false
           example: '1998-10-22'
           schema:
@@ -148,7 +168,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/EmployeePersonalDetails'
               example:
-                $ref: components/examples/SearchForAnEmployeeHappyPathResponse.json
+                $ref: components/examples/SearchForAnEmployeeResponseSuccess.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -163,7 +183,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                $ref: components/examples/SearchForAnEmployeeErrorResponse.json              
+                $ref: components/examples/SearchForAnEmployeeResponseError.json              
   /organisations/{org-id}/employees/{employee-id}:
     get:
       operationId: get-employee-personal-details
@@ -183,7 +203,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeePersonalDetails'
               example:
-                $ref: components/examples/GetEmployeePersonalDetailsHappyPathResponse.json
+                $ref: components/examples/GetEmployeePersonalDetailsResponseSuccess.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -197,7 +217,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                $ref: components/examples/GetEmployeePersonalDetailsErrorResponse.json              
+                $ref: components/examples/GetEmployeePersonalDetailsResponseError.json              
   /organisations/{org-id}/employees/{employee-id}/records:
     get:
       operationId: get-employee-records
@@ -231,7 +251,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeRecords'
               example:
-                $ref: components/examples/GetEmployeeRecordsHappyPathResponse.json
+                $ref: components/examples/GetEmployeeRecordsResponseSuccess.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -245,7 +265,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                $ref: components/examples/GetEmployeeRecordsErrorResponse.json              
+                $ref: components/examples/GetEmployeeRecordsResponseError.json              
     post:
       operationId: add-employee-record
       summary: Add an employee record
@@ -265,8 +285,19 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EmployeeRecord'
-            example:
-              $ref: components/examples/AddEmployeeRecordRequest.json
+            examples:
+              right-to-work:
+                summary: Add a right to work record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestRightToWork.json
+              dbs-check-supporting-information:
+                summary: Add a DBS check supporting information record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestDBS.json
+              core-skills:
+                summary: Add a core skills record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestCoreSkillsTraining.json
       responses:
         '201':
           description: Record created.
@@ -274,8 +305,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EmployeeRecord'
-              example:
-                $ref: components/examples/AddEmployeeRecordHappyPathResponse.json
+              examples:
+                right-to-work:
+                  summary: Right to work record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseRightToWork.json
+                dbs-check-supporting-information:
+                  summary: DBS check supporting information record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseDBS.json
+                core-skills:
+                  summary: Core skills record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseCoreSkillsTraining.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -290,7 +332,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                $ref: components/examples/AddEmployeeRecordErrorResponse.json
+                $ref: components/examples/AddEmployeeRecordResponseError.json
 components:
   parameters:
     BearerAuthorization:
@@ -341,7 +383,7 @@ components:
           type: string
           example: 'Smith'
         birthDate:
-          description: The employee's date of birth, in the format `yyyy-mm-dd`.
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
           type: string
           example: '1998-10-22'
         email:
@@ -370,7 +412,114 @@ components:
             $ref: '#/components/schemas/EmployeeRecord'
     EmployeeRecord:
       oneOf:
+        - $ref: '#/components/schemas/RightToWork'
+        - $ref: '#/components/schemas/DBSCheckSupportingInformation'
         - $ref: '#/components/schemas/CoreSkillsTraining'
+    RightToWork:
+      type: object
+      description: Identity information to support a right to work check, as obtained and verified by an Identity Service Provider.
+      required:
+        - recordType
+        - legalFirstName
+        - legalSurname
+        - birthDate
+        - biometricPageImage
+        - photograph
+        - identityVerified
+        - evidenceCheckedBy
+        - dateOfIdCheck
+        - GPG45profile
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'RightToWork'
+        legalFirstName:
+          description: The employee's legal first name, as it appears on their identity document.
+          type: string
+        middleNames:
+          description: The employee's middle names, as they appear on their identity document.
+          type: string
+        legalSurname:
+          description: The employee's legal surname, as it appears on their identity document.
+          type: string
+        birthDate:
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
+          type: string
+        biometricPageImage:
+          description: An image of the biometric page of the employee's identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
+          type: string
+        photograph:
+          description: A photograph of the employee, as it appears on their identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
+          type: string
+        identityVerified:
+          description: Whether the employee's identity has been verified - always `true`.
+          type: boolean
+        evidenceCheckedBy:
+          description: Organisation that performed the identity check.
+          type: string
+        dateOfIdCheck:
+          description: The date the ID check was performed, in the format `YYYY-MM-DD`.
+          type: string
+        GPG45profile:
+          description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
+          type: string
+    DBSCheckSupportingInformation:
+      type: object
+      description: Identity information to support a DBS check, as obtained and verified by an Identity Service Provider.
+      required:
+        - recordType
+        - legalFirstName
+        - legalSurname
+        - birthDate
+        - currentAddress
+        - currentAddressVerified
+        - dateOfAddressCheck
+        - identityVerified
+        - evidenceCheckedBy
+        - GPG45profile
+        - subjectId
+# TBC other required fields        
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'DBSCheckInformation'
+        legalFirstName:
+          description: The employee's legal first name, as it appears on their identity document.
+          type: string
+        middleNames:
+          description: The employee's middle names, as they appear on their identity document.
+          type: string
+        legalSurname:
+          description: The employee's legal surname, as it appears on their identity document.
+          type: string
+        birthDate:
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
+          type: string
+        currentAddress:
+          description: The employee's current address, as it appears on their identity document.
+          type: string
+        currentAddressVerified:
+          description: Whether the employee's current address has been verified by the IDSP. Alwats `true`.
+          type: boolean
+        dateOfAddressCheck:
+          description: Date the address check was done, in the format `YYYY-MM-DD`.
+          type: string
+        identityVerified:
+          description: Whether the employee's identity has been verified - always `true`.
+          type: boolean
+        evidenceCheckedBy:
+          description: Organisation that performed the identity check.
+          type: string
+        GPG45profile:
+          description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
+          type: string
+        subjectId:
+          description: Unique identifier for the identity check as shared between DSP and the IDSP. Generally expressed as a GUID.
+          type: string
     CoreSkillsTraining:
       type: object
       description: A record of a core skill attained by the employee. In most cases this will be part of the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
@@ -380,11 +529,9 @@ components:
         - statMandSubject
         - competencyName
         - subjectLevel
-        - proficiencyLevel
         - attainmentStatus
         - awardingOrganisation
         - dateLastAwarded
-# TBC other required fields?
       properties:
         recordType:
           description: Type of record.
@@ -416,7 +563,7 @@ components:
         subjectLevel:
           description: |
             Subject level as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
-            If the core skill has no subject level, it defailts to `1`.
+            If the core skill has no subject level, it defaults to `1`.
           type: string
           example: '2'
         renewalPeriodNumber:
@@ -424,7 +571,6 @@ components:
           type: string
           example: '2'
         renewalPeriodUnits:
-# TBC Make into an object renewalPeriod with two sub-fields amount and unit?
           description: The unit of measure associated with the core skill's renewal period. For example if the core skill renewal period is `2 Years`, this will be `Years`. If the renewal period is `1 Year`, this will be `Year` (singular).
           type: string
           example: 'Years'
@@ -449,11 +595,11 @@ components:
           type: string
           example: RHQ
         dateLastAwarded:
-          description: The date when the core skill was most recently awarded, in the format `yyyy-mm-dd`.
+          description: The date when the core skill was most recently awarded, in the format `YYYY-MM-DD`.
           type: string
           example: '2023-11-01'
         dateTo:
-          description: The date when the core skill expires, if appropriate, in the format `yyyy-mm-dd`.
+          description: The date when the core skill expires, if appropriate, in the format `YYYY-MM-DD`.
           type: string
           example: '2024-10-31'
     Error:
@@ -498,4 +644,4 @@ components:
                   text:
                     description: A text description of the error or warning.
                     type: string
-                    example: 'Invalid format for birthDate query parameter - must be yyyy-mm-dd.'
+                    example: 'Invalid format for birthDate query parameter - must be YYYY-MM-DD.'
