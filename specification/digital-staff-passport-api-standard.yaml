@@ -7,10 +7,10 @@ info:
     Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to interact with your system.
 
     The standard includes the following operations:
-    - searching for an employee in the external system
-    - getting an employee's personal details from the external system
-    - getting employee information from the external system
-    - sending employee information to the external system
+    - search for an employee
+    - get an employee's personal details
+    - get employee information
+    - send employee information
 
     The standard currently does not include:
     - support for 'pagination' of search results in the event of there being more than 50 matching employees
@@ -287,11 +287,11 @@ paths:
               $ref: '#/components/schemas/EmployeeRecord'
             examples:
               right-to-work:
-                summary: Adding a right to work record
+                summary: Add a right to work record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestRightToWork.json
               core-skills:
-                summary: Adding a core skills record
+                summary: Add a core skills record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestCoreSkillsTraining.json
       responses:
@@ -303,11 +303,11 @@ paths:
                 $ref: '#/components/schemas/EmployeeRecord'
               examples:
                 right-to-work:
-                  summary: Adding a right to work record
+                  summary: Right to work record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseRightToWork.json
                 core-skills:
-                  summary: Adding a core skills record
+                  summary: Core skills record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseCoreSkillsTraining.json
         '4XX':
