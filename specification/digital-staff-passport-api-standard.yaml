@@ -17,8 +17,8 @@ info:
 
     The standard currently supports the following types of information:
     - core skills
-    - identity
-    - right to work
+    - right to work check
+    - DBS check
     
     ## Who can use this API standard
     You can only use this API standard if you are integrating your system with Digital Staff Passport.
@@ -375,7 +375,7 @@ components:
           type: string
           example: 'Smith'
         birthDate:
-          description: The employee's date of birth, in the format `yyyy-mm-dd`.
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
           type: string
           example: '1998-10-22'
         email:
@@ -449,16 +449,16 @@ components:
           description: A photograph of the employee, as it appears on their identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
           type: string
         identityVerified:
-          description: TBC
-          type: string
+          description: Whether the employee's identity has been verified - always `true`.
+          type: boolean
         evidenceCheckedBy:
-          description: TBC
+          description: Organisation that performed the identity check.
           type: string
         dateOfIdCheck:
-          description: The date the ID check was performed, in the format `yyyy-mm-dd`.
+          description: The date the ID check was performed, in the format `YYYY-MM-DD`.
           type: string
         GPG45profile:
-          description: TBC
+          description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
           type: string
     CoreSkillsTraining:
       type: object
