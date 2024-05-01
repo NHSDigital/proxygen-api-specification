@@ -1,0 +1,14 @@
+{
+    "recordType": "DBSCheckSupportingInformation",
+    "legalFirstName": "Jane",
+    "middleNames": "Annabel",
+    "legalSurname": "Smith",
+    "birthDate": "1998-10-22",
+    "currentAddress": "1 Trevelyan Square\nBoar Lane\nCity Centre\nLeeds\nWest Yorkshire\nLS1 6AE",
+    "currentAddressVerified": "true",
+    "dateOfAddressCheck": "2024-05-01",
+    "identityVerified": "true",
+    "evidenceCheckedBy": "Yoti Ltd",
+    "GPG45profile": "H1A",
+    "subjectId": "434c9ed9-2210-4727-8df7-10222b36a789"
+}
