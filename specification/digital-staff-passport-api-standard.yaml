@@ -491,13 +491,13 @@ components:
           type: string
         currentAddress:
           description: TBC
-          type: TBC
+          type: string
         currentAddressVerified:
           description: TBC
-          type: TBC
+          type: boolean
         dateOfAddressCheck:
           description: TBC
-          type: TBC
+          type: string
         identityVerified:
           description: Whether the employee's identity has been verified - always `true`.
           type: boolean
@@ -509,7 +509,7 @@ components:
           type: string
         subjectId:
           description: TBC
-          type: TBC
+          type: string
     CoreSkillsTraining:
       type: object
       description: A record of a core skill attained by the employee. In most cases this will be part of the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
