@@ -290,6 +290,10 @@ paths:
                 summary: Add a right to work record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestRightToWork.json
+              dbs-check-supporting-information:
+                summary: Add a DBS check supporting information record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestDBS.json
               core-skills:
                 summary: Add a core skills record
                 value:
@@ -306,6 +310,10 @@ paths:
                   summary: Right to work record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseRightToWork.json
+                dbs-check-supporting-information:
+                  summary: DBS check supporting information record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseDBS.json
                 core-skills:
                   summary: Core skills record added
                   value:
@@ -404,26 +412,23 @@ components:
             $ref: '#/components/schemas/EmployeeRecord'
     EmployeeRecord:
       oneOf:
-        - $ref: '#/components/schemas/Identity'
         - $ref: '#/components/schemas/RightToWork'
+        - $ref: '#/components/schemas/DBSCheckInformation'
         - $ref: '#/components/schemas/CoreSkillsTraining'
-    Identity:
-      type: object
-      description: TBC.
-      required:
-        - recordType
-      properties:
-        recordType:
-          description: Type of record.
-          type: string
-          enum:
-            - 'Identity'
     RightToWork:
       type: object
-      description: TBC.
+      description: Identity information to support a right to work check, as obtained and verified by an Identity Service Provider.
       required:
         - recordType
-# TBC other required fields        
+        - legalFirstName
+        - legalSurname
+        - birthDate
+        - biometricPageImage
+        - photograph
+        - identityVerified
+        - evidenceCheckedBy
+        - dateOfIdCheck
+        - GPG45profile
       properties:
         recordType:
           description: Type of record.
@@ -460,6 +465,51 @@ components:
         GPG45profile:
           description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
           type: string
+    DBSCheckSupportingInformation:
+      type: object
+      description: Identity information to support a DBS check, as obtained and verified by an Identity Service Provider.
+      required:
+        - recordType
+# TBC other required fields        
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'DBSCheckInformation'
+        legalFirstName:
+          description: The employee's legal first name, as it appears on their identity document.
+          type: string
+        middleNames:
+          description: The employee's middle names, as they appear on their identity document.
+          type: string
+        legalSurname:
+          description: The employee's legal surname, as it appears on their identity document.
+          type: string
+        birthDate:
+          description: The employee's date of birth, in the format `yyyy-mm-dd`.
+          type: string
+        currentAddress:
+          description: TBC
+          type: TBC
+        currentAddressVerified:
+          description: TBC
+          type: TBC
+        dateOfAddressCheck:
+          description: TBC
+          type: TBC
+        identityVerified:
+          description: Whether the employee's identity has been verified - always `true`.
+          type: boolean
+        evidenceCheckedBy:
+          description: Organisation that performed the identity check.
+          type: string
+        GPG45profile:
+          description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
+          type: string
+        subjectId:
+          description: TBC
+          type: TBC
     CoreSkillsTraining:
       type: object
       description: A record of a core skill attained by the employee. In most cases this will be part of the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
