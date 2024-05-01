@@ -150,7 +150,7 @@ paths:
             type: string
         - name: birthDate
           in: query
-          description: The employee's date of birth, in the format `yyyy-mm-dd`.
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
           required: false
           example: '1998-10-22'
           schema:
@@ -445,7 +445,7 @@ components:
           description: The employee's legal surname, as it appears on their identity document.
           type: string
         birthDate:
-          description: The employee's date of birth, in the format `yyyy-mm-dd`.
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
           type: string
         biometricPageImage:
           description: An image of the biometric page of the employee's identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
@@ -470,6 +470,16 @@ components:
       description: Identity information to support a DBS check, as obtained and verified by an Identity Service Provider.
       required:
         - recordType
+        - legalFirstName
+        - legalSurname
+        - birthDate
+        - currentAddress
+        - currentAddressVerified
+        - dateOfAddressCheck
+        - identityVerified
+        - evidenceCheckedBy
+        - GPG45profile
+        - subjectId
 # TBC other required fields        
       properties:
         recordType:
@@ -487,16 +497,16 @@ components:
           description: The employee's legal surname, as it appears on their identity document.
           type: string
         birthDate:
-          description: The employee's date of birth, in the format `yyyy-mm-dd`.
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
           type: string
         currentAddress:
-          description: TBC
+          description: The employee's current address, as it appears on their identity document.
           type: string
         currentAddressVerified:
-          description: TBC
+          description: Whether the employee's current address has been verified by the IDSP. Alwats `true`.
           type: boolean
         dateOfAddressCheck:
-          description: TBC
+          description: Date the address check was done, in the format `YYYY-MM-DD`.
           type: string
         identityVerified:
           description: Whether the employee's identity has been verified - always `true`.
@@ -508,7 +518,7 @@ components:
           description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
           type: string
         subjectId:
-          description: TBC
+          description: Unique identifier for the identity check as shared between DSP and the IDSP. Generally expressed as a GUID.
           type: string
     CoreSkillsTraining:
       type: object
@@ -585,11 +595,11 @@ components:
           type: string
           example: RHQ
         dateLastAwarded:
-          description: The date when the core skill was most recently awarded, in the format `yyyy-mm-dd`.
+          description: The date when the core skill was most recently awarded, in the format `YYYY-MM-DD`.
           type: string
           example: '2023-11-01'
         dateTo:
-          description: The date when the core skill expires, if appropriate, in the format `yyyy-mm-dd`.
+          description: The date when the core skill expires, if appropriate, in the format `YYYY-MM-DD`.
           type: string
           example: '2024-10-31'
     Error:
@@ -634,4 +644,4 @@ components:
                   text:
                     description: A text description of the error or warning.
                     type: string
-                    example: 'Invalid format for birthDate query parameter - must be yyyy-mm-dd.'
+                    example: 'Invalid format for birthDate query parameter - must be YYYY-MM-DD.'
