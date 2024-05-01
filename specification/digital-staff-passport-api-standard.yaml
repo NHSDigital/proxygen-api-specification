@@ -413,7 +413,7 @@ components:
     EmployeeRecord:
       oneOf:
         - $ref: '#/components/schemas/RightToWork'
-        - $ref: '#/components/schemas/DBSCheckInformation'
+        - $ref: '#/components/schemas/DBSCheckSupportingInformation'
         - $ref: '#/components/schemas/CoreSkillsTraining'
     RightToWork:
       type: object
