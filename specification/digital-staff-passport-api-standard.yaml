@@ -6,13 +6,13 @@ info:
     ## Overview
     Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to interact with your system.
 
-    The standard supports the following use cases and external system types:
+    The standard currently supports the following use cases:
 
     | Use case                              | External system type       |
     | ------------------------------------- | -------------------------- |
-    | get core skills                       | Learning management system |
-    | send core skills                      | Learning management system |
-    | Send right to work check information  | Recruitment system         |
+    | Get core skills                       | Learning management system |
+    | Send core skills                      | Learning management system |
+    | Send right to work information        | Recruitment system         |
     | Send DBS check supporting information | Recruitment system         |
     
     The standard currently does not include:
@@ -72,7 +72,7 @@ info:
     To help with this, mappings for the various data fields are included in the
     [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
 
-    ### Right to work check information
+    ### Right to work information
     [Right to work checks](https://www.nhsemployers.org/publications/right-work-checks-standard) must be performed by all NHS employers.
 
     These checks are normally managed in a recruitment system.
@@ -454,10 +454,10 @@ components:
           minItems: 0
           items:
             $ref: '#/components/schemas/EmployeeRecordGet'
-    EmployeeRecordPost:
+    EmployeeRecordGet:
       oneOf:
         - $ref: '#/components/schemas/CoreSkillsTraining'
-    EmployeeRecordGet:
+    EmployeeRecordPost:
       oneOf:
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
@@ -550,7 +550,7 @@ components:
           description: The employee's current address, as it appears on their identity document.
           type: string
         currentAddressVerified:
-          description: Whether the employee's current address has been verified by the IDSP. Alwats `true`.
+          description: Whether the employee's current address has been verified by the IDSP. Always `true`.
           type: boolean
         dateOfAddressCheck:
           description: Date the address check was done, in the format `YYYY-MM-DD`.
