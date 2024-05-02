@@ -8,19 +8,19 @@ info:
 
     The standard supports the following use cases and external system types:
 
-    | Use case | External system type |
-    | get core skills | Learning management system |
-    | send core skills | Learning management system |
-    | Send right to work check information | Recruitment system |
-    | Send DBS check supporting information | Recruitment system |
+    | Use case                              | External system type       |
+    | ------------------------------------- | -------------------------- |
+    | get core skills                       | Learning management system |
+    | send core skills                      | Learning management system |
+    | Send right to work check information  | Recruitment system         |
+    | Send DBS check supporting information | Recruitment system         |
     
     The standard currently does not include:
     - support for 'pagination' of search results in the event of there being more than 50 matching employees
 
-    For more context, see [Integrating with the Digital Staf Passport](https://digital.nhs.uk/services/digital-staff-passport/integration).
-    Specifically, this API standard relates to:
-    - [integration pattern 2: outbound - via online portal](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
-    - [integration pattern 4: inbound - via online portal](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-4-inbound-via-online-portal)
+    For more context, see [Integrating with the Digital Staf Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
+    - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
+    - [integration pattern 4](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-4-inbound-via-online-portal)
 
     ## Who can use this API standard
     You can only use this API standard if you are integrating your system with Digital Staff Passport.
@@ -59,7 +59,7 @@ info:
     They generally represent skills that have a [nationally-defined framework](https://www.skillsforhealth.org.uk/resources/category/capabilities-frameworks/)
     such as the [Dementia skills framework](https://www.skillsforhealth.org.uk/resources/dementia-2015-updated-2018/).
 
-    For the avoidance of doubt, there is a full list of the core skills in scope for Digital Staff Passport in the
+    For the avoidance of doubt, a full list of the core skills in scope for Digital Staff Passport is provided in the
     [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
     
     Core skills records are typically held in a learning managements system (LMS).
@@ -67,7 +67,7 @@ info:
     - DSP getting core skills from an LMS
     - DSP sending core skills to an LMS
 
-    When sending and receiving core skills records, LMSs should follow the
+    When sending and receiving core skills records, LMSs must follow the
     [standard naming conventions for CSTF core skills](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
     To help with this, mappings for the various data fields are included in the
     [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
@@ -328,7 +328,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EmployeeRecord'
+              $ref: '#/components/schemas/EmployeeRecordPost'
             examples:
               right-to-work:
                 summary: Add a right to work record
@@ -348,7 +348,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmployeeRecord'
+                $ref: '#/components/schemas/EmployeeRecordPost'
               examples:
                 right-to-work:
                   summary: Right to work record added
@@ -453,8 +453,11 @@ components:
           type: array
           minItems: 0
           items:
-            $ref: '#/components/schemas/EmployeeRecord'
-    EmployeeRecord:
+            $ref: '#/components/schemas/EmployeeRecordGet'
+    EmployeeRecordPost:
+      oneOf:
+        - $ref: '#/components/schemas/CoreSkillsTraining'
+    EmployeeRecordGet:
       oneOf:
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
