@@ -6,12 +6,14 @@ info:
     ## Overview
     Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to interact with your system.
 
-    The standard supports the following use cases:
-    - get core skills (from a learning management system)
-    - send core skills (to a learning management system)
-    - send right to work check information (to a recruitment system, for example)
-    - send DBS check supporting information (to a recruitment system, for example)
+    The standard supports the following use cases and external system types:
 
+    | Use case | External system type |
+    | get core skills | Learning management system |
+    | send core skills | Learning management system |
+    | Send right to work check information | Recruitment system |
+    | Send DBS check supporting information | Recruitment system |
+    
     The standard currently does not include:
     - support for 'pagination' of search results in the event of there being more than 50 matching employees
 
@@ -38,7 +40,39 @@ info:
     Given the employee's external system ID, DSP can send information to the external system using the [Add an employee record](#post-/organisations/-org-id-/employees/-employee-id-/records) operation.
 
     The type of information sent depends on the type of system. For example, DSP might send identity information to a recruitment system in order to support varioius employment checks.
-    
+
+    ## Employee record types
+
+    ### Core skills
+    Core skills are a specific type of mandatory training that are common across all NHS organisations,
+    and are generally aligned with the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+
+    Core skills are not always part of the CSTF.
+    For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for Digital Staff Passport.
+
+    Core skills records are typically held in a learning managements system (LMS).
+    This API standard supports:
+    - DSP getting core skills from an LMS
+    - DSP sending core skills to an LMS
+
+    ### Right to work check information
+    [Right to work checks](https://www.nhsemployers.org/publications/right-work-checks-standard) must be performed by all NHS employers.
+
+    These checks are normally managed in a recruitment system.
+
+    If the employee has completed digital identity verification via Digital Staff Passport, this information can be used to support the right to work check.
+
+    Hence this API standard supports Digital Staff Passport sending right to work check information to a recruitment system.
+
+    ### DBS check supporting information
+    [Criminal record (DBS) checks](https://www.nhsemployers.org/publications/criminal-record-checks-standard) must be performed by all NHS employers.
+
+    These checks are normally managed in a recruitment system.
+
+    If the employee has completed digital identity verification via Digital Staff Passport, this information can be used to support the DBS check.
+
+    Hence this API standard supports Digital Staff Passport sending DBS check supporting information to a recruitment system.
+
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
     meaning it is under development and might be subject to breaking changes.
@@ -221,19 +255,12 @@ paths:
         ### Overview
         This operation returns a list of all data records available for a given employee.
 
-        The type of records returned depends on the type of system.
-        For example, a learning management system would return core skills records.
-
-        ### Core skills
-        Core skills records have a `recordType` of `CoreSkillsTraining` and are typically held in a learning managements system (LMS).
-
-        Core skills are a specific type of mandatory training that are common across all NHS organisations,
-        and are generally aligned with the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
-
-        Core skills are not always part of the CSTF.
-        For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for Digital Staff Passport.
-
-        This operation returns all training records that are flagged as in scope for DSP, regardless of whether they are part of the CSTF.
+        It supports the following record and external system types:
+        
+        | Record type | External system type       |
+        | ----------- | -------------------------- |
+        | Core skills | Learning management system |
+        
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
         - $ref: '#/components/parameters/EmployeeId'
@@ -267,8 +294,13 @@ paths:
       description: |
         This operation adds a data record for a given employee.
 
-        The type of record that can be added depends on the type of system.
-        For example, core skills records can be added to a learning management system.
+        It supports the following record and external system types:
+        
+        | Record type                      | External system type       |
+        | -------------------------------- | -------------------------- |
+        | Core skills                      | Learning management system |
+        | Right to work check information  | Recruitment system         |
+        | DBS check supporting information | Recruitment system         |
 
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
