@@ -472,6 +472,7 @@ components:
         - birthDate
         - biometricPageImage
         - photograph
+        - passportExpiryDate
         - identityVerified
         - evidenceCheckedBy
         - dateOfIdCheck
@@ -499,6 +500,9 @@ components:
           type: string
         photograph:
           description: A photograph of the employee, as it appears on their identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
+          type: string
+        passportExpiryDate:
+          description: Passport expiry date, in the format `YYYY-MM-DD`.
           type: string
         identityVerified:
           description: Whether the employee's identity has been verified - always `true`.
@@ -564,8 +568,38 @@ components:
         GPG45profile:
           description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
           type: string
+        GPG44level:
+          description: TBC
+          type: string
         subjectId:
           description: Unique identifier for the identity check as shared between DSP and the IDSP. Generally expressed as a GUID.
+          type: string
+        passportNumber:
+          description: Passport number
+          type: string
+        passportBirthDate:
+          description: Employee's date of birth as it appears on their passport, in the format `YYYY-MM-DD`.
+          type: string
+        passportNationality:
+          description: Issuing country for the passport, as an [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) alpha-3 three-letter code.
+          type: string
+        passportIssueDate:
+          description: Passport issue date, in the format `YYYY-MM-DD`.
+          type: string
+        drivingLicenceNumber:
+          description: Driving licence number
+          type: string
+        drivingLicenceBirthDate:
+          description: Employee's date of birth as it appears on their driving licence, in the format `YYYY-MM-DD`.
+          type: string
+        drivingLicenceType:
+          description: TBC
+          type: string
+        drivingLicenceValidFrom:
+          description: Date the driving licence is valid from, in the format `YYYY-MM-DD`.
+          type: string
+        drivingLicenceCountry:
+          description: Issuing country for the driving licence, as an [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) alpha-3 three-letter code.
           type: string
     CoreSkillsTraining:
       type: object
