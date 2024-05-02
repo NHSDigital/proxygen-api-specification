@@ -4,7 +4,7 @@
     {
       "recordType": "CoreSkillsTraining",
       "competencyFramework": "CSTF",
-      "statMandSubject": "Information Governance and Data Security",
+      "subjectName": "Information Governance and Data Security",
       "competencyName": "Information Governance and Data Security", 
       "subjectLevel": "1",
       "renewalPeriodNumber": "2",
@@ -19,7 +19,7 @@
     {
       "recordType": "CoreSkillsTraining",
       "competencyFramework": "CSTF",
-      "statMandSubject": "Resuscitation",
+      "subjectName": "Resuscitation",
       "competencyName": "Resuscitation Adult Basic Life Support",
       "subjectLevel": "2",
       "renewalPeriodNumber": "1",

@@ -6,20 +6,22 @@ info:
     ## Overview
     Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to interact with your system.
 
-    The standard includes the following operations:
-    - search for an employee
-    - get an employee's personal details
-    - get employee information
-    - send employee information
+    The standard currently supports the following use cases:
 
+    | Use case                              | External system type       |
+    | ------------------------------------- | -------------------------- |
+    | Get core skills                       | Learning management system |
+    | Send core skills                      | Learning management system |
+    | Send right to work information        | Recruitment system         |
+    | Send DBS check supporting information | Recruitment system         |
+    
     The standard currently does not include:
     - support for 'pagination' of search results in the event of there being more than 50 matching employees
 
-    The standard currently supports the following types of information:
-    - core skills
-    - right to work check
-    - DBS check
-    
+    For more context, see [Integrating with the Digital Staf Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
+    - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
+    - [integration pattern 4](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-4-inbound-via-online-portal)
+
     ## Who can use this API standard
     You can only use this API standard if you are integrating your system with Digital Staff Passport.
 
@@ -43,7 +45,51 @@ info:
     Given the employee's external system ID, DSP can send information to the external system using the [Add an employee record](#post-/organisations/-org-id-/employees/-employee-id-/records) operation.
 
     The type of information sent depends on the type of system. For example, DSP might send identity information to a recruitment system in order to support varioius employment checks.
+
+    ## Employee record types
+
+    ### Core skills
+    Core skills are a specific type of mandatory training that are common across all NHS organisations,
+    and are generally aligned with the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+
+    Core skills are not always part of the CSTF.
+    For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for Digital Staff Passport.
+
+    Also, the Employee Staff Record (ESR) system includes a number of competencies which are flagged as 'CSTF' even though they are not part of the Core Skills Training Framework.
+    They generally represent skills that have a [nationally-defined framework](https://www.skillsforhealth.org.uk/resources/category/capabilities-frameworks/)
+    such as the [Dementia skills framework](https://www.skillsforhealth.org.uk/resources/dementia-2015-updated-2018/).
+
+    For the avoidance of doubt, a full list of the core skills in scope for Digital Staff Passport is provided in the
+    [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
     
+    Core skills records are typically held in a learning managements system (LMS).
+    This API standard supports:
+    - DSP getting core skills from an LMS
+    - DSP sending core skills to an LMS
+
+    When sending and receiving core skills records, LMSs must follow the
+    [standard naming conventions for CSTF core skills](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
+    To help with this, mappings for the various data fields are included in the
+    [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
+
+    ### Right to work information
+    [Right to work checks](https://www.nhsemployers.org/publications/right-work-checks-standard) must be performed by all NHS employers.
+
+    These checks are normally managed in a recruitment system.
+
+    If the employee has completed digital identity verification via Digital Staff Passport, this information can be used to support the right to work check.
+
+    Hence this API standard supports Digital Staff Passport sending right to work check information to a recruitment system.
+
+    ### DBS check supporting information
+    [Criminal record (DBS) checks](https://www.nhsemployers.org/publications/criminal-record-checks-standard) must be performed by all NHS employers.
+
+    These checks are normally managed in a recruitment system.
+
+    If the employee has completed digital identity verification via Digital Staff Passport, this information can be used to support the DBS check.
+
+    Hence this API standard supports Digital Staff Passport sending DBS check supporting information to a recruitment system.
+
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
     meaning it is under development and might be subject to breaking changes.
@@ -226,19 +272,12 @@ paths:
         ### Overview
         This operation returns a list of all data records available for a given employee.
 
-        The type of records returned depends on the type of system.
-        For example, a learning management system would return core skills records.
-
-        ### Core skills
-        Core skills records have a `recordType` of `CoreSkillsTraining` and are typically held in a learning managements system (LMS).
-
-        Core skills are a specific type of mandatory training that are common across all NHS organisations,
-        and are generally aligned with the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
-
-        Core skills are not always part of the CSTF.
-        For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for Digital Staff Passport.
-
-        This operation returns all training records that are flagged as in scope for DSP, regardless of whether they are part of the CSTF.
+        It supports the following record and external system types:
+        
+        | Record type | External system type       |
+        | ----------- | -------------------------- |
+        | Core skills | Learning management system |
+        
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
         - $ref: '#/components/parameters/EmployeeId'
@@ -272,8 +311,13 @@ paths:
       description: |
         This operation adds a data record for a given employee.
 
-        The type of record that can be added depends on the type of system.
-        For example, core skills records can be added to a learning management system.
+        It supports the following record and external system types:
+        
+        | Record type                      | External system type       |
+        | -------------------------------- | -------------------------- |
+        | Core skills                      | Learning management system |
+        | Right to work check information  | Recruitment system         |
+        | DBS check supporting information | Recruitment system         |
 
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
@@ -284,7 +328,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EmployeeRecord'
+              $ref: '#/components/schemas/EmployeeRecordPost'
             examples:
               right-to-work:
                 summary: Add a right to work record
@@ -304,7 +348,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmployeeRecord'
+                $ref: '#/components/schemas/EmployeeRecordPost'
               examples:
                 right-to-work:
                   summary: Right to work record added
@@ -357,7 +401,7 @@ components:
     EmployeeId:
       in: path
       name: employee-id
-      description: The employee's primary unique identifier, as used by the source system.
+      description: The employee's primary unique identifier, as used by the external system.
       required: true
       example: '12345'
       schema:
@@ -371,7 +415,7 @@ components:
         - surname
       properties:
         id:
-          description: The employee's primary unique identifier, as used by the source system.
+          description: The employee's primary unique identifier, as used by the external system.
           type: string
           example: '12345'
         firstName:
@@ -401,7 +445,7 @@ components:
         - records
       properties:
         id:
-          description: The employee's primary unique identifier, as used by the source system.
+          description: The employee's primary unique identifier, as used by the external system.
           type: string
           example: '12345'
         records:
@@ -409,8 +453,11 @@ components:
           type: array
           minItems: 0
           items:
-            $ref: '#/components/schemas/EmployeeRecord'
-    EmployeeRecord:
+            $ref: '#/components/schemas/EmployeeRecordGet'
+    EmployeeRecordGet:
+      oneOf:
+        - $ref: '#/components/schemas/CoreSkillsTraining'
+    EmployeeRecordPost:
       oneOf:
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
@@ -425,6 +472,7 @@ components:
         - birthDate
         - biometricPageImage
         - photograph
+        - passportExpiryDate
         - identityVerified
         - evidenceCheckedBy
         - dateOfIdCheck
@@ -452,6 +500,9 @@ components:
           type: string
         photograph:
           description: A photograph of the employee, as it appears on their identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
+          type: string
+        passportExpiryDate:
+          description: Passport expiry date, in the format `YYYY-MM-DD`.
           type: string
         identityVerified:
           description: Whether the employee's identity has been verified - always `true`.
@@ -503,7 +554,7 @@ components:
           description: The employee's current address, as it appears on their identity document.
           type: string
         currentAddressVerified:
-          description: Whether the employee's current address has been verified by the IDSP. Alwats `true`.
+          description: Whether the employee's current address has been verified by the IDSP. Always `true`.
           type: boolean
         dateOfAddressCheck:
           description: Date the address check was done, in the format `YYYY-MM-DD`.
@@ -517,8 +568,38 @@ components:
         GPG45profile:
           description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
           type: string
+        GPG44level:
+          description: TBC
+          type: string
         subjectId:
           description: Unique identifier for the identity check as shared between DSP and the IDSP. Generally expressed as a GUID.
+          type: string
+        passportNumber:
+          description: Passport number.
+          type: string
+        passportBirthDate:
+          description: Employee's date of birth as it appears on their passport, in the format `YYYY-MM-DD`.
+          type: string
+        passportNationality:
+          description: Issuing country for the passport, as an [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) alpha-3 three-letter code.
+          type: string
+        passportIssueDate:
+          description: Passport issue date, in the format `YYYY-MM-DD`.
+          type: string
+        drivingLicenceNumber:
+          description: Driving licence number.
+          type: string
+        drivingLicenceBirthDate:
+          description: Employee's date of birth as it appears on their driving licence, in the format `YYYY-MM-DD`.
+          type: string
+        drivingLicenceType:
+          description: TBC
+          type: string
+        drivingLicenceValidFrom:
+          description: Date the driving licence is valid from, in the format `YYYY-MM-DD`.
+          type: string
+        drivingLicenceCountry:
+          description: Issuing country for the driving licence, as an [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) alpha-3 three-letter code.
           type: string
     CoreSkillsTraining:
       type: object
@@ -526,7 +607,7 @@ components:
       required:
         - recordType
         - competencyFramework
-        - statMandSubject
+        - subjectName
         - competencyName
         - subjectLevel
         - attainmentStatus
@@ -547,8 +628,7 @@ components:
           enum:
            - 'CSTF'
            - 'MAND'
-        statMandSubject:
-# TBC rename to something more readable? YES
+        subjectName:
           description: |
             Subject name as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
             Specifically, this is the part of the subject name that appears before the level number. For example, if the subject name is `Resuscitation - Level 2 - Adult Basic Life Support - 1 Year`, this would be `Resuscitation`.

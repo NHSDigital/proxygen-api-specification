@@ -1,7 +1,7 @@
 {
   "recordType": "CoreSkillsTraining",
   "competencyFramework": "CSTF",
-  "statMandSubject": "Information Governance and Data Security",
+  "subjectName": "Information Governance and Data Security",
   "competencyName": "Information Governance and Data Security",
   "subjectLevel": "1",
   "renewalPeriodNumber": "2",
