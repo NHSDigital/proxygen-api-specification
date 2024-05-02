@@ -384,7 +384,7 @@ components:
     EmployeeId:
       in: path
       name: employee-id
-      description: The employee's primary unique identifier, as used by the source system.
+      description: The employee's primary unique identifier, as used by the external system.
       required: true
       example: '12345'
       schema:
@@ -398,7 +398,7 @@ components:
         - surname
       properties:
         id:
-          description: The employee's primary unique identifier, as used by the source system.
+          description: The employee's primary unique identifier, as used by the external system.
           type: string
           example: '12345'
         firstName:
@@ -428,7 +428,7 @@ components:
         - records
       properties:
         id:
-          description: The employee's primary unique identifier, as used by the source system.
+          description: The employee's primary unique identifier, as used by the external system.
           type: string
           example: '12345'
         records:
