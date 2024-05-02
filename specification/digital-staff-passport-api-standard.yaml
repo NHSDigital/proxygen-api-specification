@@ -553,7 +553,7 @@ components:
       required:
         - recordType
         - competencyFramework
-        - statMandSubject
+        - subjectName
         - competencyName
         - subjectLevel
         - attainmentStatus
@@ -574,8 +574,7 @@ components:
           enum:
            - 'CSTF'
            - 'MAND'
-        statMandSubject:
-# TBC rename to something more readable? YES
+        subjectName:
           description: |
             Subject name as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
             Specifically, this is the part of the subject name that appears before the level number. For example, if the subject name is `Resuscitation - Level 2 - Adult Basic Life Support - 1 Year`, this would be `Resuscitation`.
