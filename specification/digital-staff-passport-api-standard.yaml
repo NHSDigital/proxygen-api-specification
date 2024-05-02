@@ -575,7 +575,7 @@ components:
           description: Unique identifier for the identity check as shared between DSP and the IDSP. Generally expressed as a GUID.
           type: string
         passportNumber:
-          description: Passport number
+          description: Passport number.
           type: string
         passportBirthDate:
           description: Employee's date of birth as it appears on their passport, in the format `YYYY-MM-DD`.
@@ -587,7 +587,7 @@ components:
           description: Passport issue date, in the format `YYYY-MM-DD`.
           type: string
         drivingLicenceNumber:
-          description: Driving licence number
+          description: Driving licence number.
           type: string
         drivingLicenceBirthDate:
           description: Employee's date of birth as it appears on their driving licence, in the format `YYYY-MM-DD`.
