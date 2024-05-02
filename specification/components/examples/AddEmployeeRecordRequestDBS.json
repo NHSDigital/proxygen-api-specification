@@ -10,5 +10,15 @@
     "identityVerified": "true",
     "evidenceCheckedBy": "Yoti Ltd",
     "GPG45profile": "H1A",
-    "subjectId": "434c9ed9-2210-4727-8df7-10222b36a789"
+    "GPG44level": "TBC",
+    "subjectId": "434c9ed9-2210-4727-8df7-10222b36a789",
+    "passportNumber": "107182890",
+    "passportBirthDate": "1998-10-22",
+    "passportNationality": "GBR",
+    "passportIssueDate": "2020-11-01",
+    "drivingLicenceNumber": "SMITH960228JA1AA",
+    "drivingLicenceBirthDate": "1998-10-22",
+    "drivingLicenceType": "TBC",
+    "drivingLicenceValidFrom": "2020-11-01",
+    "drivingLicenceCountry": "GBR"
 }
