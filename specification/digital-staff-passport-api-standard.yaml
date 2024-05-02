@@ -6,20 +6,15 @@ info:
     ## Overview
     Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to interact with your system.
 
-    The standard includes the following operations:
-    - search for an employee
-    - get an employee's personal details
-    - get employee information
-    - send employee information
+    The standard supports the following use cases:
+    - get core skills (from a learning management system)
+    - send core skills (to a learning management system)
+    - send right to work check information (to a recruitment system, for example)
+    - send DBS check supporting information (to a recruitment system, for example)
 
     The standard currently does not include:
     - support for 'pagination' of search results in the event of there being more than 50 matching employees
 
-    The standard currently supports the following types of information:
-    - core skills
-    - right to work check
-    - DBS check
-    
     ## Who can use this API standard
     You can only use this API standard if you are integrating your system with Digital Staff Passport.
 
