@@ -568,9 +568,16 @@ components:
         GPG45profile:
           description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
           type: string
-        GPG44level:
-          description: TBC
+        GPG44level: 
+          description: |
+            The [level of protection](https://www.gov.uk/government/publications/authentication-credentials-for-online-government-services/giving-users-access-to-online-services#choosing-an-authenticator)
+            provided by the authenticator used by the digital identity check service.
           type: string
+          enum:
+            - Low
+            - Medium
+            - High
+            - Very high
         subjectId:
           description: Unique identifier for the identity check as shared between DSP and the IDSP. Generally expressed as a GUID.
           type: string
