@@ -600,8 +600,11 @@ components:
           description: Employee's date of birth as it appears on their driving licence, in the format `YYYY-MM-DD`.
           type: string
         drivingLicenceType:
-          description: TBC
+          description: Driving licence type.
           type: string
+          enum:
+            - Full
+            - Provisional
         drivingLicenceValidFrom:
           description: Date the driving licence is valid from, in the format `YYYY-MM-DD`.
           type: string
