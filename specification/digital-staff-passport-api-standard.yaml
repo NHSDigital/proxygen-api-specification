@@ -15,9 +15,6 @@ info:
     | Send right to work information        | Recruitment system         |
     | Send DBS check supporting information | Recruitment system         |
     
-    The standard currently does not include:
-    - support for 'pagination' of search results in the event of there being more than 50 matching employees
-
     For more context, see [Integrating with the Digital Staf Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
     - [integration pattern 4](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-4-inbound-via-online-portal)
@@ -71,6 +68,10 @@ info:
     [standard naming conventions for CSTF core skills](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
     To help with this, mappings for the various data fields are included in the
     [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
+
+    When receiving a core skill, LMSs should:
+    - reject duplicates i.e. same competency name, same date last awarded
+    - ignore the renewal period and expiry date, instead applying the local renewal period and re-calculating the expiry date
 
     ### Right to work information
     [Right to work checks](https://www.nhsemployers.org/publications/right-work-checks-standard) must be performed by all NHS employers.
@@ -371,6 +372,7 @@ paths:
             | 400         | invalid      | Invalid data in request body, for example, missing mandatory field or invalid date format. |
             | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
             | 404         | not-found    | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
+            | 409         | duplicate    | Attempted to add a record that already exists, for example a core skill with the same date last awarded. |
           content:
             application/json:
               schema:
@@ -613,7 +615,12 @@ components:
           type: string
     CoreSkillsTraining:
       type: object
-      description: A record of a core skill attained by the employee. In most cases this will be part of the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+      description: |
+        A record of a core skill attained by the employee. In most cases this will be part of the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+
+        When receiving a core skill, external systems should:
+        - reject duplicates i.e. same competency name, same date last awarded
+        - ignore the renewal period and expiry date, instead applying the local renewal period and re-calculating the expiry date
       required:
         - recordType
         - competencyFramework
