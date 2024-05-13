@@ -15,9 +15,6 @@ info:
     | Send right to work information        | Recruitment system         |
     | Send DBS check supporting information | Recruitment system         |
     
-    The standard currently does not include:
-    - support for 'pagination' of search results in the event of there being more than 50 matching employees
-
     For more context, see [Integrating with the Digital Staf Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
     - [integration pattern 4](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-4-inbound-via-online-portal)
