@@ -4,5 +4,6 @@
   "surname": "Smith",
   "birthDate": "1998-10-22",
   "email": "jane.smith@example.com",
-  "esrIdentifier": "87654321"
+  "esrIdentifier": "87654321",
+  "furtherInformation": "Orthapaedic Practitioner (XR05) - Permenant"
 }
