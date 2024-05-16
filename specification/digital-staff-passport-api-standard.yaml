@@ -445,7 +445,7 @@ components:
             Further information about the employee record that disambiguates it from other records.
             This can be anything and is likely to be system-specific.
             For example, a recruitment system holding possibly multiple applications for the same person
-            might include a composite of the job description and contract type being applied for.
+            could include a composite of the job description and contract type being applied for.
           type: string
           example: 'Orthapaedic Practitioner (XR05) - Permanent'
     EmployeeRecords:
@@ -508,12 +508,12 @@ components:
         biometricPageImage:
           description: |
             An image of the biometric page of the employee's identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
-            Approx image size 450x600 pixels; approx data size (base64 encoded) 105KB.
+            Approximate image size: 450x600 pixels. Approximate data size (base64 encoded): 105KB.
           type: string
         photograph:
           description: |
             A photograph of the employee, as it appears on their identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
-            Approx image size 450x300; approx data size (base64 encoded) 12-15KB.
+            Approximate image size: 450x300 Approximate data size (base64 encoded): 12-15KB.
           type: string
         passportExpiryDate:
           description: Passport expiry date, in the format `YYYY-MM-DD`.
