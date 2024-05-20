@@ -159,25 +159,6 @@ x-spec-publication:
   try-this-api:
     disabled: true
 paths:
-  /organisations/{org-id}/_ping:
-    get:
-      operationId: ping
-      summary: Ping
-      description: |
-        This operation allows our live service monitoring tools to check that the API is available.
-
-        It differs from the 'Status' endpoint in that it doesn't check whether any of its dependent resources are available.
-
-        The URL is `/organisations/{org-id}/_ping` rather than just `/_ping` so that it can be supported by systems that have separate instances deployed for each organisation.
-      parameters:
-        - $ref: '#/components/parameters/OrganisationId'
-      responses:
-        '200':
-          description: A successful ping. The response should include useful information about the API, such the version number.
-          content:
-            application/json:
-              example:
-                $ref: components/examples/PingSuccess.json
   /organisations/{org-id}/employees:
     get:
       operationId: search-for-employee
@@ -398,6 +379,30 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 $ref: components/examples/AddEmployeeRecordResponseError.json
+  /organisations/{org-id}/_status:
+    get:
+      operationId: status
+      summary: Get API status
+      description: |
+        This operation allows our live service monitoring tools to check that the API is available and working.
+
+        The URL is `/organisations/{org-id}/_status` rather than just `/_status` so that it can be supported by systems that have separate instances deployed for each organisation.
+
+        It is a 'deep ping' in that it checks and reports on the health status of any dependent resources, for example an underlying database.
+
+        The response is based on, but not entirely consistent with, the draft standard [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/draft-inadarei-api-health-check/).
+        
+        If it returns a response (i.e. if the calling application was actually able to reach it), it always returns a status code of 200, even if one or more of the dependent resources
+        are not healthy. Therefore it is important to check `status` field in the body of the response.
+      parameters:
+        - $ref: '#/components/parameters/OrganisationId'
+      responses:
+        '200':
+          description: A successful status check.
+          content:
+            application/health+json:
+              example:
+                $ref: components/examples/PingSuccess.json
 components:
   parameters:
     BearerAuthorization:
