@@ -141,7 +141,7 @@ info:
 
     `<your domain>/dsp-api/organisations/<org ODS code>`
 
-    In this case, you should alter the URL for the individual operations to exclude the `organisations\{org-id}` part, so that it isn't repeated.
+    In this case, you should alter the URL for the individual operations to exclude the `organisations/{org-id}` part, so that it isn't repeated.
 
     ### Integration testing
     Your integration test environment needs to include:
@@ -159,6 +159,25 @@ x-spec-publication:
   try-this-api:
     disabled: true
 paths:
+  /organisations/{org-id}/_ping:
+    get:
+      operationId: ping
+      summary: Ping
+      description: |
+        This operation allows our live service monitoring tools to check that the API is available.
+
+        It differs from the 'Status' endpoint in that it doesn't check whether any of its dependent resources are available.
+
+        The URL is `/organisations/{org-id}/_ping` rather than just `/_ping` so that it can be supported by systems that have separate instances deployed for each organisation.
+      parameters:
+        - $ref: '#/components/parameters/OrganisationId'
+      responses:
+        '200':
+          description: A successful ping. The response should include useful information about the API, such the version number.
+          content:
+            application/json:
+              example:
+                $ref: components/examples/PingSuccess.json
   /organisations/{org-id}/employees:
     get:
       operationId: search-for-employee
