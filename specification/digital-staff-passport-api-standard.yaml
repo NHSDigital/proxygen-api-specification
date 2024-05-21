@@ -390,13 +390,9 @@ paths:
 
         It is based on the draft standard [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/draft-inadarei-api-health-check/).
 
-        It can be implemented as a 'shallow ping' or a 'deep ping'.
-
-        For a shallow ping, the operation returns a `status` of `pass` without checking any dependent resources. This is the easier approach.
-
-        For a deep ping, the operation checks the status of dependent resources and returns a status that reflects the overall health of the service.
-        The status of dependent resources is provided within the `checks` object.
-        This approach is more work but allows us to react to live incidents more quickly.
+        It can be implemented as a 'shallow ping' or a 'deep ping':
+        - For a shallow ping, the operation returns a `status` of `pass` without checking any dependent resources. This is the easier approach.
+        - For a deep ping, the operation checks the status of dependent resources and returns a status that reflects the overall health of the service. The status of dependent resources is provided within the `checks` object. This approach is more work but allows us to react to live incidents more quickly.
         
         The operation always returns an HTTP status code of 200, even if one or more of the dependent resources is not healthy.
         Therefore it is important for monitoring tools to check the `status` field in the body of the response.
@@ -406,7 +402,7 @@ paths:
         - $ref: '#/components/parameters/OrganisationId'
       responses:
         '200':
-          description: A successful status check.
+          description: The status operation was executed and the result might have been a pass or a fail (for example due to an unhealthy dependent resource).
           content:
             application/health+json:
               schema:
