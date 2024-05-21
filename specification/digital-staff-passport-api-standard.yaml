@@ -592,7 +592,7 @@ components:
           description: The employee's current address, as it appears on their identity document.
           type: string
         currentAddressVerified:
-          description: Whether the employee's current address has been verified by the IDSP. Always `true`.
+          description: Whether the employee's current address has been verified by the IDSP. With our current IDSP this is always `true` but we anticipate it could be `false` in the future.
           type: boolean
         dateOfAddressCheck:
           description: Date the address check was done, in the format `YYYY-MM-DD`.
