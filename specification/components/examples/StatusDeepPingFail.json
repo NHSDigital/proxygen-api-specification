@@ -1,0 +1,16 @@
+{
+  "description": "Acme Workforce System Digital Staff Passport API",
+  "version": "1",
+  "releaseId": "1.0.123",
+  "status": fail,
+  "notes": ["Dependent resource B timed out."],
+  "output": "",
+  "checks" : {
+    "dependentResourceA:status": [
+      "status": "pass"
+    ],
+    "dependentResourceB:status": [
+      "status": "fail"
+    ]
+  }
+}

@@ -141,7 +141,7 @@ info:
 
     `<your domain>/dsp-api/organisations/<org ODS code>`
 
-    In this case, you should alter the URL for the individual operations to exclude the `organisations\{org-id}` part, so that it isn't repeated.
+    In this case, you should alter the URL for the individual operations to exclude the `organisations/{org-id}` part, so that it isn't repeated.
 
     ### Integration testing
     Your integration test environment needs to include:
@@ -379,6 +379,43 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 $ref: components/examples/AddEmployeeRecordResponseError.json
+  /organisations/{org-id}/_status:
+    get:
+      operationId: status
+      summary: Get API status
+      description: |
+        This operation allows our live service monitoring tools to check that the API is available and working.
+
+        The URL is `/organisations/{org-id}/_status` rather than just `/_status` so that it can be supported by systems that have separate instances deployed for each organisation.
+
+        It is based on the draft standard [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/draft-inadarei-api-health-check/).
+
+        It can be implemented as a 'shallow ping' or a 'deep ping':
+        - For a shallow ping, the operation returns a `status` of `pass` without checking any dependent resources. This is the easier approach.
+        - For a deep ping, the operation checks the status of dependent resources and returns a status that reflects the overall health of the service. The status of dependent resources is provided within the `checks` object. This approach is more work but allows us to react to live incidents more quickly.
+        
+        The operation always returns an HTTP status code of 200, even if one or more of the dependent resources is not healthy.
+        Therefore it is important for monitoring tools to check the `status` field in the body of the response.
+
+        All fields apart from `status` are optional, so the simplest possible implementation is a 'shallow ping' response that always returns a single field `status` with a value of `pass`.
+      parameters:
+        - $ref: '#/components/parameters/OrganisationId'
+      responses:
+        '200':
+          description: The status operation was executed and the result might have been a pass or a fail (for example due to an unhealthy dependent resource).
+          content:
+            application/health+json:
+              schema:
+                $ref: '#/components/schemas/Status'
+              examples:
+                shallow-ping-success:
+                  summary: Shallow ping
+                  value:
+                    $ref: components/examples/StatusShallowPingPass.json
+                deep-ping-fail:
+                  summary: Deep ping with a dependent resource failure
+                  value:
+                    $ref: components/examples/StatusDeepPingFail.json
 components:
   parameters:
     BearerAuthorization:
@@ -568,7 +605,7 @@ components:
           description: The employee's current address, as it appears on their identity document.
           type: string
         currentAddressVerified:
-          description: Whether the employee's current address has been verified by the IDSP. Always `true`.
+          description: Whether the employee's current address has been verified by the IDSP. With our current IDSP this is always `true` but we anticipate it could be `false` in the future.
           type: boolean
         dateOfAddressCheck:
           description: Date the address check was done, in the format `YYYY-MM-DD`.
@@ -754,3 +791,38 @@ components:
                     description: A text description of the error or warning.
                     type: string
                     example: 'Invalid format for birthDate query parameter - must be YYYY-MM-DD.'
+    Status:
+      type: object
+      required:
+        - status
+      properties:
+        description:
+          description: Human-friendly description of the service
+        version:
+          description: Major version number for the service.
+          type: string
+        releaseId:
+          description: Minor version number and/or build or release number.
+          type: string
+        status:
+          description: |
+            Whether the service status is acceptable or not:
+            - `pass`: healthy
+            - `fail`: unhealthy
+            - `warn`: healthy, with some concerns
+          type: string
+          enum:
+            - pass
+            - fail
+            - warn
+        notes:
+          description: Array of notes relevant to current state of health
+          type: array
+        output:
+          description: raw error output, in case of `fail` or `warn` states.
+          type: string
+        checks:
+          description: |
+            Detailed health statuses of any dependent systems. Include one object per sub-component and choose suitable names and data attributes as explained in
+            [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/draft-inadarei-api-health-check/).
+          type: object
