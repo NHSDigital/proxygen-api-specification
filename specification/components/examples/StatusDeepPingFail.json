@@ -8,7 +8,7 @@
   "checks" : {
     "dependentResourceA:status": [
       "status": "pass"
-    ]
+    ],
     "dependentResourceB:status": [
       "status": "fail"
     ]
