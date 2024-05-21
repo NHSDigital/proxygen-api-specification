@@ -388,12 +388,20 @@ paths:
 
         The URL is `/organisations/{org-id}/_status` rather than just `/_status` so that it can be supported by systems that have separate instances deployed for each organisation.
 
-        It is a 'deep ping' in that it checks and reports on the health status of any dependent resources, for example an underlying database.
+        It is based on the draft standard [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/draft-inadarei-api-health-check/).
 
-        The response is based on, but not entirely consistent with, the draft standard [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/draft-inadarei-api-health-check/).
+        It can be implemented as a 'shallow ping' or a 'deep ping'.
+
+        For a shallow ping, the operation returns a `status` of `pass` without checking any dependent resources. This is the easier approach.
+
+        For a deep ping, the operation checks the status of dependent resources and returns a status that reflects the overall health of the service.
+        The status of dependent resources is provided within the `checks` object.
+        This approach is more work but allows us to react to live incidents more quickly.
         
-        If it returns a response (i.e. if the calling application was actually able to reach it), it always returns a status code of 200, even if one or more of the dependent resources
-        are not healthy. Therefore it is important to check `status` field in the body of the response.
+        The operation always returns an HTTP status code of 200, even if one or more of the dependent resources is not healthy.
+        Therefore it is important to check `status` field in the body of the response.
+
+        All fields apart from `status` are optional, so the simplest possible implementation is a response that always returns a single field `status` with a value of `pass`.
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
       responses:
@@ -401,6 +409,8 @@ paths:
           description: A successful status check.
           content:
             application/health+json:
+              schema:
+                $ref: '#/components/schemas/Status'
               example:
                 $ref: components/examples/PingSuccess.json
 components:
@@ -778,3 +788,38 @@ components:
                     description: A text description of the error or warning.
                     type: string
                     example: 'Invalid format for birthDate query parameter - must be YYYY-MM-DD.'
+    Status:
+      type: object
+      required:
+        - status
+      properties:
+        description:
+          description: Human-friendly description of the service
+        version:
+          description: Major version number for the service.
+          type: string
+        releaseId:
+          description: Minor version number and/or build or release number.
+          type: string
+        status:
+          description: |
+            Whether the service status is acceptable or not:
+            - `pass`: healthy
+            - `fail`: unhealthy
+            - `warn`: healthy, with some concerns
+          type: string
+          enum:
+            - pass
+            - fail
+            - warn
+        notes:
+          description: Array of notes relevant to current state of health
+          type: array
+        output:
+          description: raw error output, in case of `fail` or `warn` states.
+          type: string
+        checks:
+          description: |
+            Detailed health statuses of any dependent systems. Include one object per sub-component and choose suitable names and data attributes as explained in
+            [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/draft-inadarei-api-health-check/).
+          type: object
