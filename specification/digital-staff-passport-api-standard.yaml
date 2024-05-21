@@ -399,9 +399,9 @@ paths:
         This approach is more work but allows us to react to live incidents more quickly.
         
         The operation always returns an HTTP status code of 200, even if one or more of the dependent resources is not healthy.
-        Therefore it is important to check `status` field in the body of the response.
+        Therefore it is important for monitoring tools to check the `status` field in the body of the response.
 
-        All fields apart from `status` are optional, so the simplest possible implementation is a response that always returns a single field `status` with a value of `pass`.
+        All fields apart from `status` are optional, so the simplest possible implementation is a 'shallow ping' response that always returns a single field `status` with a value of `pass`.
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
       responses:
@@ -411,8 +411,15 @@ paths:
             application/health+json:
               schema:
                 $ref: '#/components/schemas/Status'
-              example:
-                $ref: components/examples/PingSuccess.json
+              examples:
+                shallow-ping-success:
+                  summary: Shallow ping
+                  value:
+                    $ref: components/examples/StatusShallowPingPass.json
+                deep-ping-fail:
+                  summary: Deep ping with a dependent resource failure
+                  value:
+                    $ref: components/examples/StatusDeepPingFail.json
 components:
   parameters:
     BearerAuthorization:
