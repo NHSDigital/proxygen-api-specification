@@ -3,7 +3,7 @@
   "version": "1",
   "releaseId": "1.0.123",
   "status": fail,
-  "notes": "",
+  "notes": ["Dependent resource B timed out."],
   "output": "",
   "checks" : {
     "dependentResourceA:status": [
