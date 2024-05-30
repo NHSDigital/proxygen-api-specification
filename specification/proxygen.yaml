@@ -436,8 +436,8 @@ info:
     Under the `cis2` and `nhs-login` block, the `included` boolean will determine whether the identity headers will be present in the request to the backend for the corresponding auth provider.
 
     The individual header names are optional. In their absence, the following defaults will be used: 
-    - uuid-header-name: `NHSD-Session-URID` 
-    - urid-header-name: `NHSD-Session-UUID`
+    - uuid-header-name: `NHSD-Session-UUID` 
+    - urid-header-name: `NHSD-Session-URID`
     - nhs-number-header-name: `NHSD-NHSlogin-NHS-Number`
 
     The headers will have their values populated using the auth token associated with the CIS2 or NHS login authentication.
