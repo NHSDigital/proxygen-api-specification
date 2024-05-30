@@ -433,7 +433,7 @@ info:
 
     Each item under `x-nhsd-apim.target-identity` is the name of an authentication mechanism for which you intend to pass identity headers through to the backend. Currently, CIS2 and NHS login authentication is supported.
 
-    Under the `cis2` and `nhs-login` block, the `included` boolean will determine whether the identity headers will be present in the request to the backend.
+    Under the `cis2` and `nhs-login` block, the `included` boolean will determine whether the identity headers will be present in the request to the backend for the corresponding auth provider.
 
     The individual header names are optional. In their absence, the following defaults will be used: 
     - uuid-header-name: `NHSD-Session-URID` 
@@ -455,10 +455,10 @@ info:
         urid-header-name: "custom-urid-header-name"
       nhs-login:
         included: true
-        nhs-number-header-name: "nhs-number-header"
+        nhs-number-header-name: "custom-nhs-number-header"
     ```
 
-    The value of the included field must be a boolean and the two header-name fields must be strings.
+    The value of the included field must be a boolean and the header-name fields must be strings.
 
 
     ## Usage limits
