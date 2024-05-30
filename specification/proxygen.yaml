@@ -431,15 +431,18 @@ info:
 
     #### Target Identity Headers
 
-    Each item under `x-nhsd-apim.target-identity` is the name of an authentication mechanism for which you intend to pass identity headers through to the backend. Currently, only CIS2 authentication is supported.
+    Each item under `x-nhsd-apim.target-identity` is the name of an authentication mechanism for which you intend to pass identity headers through to the backend. Currently, CIS2 and NHS login authentication is supported.
 
-    Under the `x-nhsd-apim.target-identity.cis2` the `included` boolean will determine whether the identity headers will be present in the request to the backend.
+    Under the `cis2` and `nhs-login` block, the `included` boolean will determine whether the identity headers will be present in the request to the backend for the corresponding auth provider.
 
-    The individual header names are optional. In their absence, defaults of `NHSD-Session-URID` and `NHSD-Session-UUID` will be used.
+    The individual header names are optional. In their absence, the following defaults will be used: 
+    - uuid-header-name: `NHSD-Session-UUID` 
+    - urid-header-name: `NHSD-Session-URID`
+    - nhs-number-header-name: `NHSD-NHSlogin-NHS-Number`
 
-    The headers will have their values populated with the User ID and Role ID associated with the CIS2 authentication.
-    
-    The User ID value is obtained from the access token in the request, with the Role ID value being obtained via the shared UserRoleServiceV2.
+    The headers will have their values populated using the auth token associated with the CIS2 or NHS login authentication.
+       
+    The CIS2 UUID or NHS login NHS number value is obtained from the access token in the request. The Role ID value is obtained via the shared UserRoleServiceV2.
 
     If the request to the _proxy_ includes the default Role ID header `NHSD-Session-URID`, this will flow through to the backend as the urid-header-name defined in your specification (or remain as the default header name, in the absence of a provided header name).
 
@@ -450,9 +453,12 @@ info:
         included: true
         uuid-header-name: "custom-uuid-header-name"
         urid-header-name: "custom-urid-header-name"
+      nhs-login:
+        included: true
+        nhs-number-header-name: "custom-nhs-number-header"
     ```
 
-    The value of the included field must be a boolean and the two header-name fields must be strings.
+    The value of the included field must be a boolean and the header-name fields must be strings.
 
 
     ## Usage limits
