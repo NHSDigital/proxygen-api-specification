@@ -8,12 +8,13 @@ info:
 
     The standard currently supports the following use cases:
 
-    | Use case                              | External system type       |
-    | ------------------------------------- | -------------------------- |
-    | Get core skills                       | Learning management system |
-    | Send core skills                      | Learning management system |
-    | Send right to work information        | Recruitment system         |
-    | Send DBS check supporting information | Recruitment system         |
+    | External system type       | Use case                              |
+    | -------------------------- | ------------------------------------- |
+    | Learning management system | Get core skills                       |
+    | Learning management system | Send core skills                      |
+    | Recruitment system         | Send right to work information        |
+    | Recruitment system         | Send DBS check supporting information |
+    | Recruitment system         | Get DBS check outcome                 |
     
     For more context, see [Integrating with the Digital Staf Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
@@ -41,7 +42,7 @@ info:
     ### Sending employee information
     Given the employee's external system ID, DSP can send information to the external system using the [Add an employee record](#post-/organisations/-org-id-/employees/-employee-id-/records) operation.
 
-    The type of information sent depends on the type of system. For example, DSP might send identity information to a recruitment system in order to support varioius employment checks.
+    The type of information sent depends on the type of system. For example, DSP might send right to work information to a recruitment system in order to support varioius employment checks.
 
     ## Employee record types
 
@@ -90,6 +91,13 @@ info:
     If the employee has completed digital identity verification via Digital Staff Passport, this information can be used to support the DBS check.
 
     Hence this API standard supports Digital Staff Passport sending DBS check supporting information to a recruitment system.
+
+    ### DBS check outcome
+    Once a DBS check has been completed in a recruitment system, it can be useful for the employee to have the details of the outcome so that it can be passed on to a new employer.
+
+    Specifically, this is useful for [doctors in training if the DBS check is less than three years old](https://www.nhsemployers.org/publications/criminal-record-checks-standard).
+
+    Hence this API standard supports Digital Staff Passport receiving a DBS check outcome record from a recruitment system.
 
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
