@@ -592,7 +592,6 @@ components:
         - legalFirstName
         - legalSurname
         - birthDate
-        - currentAddress
         - currentAddressVerified
         - identityVerified
         - evidenceCheckedBy
@@ -618,7 +617,7 @@ components:
           description: The employee's date of birth, in the format `YYYY-MM-DD`.
           type: string
         currentAddress:
-          description: The employee's current address, as it appears on their identity document.
+          description: The employee's current address, as it appears on their identity document. Only included if it has been verified.
           type: string
         currentAddressVerified:
           description: Whether the employee's current address has been verified by the IDSP. With our current IDSP this is always `true` but we anticipate it could be `false` in the future.
