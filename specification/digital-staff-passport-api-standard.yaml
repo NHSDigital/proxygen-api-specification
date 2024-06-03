@@ -698,28 +698,35 @@ components:
         applicantDateOfBirth:
           description: Employee's date of birth as used in the DBS check.
           type: string
-        typeOfCheck:
-          description: TBC.
+        typeOfDBSCheck:
+          description: The type, or level, of DBS check performed.
           type: string
+          enum:
+            - 'Basic check'
+            - 'Standard check'
+            - 'Enhanced check'
+            - 'Enhanced with barred list(s) check'
         adultsBarredListChecked:
-          description: TBC.
-          type: string
+          description: Whether or not the adults' barred list was checked.
+          type: boolean
         childrensBarredListChecked:
+          description: Whether or not the children's barred list was checked.
+          type: boolean
+        certificateNumber:
+          description: Unique identifier for the certificate issued for the DBS check. 12 digits.
+          type: string
+        disclosureIssueDate:
+          description: Date the DBS check certificate was issued, in the format `YYYY-MM-DD`.
+          type: string
+        informationDisclosed:
+          description: Whether or not any information was disclosed on the certificate. A value of `false` means the certificate is 'clean'.
+          type: boolean
+        websiteCheck:
+# do we want this - Farouk says exclude but we've asked ESR for it.
           description: TBC.
           type: string
-        TBC:
-          description: TBC.
-          type: string
-        TBC:
-          description: TBC.
-          type: string
-        TBC:
-          description: TBC.
-          type: string
-        TBC:
-          description: TBC.
-          type: string
-        TBC:
+        websiteMatch:
+# do we want this - Farouk says exclude but we've asked ESR for it. Also, Robin says Trac doesn't actually send it to ESR!
           description: TBC.
           type: string
     CoreSkillsTraining:
