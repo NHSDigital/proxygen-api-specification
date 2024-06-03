@@ -1,0 +1,9 @@
+{
+  "id": "12345",
+  "records": [
+    {
+      "recordType": "DBSCheckOutcome",
+      "TBC": "TBC"
+    }
+  ]
+}
