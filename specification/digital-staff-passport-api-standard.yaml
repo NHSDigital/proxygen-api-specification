@@ -685,13 +685,40 @@ components:
       description: Outcome of a DBS check, as performed by an employer.
       required:
         - recordType
-# TBC other required fields        
+# TBC other required fields
       properties:
         recordType:
           description: Type of record.
           type: string
           enum:
             - 'DBSCheckOutcome'
+        applicantName:
+          description: Employee's name as used in the DBS check.
+          type: string
+        applicantDateOfBirth:
+          description: Employee's date of birth as used in the DBS check.
+          type: string
+        typeOfCheck:
+          description: TBC.
+          type: string
+        adultsBarredListChecked:
+          description: TBC.
+          type: string
+        childrensBarredListChecked:
+          description: TBC.
+          type: string
+        TBC:
+          description: TBC.
+          type: string
+        TBC:
+          description: TBC.
+          type: string
+        TBC:
+          description: TBC.
+          type: string
+        TBC:
+          description: TBC.
+          type: string
         TBC:
           description: TBC.
           type: string
