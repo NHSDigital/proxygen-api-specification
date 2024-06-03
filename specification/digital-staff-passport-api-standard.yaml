@@ -577,9 +577,9 @@ components:
         - birthDate
         - currentAddress
         - currentAddressVerified
-        - dateOfAddressCheck
         - identityVerified
         - evidenceCheckedBy
+        - dateOfIdCheck
         - GPG45profile
         - subjectId
 # TBC other required fields        
@@ -608,13 +608,16 @@ components:
           description: Whether the employee's current address has been verified by the IDSP. With our current IDSP this is always `true` but we anticipate it could be `false` in the future.
           type: boolean
         dateOfAddressCheck:
-          description: Date the address check was done, in the format `YYYY-MM-DD`.
+          description: Date the address check was done, if it was done, in the format `YYYY-MM-DD`.
           type: string
         identityVerified:
           description: Whether the employee's identity has been verified - always `true`.
           type: boolean
         evidenceCheckedBy:
           description: Organisation that performed the identity check.
+          type: string
+        dateOfIdCheck:
+          description: The date the ID check was performed, in the format `YYYY-MM-DD`.
           type: string
         GPG45profile:
           description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
