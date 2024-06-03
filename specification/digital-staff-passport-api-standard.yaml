@@ -283,9 +283,10 @@ paths:
 
         It supports the following record and external system types:
         
-        | Record type | External system type       |
-        | ----------- | -------------------------- |
-        | Core skills | Learning management system |
+        | Record type       | External system type       |
+        | ----------------- | -------------------------- |
+        | Core skills       | Learning management system |
+        | DBS check outcome | Recruitment system         |
         
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
@@ -298,8 +299,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EmployeeRecords'
-              example:
-                $ref: components/examples/GetEmployeeRecordsResponseSuccess.json
+              examples:
+                core-skills:
+                  summary: Core skills
+                  value:
+                    $ref: components/examples/GetEmployeeRecordsResponseCoreSkills.json
+                dbs-check-outcome:
+                  summary: DBS check outcome
+                  value:
+                    $ref: components/examples/GetEmployeeRecordsResponseDBSCheckOutcome.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -339,6 +347,10 @@ paths:
             schema:
               $ref: '#/components/schemas/EmployeeRecordPost'
             examples:
+              core-skills:
+                summary: Add a core skills record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestCoreSkillsTraining.json
               right-to-work:
                 summary: Add a right to work record
                 value:
@@ -347,10 +359,6 @@ paths:
                 summary: Add a DBS check supporting information record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestDBS.json
-              core-skills:
-                summary: Add a core skills record
-                value:
-                  $ref: components/examples/AddEmployeeRecordRequestCoreSkillsTraining.json
       responses:
         '201':
           description: Record created.
@@ -359,6 +367,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeRecordPost'
               examples:
+                core-skills:
+                  summary: Core skills record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseCoreSkillsTraining.json
                 right-to-work:
                   summary: Right to work record added
                   value:
@@ -367,10 +379,6 @@ paths:
                   summary: DBS check supporting information record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseDBS.json
-                core-skills:
-                  summary: Core skills record added
-                  value:
-                    $ref: components/examples/AddEmployeeRecordResponseCoreSkillsTraining.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -512,11 +520,12 @@ components:
     EmployeeRecordGet:
       oneOf:
         - $ref: '#/components/schemas/CoreSkillsTraining'
+        - $ref: '#/components/schemas/DBSCheckOutcome'
     EmployeeRecordPost:
       oneOf:
+        - $ref: '#/components/schemas/CoreSkillsTraining'
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
-        - $ref: '#/components/schemas/CoreSkillsTraining'
     RightToWork:
       type: object
       description: Identity information to support a right to work check, as obtained and verified by an Identity Service Provider.
@@ -590,13 +599,12 @@ components:
         - dateOfIdCheck
         - GPG45profile
         - subjectId
-# TBC other required fields        
       properties:
         recordType:
           description: Type of record.
           type: string
           enum:
-            - 'DBSCheckInformation'
+            - 'DBSCheckSupportingInformation'
         legalFirstName:
           description: The employee's legal first name, as it appears on their identity document.
           type: string
@@ -672,6 +680,21 @@ components:
           type: string
         drivingLicenceCountry:
           description: Issuing country for the driving licence, as an [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) alpha-3 three-letter code.
+          type: string
+    DBSCheckOutcome:
+      type: object
+      description: Outcome of a DBS check, as performed by an employer.
+      required:
+        - recordType
+# TBC other required fields        
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'DBSCheckOutcome'
+        TBC:
+          description: TBC.
           type: string
     CoreSkillsTraining:
       type: object
