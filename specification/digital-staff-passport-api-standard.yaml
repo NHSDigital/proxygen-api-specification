@@ -14,6 +14,7 @@ info:
     | Learning management system | Send core skills                      |
     | Recruitment system         | Send right to work information        |
     | Recruitment system         | Send DBS check supporting information |
+    | Recruitment system         | Send DBS check outcome                |
     | Recruitment system         | Get DBS check outcome                 |
     
     For more context, see [Integrating with the Digital Staf Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
@@ -83,21 +84,25 @@ info:
 
     Hence this API standard supports Digital Staff Passport sending right to work check information to a recruitment system.
 
-    ### DBS check supporting information
-    [Criminal record (DBS) checks](https://www.nhsemployers.org/publications/criminal-record-checks-standard) must be performed by all NHS employers.
+    ### DBS checks
+    NHS employers must consider carrying out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
 
     These checks are normally managed in a recruitment system.
 
+    Digital Staff Passport can help with DBS checks in two ways.
+
+    #### DBS check supporting information
     If the employee has completed digital identity verification via Digital Staff Passport, this information can be used to support the DBS check.
 
     Hence this API standard supports Digital Staff Passport sending DBS check supporting information to a recruitment system.
 
-    ### DBS check outcome
-    Once a DBS check has been completed in a recruitment system, it can be useful for the employee to have the details of the outcome so that it can be passed on to a new employer.
+    #### DBS check outcome
+    In some cases, the employer can use a DBS check outcome from a previous NHS employer instead of a fresh DBS check.
+    Specifically, this applies to [doctors in training if the DBS check is less than three years old](https://www.nhsemployers.org/publications/criminal-record-checks-standard).
 
-    Specifically, this is useful for [doctors in training if the DBS check is less than three years old](https://www.nhsemployers.org/publications/criminal-record-checks-standard).
-
-    Hence this API standard supports Digital Staff Passport receiving a DBS check outcome record from a recruitment system.
+    Hence this API standard supports:
+    - Digital Staff Passport receiving a DBS check outcome record from a recruitment system
+    - Digital Staff Passport sending a DBS check outcome record to a recruitment system
 
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
@@ -335,6 +340,7 @@ paths:
         | Core skills                      | Learning management system |
         | Right to work check information  | Recruitment system         |
         | DBS check supporting information | Recruitment system         |
+        | DBS check outcome                | Recruitment system         |
 
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
@@ -358,7 +364,11 @@ paths:
               dbs-check-supporting-information:
                 summary: Add a DBS check supporting information record
                 value:
-                  $ref: components/examples/AddEmployeeRecordRequestDBS.json
+                  $ref: components/examples/AddEmployeeRecordRequestDBSCheckSupportingInformation.json
+              dbs-check-outcome:
+                summary: Add a DBS check outcome record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestDBSCheckOutcome.json
       responses:
         '201':
           description: Record created.
@@ -378,7 +388,11 @@ paths:
                 dbs-check-supporting-information:
                   summary: DBS check supporting information record added
                   value:
-                    $ref: components/examples/AddEmployeeRecordResponseDBS.json
+                    $ref: components/examples/AddEmployeeRecordResponseDBSCheckSupportingInformation.json
+                dbs-check-outcome:
+                  summary: DBS check outcome record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseDBSCheckOutcome.json
         '4XX':
           description: |
             An error occurred as follows:
