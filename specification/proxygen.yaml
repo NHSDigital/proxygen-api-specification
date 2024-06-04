@@ -424,8 +424,8 @@ info:
 
     For example `service.metadata` refers to an object with the following JSON representation `{"service": {"metadata": <some value>}}`. You can similarly describe attributes in deeper nested objects, e.g. `service.metadata.timestamp`.
     
-    The values declared will be forwarded on as headers on the request. The name of this header is the 'header' value specific to the individual attribute, e.g 'ODS-Code-Header'.
-    If 'header' is not provided, the name of this header is derived from the name you have provided for each attribute, and is formatted as `attribute-<your attribute name>`, e.g. `attribute-party-key`.
+    The values declared will be forwarded on as headers on the request. The name of this header is the `header` value specific to the individual attribute, e.g `ODS-Code-Header`.
+    If `header` is not provided, the name of this header is derived from the name you have provided for each attribute, and is formatted as `attribute-<your attribute name>`, e.g. `attribute-party-key`.
 
     Please be aware that these headers are not base64 encoded before they are forwarded and take this into consideration before attaching sensitive data to consumer applications as attributes.
 
@@ -2241,6 +2241,10 @@ components:
           type: string
         required:
           type: boolean
+          default: true
+        header:
+          type: string
+          default: attribute-{name}
     TargetIdentity:
       type: object
       properties:
