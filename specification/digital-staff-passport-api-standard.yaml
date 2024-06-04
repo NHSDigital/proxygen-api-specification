@@ -8,14 +8,14 @@ info:
 
     The standard currently supports the following use cases:
 
-    | External system type       | Use case                              |
-    | -------------------------- | ------------------------------------- |
-    | Learning management system | Get core skills                       |
-    | Learning management system | Send core skills                      |
-    | Recruitment system         | Send right to work information        |
-    | Recruitment system         | Send DBS check supporting information |
-    | Recruitment system         | Send DBS check outcome                |
-    | Recruitment system         | Get DBS check outcome                 |
+    | Use case                              | Direction | External system type       |
+    | ------------------------------------- | --------- | -------------------------- |
+    | Get core skills                       | from      | Learning management system |
+    | Send core skills                      | to        | Learning management system |
+    | Send right to work information        | to        | Recruitment system         |
+    | Send DBS check supporting information | to        | Recruitment system         |
+    | Get DBS check outcome                 | from      | Recruitment system         |
+    | Send DBS check outcome                | to        | Recruitment system         |
     
     For more context, see [Integrating with the Digital Staf Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
