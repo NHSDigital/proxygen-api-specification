@@ -8,12 +8,14 @@ info:
 
     The standard currently supports the following use cases:
 
-    | Use case                              | External system type       |
-    | ------------------------------------- | -------------------------- |
-    | Get core skills                       | Learning management system |
-    | Send core skills                      | Learning management system |
-    | Send right to work information        | Recruitment system         |
-    | Send DBS check supporting information | Recruitment system         |
+    | Use case                              | Direction | External system type       |
+    | ------------------------------------- | --------- | -------------------------- |
+    | Get core skills                       | from      | Learning management system |
+    | Send core skills                      | to        | Learning management system |
+    | Send right to work information        | to        | Recruitment system         |
+    | Send DBS check supporting information | to        | Recruitment system         |
+    | Get DBS check outcome                 | from      | Recruitment system         |
+    | Send DBS check outcome                | to        | Recruitment system         |
     
     For more context, see [Integrating with the Digital Staf Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
@@ -41,7 +43,7 @@ info:
     ### Sending employee information
     Given the employee's external system ID, DSP can send information to the external system using the [Add an employee record](#post-/organisations/-org-id-/employees/-employee-id-/records) operation.
 
-    The type of information sent depends on the type of system. For example, DSP might send identity information to a recruitment system in order to support varioius employment checks.
+    The type of information sent depends on the type of system. For example, DSP might send right to work information to a recruitment system in order to support varioius employment checks.
 
     ## Employee record types
 
@@ -82,14 +84,25 @@ info:
 
     Hence this API standard supports Digital Staff Passport sending right to work check information to a recruitment system.
 
-    ### DBS check supporting information
-    [Criminal record (DBS) checks](https://www.nhsemployers.org/publications/criminal-record-checks-standard) must be performed by all NHS employers.
+    ### DBS checks
+    NHS employers must consider carrying out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
 
     These checks are normally managed in a recruitment system.
 
+    Digital Staff Passport can help with DBS checks in two ways.
+
+    #### DBS check supporting information
     If the employee has completed digital identity verification via Digital Staff Passport, this information can be used to support the DBS check.
 
     Hence this API standard supports Digital Staff Passport sending DBS check supporting information to a recruitment system.
+
+    #### DBS check outcome
+    In some cases, the employer can use a DBS check outcome from a previous NHS employer instead of a fresh DBS check.
+    Specifically, this applies to [doctors in training if the DBS check is less than three years old](https://www.nhsemployers.org/publications/criminal-record-checks-standard).
+
+    Hence this API standard supports:
+    - Digital Staff Passport receiving a DBS check outcome record from a recruitment system
+    - Digital Staff Passport sending a DBS check outcome record to a recruitment system
 
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
@@ -275,9 +288,10 @@ paths:
 
         It supports the following record and external system types:
         
-        | Record type | External system type       |
-        | ----------- | -------------------------- |
-        | Core skills | Learning management system |
+        | Record type       | External system type       |
+        | ----------------- | -------------------------- |
+        | Core skills       | Learning management system |
+        | DBS check outcome | Recruitment system         |
         
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
@@ -290,8 +304,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EmployeeRecords'
-              example:
-                $ref: components/examples/GetEmployeeRecordsResponseSuccess.json
+              examples:
+                core-skills:
+                  summary: Core skills
+                  value:
+                    $ref: components/examples/GetEmployeeRecordsResponseCoreSkills.json
+                dbs-check-outcome:
+                  summary: DBS check outcome
+                  value:
+                    $ref: components/examples/GetEmployeeRecordsResponseDBSCheckOutcome.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -319,6 +340,7 @@ paths:
         | Core skills                      | Learning management system |
         | Right to work check information  | Recruitment system         |
         | DBS check supporting information | Recruitment system         |
+        | DBS check outcome                | Recruitment system         |
 
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
@@ -331,6 +353,10 @@ paths:
             schema:
               $ref: '#/components/schemas/EmployeeRecordPost'
             examples:
+              core-skills:
+                summary: Add a core skills record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestCoreSkillsTraining.json
               right-to-work:
                 summary: Add a right to work record
                 value:
@@ -338,11 +364,11 @@ paths:
               dbs-check-supporting-information:
                 summary: Add a DBS check supporting information record
                 value:
-                  $ref: components/examples/AddEmployeeRecordRequestDBS.json
-              core-skills:
-                summary: Add a core skills record
+                  $ref: components/examples/AddEmployeeRecordRequestDBSCheckSupportingInformation.json
+              dbs-check-outcome:
+                summary: Add a DBS check outcome record
                 value:
-                  $ref: components/examples/AddEmployeeRecordRequestCoreSkillsTraining.json
+                  $ref: components/examples/AddEmployeeRecordRequestDBSCheckOutcome.json
       responses:
         '201':
           description: Record created.
@@ -351,6 +377,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeRecordPost'
               examples:
+                core-skills:
+                  summary: Core skills record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseCoreSkillsTraining.json
                 right-to-work:
                   summary: Right to work record added
                   value:
@@ -358,11 +388,11 @@ paths:
                 dbs-check-supporting-information:
                   summary: DBS check supporting information record added
                   value:
-                    $ref: components/examples/AddEmployeeRecordResponseDBS.json
-                core-skills:
-                  summary: Core skills record added
+                    $ref: components/examples/AddEmployeeRecordResponseDBSCheckSupportingInformation.json
+                dbs-check-outcome:
+                  summary: DBS check outcome record added
                   value:
-                    $ref: components/examples/AddEmployeeRecordResponseCoreSkillsTraining.json
+                    $ref: components/examples/AddEmployeeRecordResponseDBSCheckOutcome.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -504,11 +534,12 @@ components:
     EmployeeRecordGet:
       oneOf:
         - $ref: '#/components/schemas/CoreSkillsTraining'
+        - $ref: '#/components/schemas/DBSCheckOutcome'
     EmployeeRecordPost:
       oneOf:
+        - $ref: '#/components/schemas/CoreSkillsTraining'
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
-        - $ref: '#/components/schemas/CoreSkillsTraining'
     RightToWork:
       type: object
       description: Identity information to support a right to work check, as obtained and verified by an Identity Service Provider.
@@ -575,20 +606,18 @@ components:
         - legalFirstName
         - legalSurname
         - birthDate
-        - currentAddress
         - currentAddressVerified
-        - dateOfAddressCheck
         - identityVerified
         - evidenceCheckedBy
+        - dateOfIdCheck
         - GPG45profile
         - subjectId
-# TBC other required fields        
       properties:
         recordType:
           description: Type of record.
           type: string
           enum:
-            - 'DBSCheckInformation'
+            - 'DBSCheckSupportingInformation'
         legalFirstName:
           description: The employee's legal first name, as it appears on their identity document.
           type: string
@@ -602,19 +631,22 @@ components:
           description: The employee's date of birth, in the format `YYYY-MM-DD`.
           type: string
         currentAddress:
-          description: The employee's current address, as it appears on their identity document.
+          description: The employee's current address, as it appears on their identity document. Only included if it has been verified.
           type: string
         currentAddressVerified:
           description: Whether the employee's current address has been verified by the IDSP. With our current IDSP this is always `true` but we anticipate it could be `false` in the future.
           type: boolean
         dateOfAddressCheck:
-          description: Date the address check was done, in the format `YYYY-MM-DD`.
+          description: Date the address check was done, if it was done, in the format `YYYY-MM-DD`.
           type: string
         identityVerified:
           description: Whether the employee's identity has been verified - always `true`.
           type: boolean
         evidenceCheckedBy:
           description: Organisation that performed the identity check.
+          type: string
+        dateOfIdCheck:
+          description: The date the ID check was performed, in the format `YYYY-MM-DD`.
           type: string
         GPG45profile:
           description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
@@ -662,6 +694,64 @@ components:
         drivingLicenceCountry:
           description: Issuing country for the driving licence, as an [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) alpha-3 three-letter code.
           type: string
+    DBSCheckOutcome:
+      type: object
+      description: Outcome of a DBS check, as performed by an employer.
+      required:
+        - recordType
+        - applicantName
+        - applicantDateOfBirth
+        - typeOfDBSCheck
+        - adultsBarredListChecked
+        - childrensBarredListChecked
+        - certificateNumber
+        - disclosureIssueDate
+        - informationDisclosed
+# TBC other required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'DBSCheckOutcome'
+        applicantName:
+          description: Employee's name as used in the DBS check.
+          type: string
+        applicantDateOfBirth:
+          description: Employee's date of birth as used in the DBS check.
+          type: string
+        typeOfDBSCheck:
+          description: The type, or level, of DBS check performed.
+          type: string
+          enum:
+            - 'Basic check'
+            - 'Standard check'
+            - 'Enhanced check'
+            - 'Enhanced with barred list(s) check'
+        adultsBarredListChecked:
+          description: Whether or not the adults' barred list was checked.
+          type: boolean
+        childrensBarredListChecked:
+          description: Whether or not the children's barred list was checked.
+          type: boolean
+        certificateNumber:
+          description: Unique identifier for the certificate issued for the DBS check. 12 digits.
+          type: string
+        disclosureIssueDate:
+          description: Date the DBS check certificate was issued, in the format `YYYY-MM-DD`.
+          type: string
+        informationDisclosed:
+          description: Whether or not any information was disclosed on the certificate. A value of `false` means the certificate is 'clean'.
+          type: boolean
+        updateServiceWebsiteCheckDate:
+# do we want this - Farouk says exclude but we've asked ESR for it.
+          description: Date the DBS update service website was checked, in the format `YYYY-MM-DD`.
+          type: string
+        updateServiceWebsiteMatch:
+# do we want this - Farouk says exclude but we've asked ESR for it. Also, Robin says Trac doesn't actually send it to ESR!
+          description: Whether the DBS update service check resulted in a match.
+# TBC what does it mean to get a match?
+          type: boolean
     CoreSkillsTraining:
       type: object
       description: |
