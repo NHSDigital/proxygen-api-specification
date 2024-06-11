@@ -1904,6 +1904,8 @@ components:
       title: OAS v3.0.3 Specification with Proxy Generator API-specific constraints and extensions
       description: |-
         Many Proxy Generator API endpoints accept or return an OpenAPI Specification with some additional constraints and a [specification extension](https://swagger.io/docs/specification/openapi-extensions/).
+        
+        For more in-depth descriptions, see the [OpenAPI specification constraints and extensions](#overview--openapi-specification-constraints-and-extensions) section.
 
         Unfortunately the schema for an OAS cannot be represented in another OAS (this Proxy Generator API specification) due to the lack of support for `patternProperties`. This is a **partial/incomplete** representation of that schema, with a specific focus on the Proxy Generator API-specific constraints and extensions.
 
