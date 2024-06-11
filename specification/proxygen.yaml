@@ -432,7 +432,7 @@ info:
 
     #### Target Identity Headers
 
-    Each object in the `x-nhsd-apim.target-identity` array described an identity header you intend to pass through to the backend. Currently, CIS2 and NHS login authentication is supported.
+    Each object in the `x-nhsd-apim.target-identity` array describes an identity header you intend to pass through to the backend. Currently, CIS2 and NHS login authentication is supported.
 
     Each object within the array relates to an individual target identity header. Specifying the `name` field as one of the available options will determine whether the identity header will be present in the request to the backend.
 
