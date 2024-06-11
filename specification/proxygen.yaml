@@ -2088,6 +2088,9 @@ components:
           items:
             $ref: '#/components/schemas/TargetAttribute'
         target-identity:
+          type: array
+          description: Describes identity headers intended to be passed through to the target backend from the users CIS2 or NHS login auth token.
+          items:
             $ref: '#/components/schemas/TargetIdentity'
     Target:
       description: Describes the API back-end and therefore associated infrastructure for deployment.
@@ -2262,13 +2265,16 @@ components:
       properties:
         name:
           type: string
+          description: Name of the identity header to be included in target requests
           enum:
-            - id-token
-            - nhs-login-nhs-number
             - cis2-uuid
             - cis2-urid
+            - nhs-login-nhs-number
+            - id-token
         header:
+          description: Custom header name
           type: string
+          default: "NHSD-Session-UUID | NHSD-Session-URID | NHSD-NHSlogin-NHS-Number | NHSD-ID-Token"
     instance:
       title: instance
       allOf:
