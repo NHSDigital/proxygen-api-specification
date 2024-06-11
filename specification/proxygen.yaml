@@ -432,18 +432,19 @@ info:
 
     #### Target Identity Headers
 
-    Each item under `x-nhsd-apim.target-identity` is the name of an authentication mechanism for which you intend to pass identity headers through to the backend. Currently, CIS2 and NHS login authentication is supported.
+    Each object in the `x-nhsd-apim.target-identity` array described an identity header you intend to pass through to the backend. Currently, CIS2 and NHS login authentication is supported.
 
-    Under the `cis2` and `nhs-login` block, the `included` boolean will determine whether the identity headers will be present in the request to the backend for the corresponding auth provider.
+    Each object within the array relates to an individual target identity header. Specifying the `name` field as one of the available options will determine whether the identity header will be present in the request to the backend.
 
-    The individual header names are optional. In their absence, the following defaults will be used: 
-    - uuid-header-name: `NHSD-Session-UUID` 
-    - urid-header-name: `NHSD-Session-URID`
-    - nhs-number-header-name: `NHSD-NHSlogin-NHS-Number`
+    The header name can be optionally specified using the `header` field. In their absence, the following defaults will be used: 
+    - cis2-uuid: `NHSD-Session-UUID` 
+    - cis2-urid: `NHSD-Session-URID`
+    - nhs-login-nhs-number: `NHSD-NHSlogin-NHS-Number`
+    - id-token: `NHSD-ID-Token`
 
     The headers will have their values populated using the auth token associated with the CIS2 or NHS login authentication.
        
-    The CIS2 UUID or NHS login NHS number value is obtained from the access token in the request. The Role ID value is obtained via the shared UserRoleServiceV2.
+    The CIS2 UUID, NHS login NHS number, and ID token values are obtained from the access token in the request. The Role ID value is obtained via the shared UserRoleServiceV2.
 
     If the request to the _proxy_ includes the default Role ID header `NHSD-Session-URID`, this will flow through to the backend as the urid-header-name defined in your specification (or remain as the default header name, in the absence of a provided header name).
 
@@ -457,9 +458,19 @@ info:
       nhs-login:
         included: true
         nhs-number-header-name: "custom-nhs-number-header"
+
+    target-identity:
+      - name: id-token
+        header: "custom-id-token-heade-name"
+      - name: cis2-uuid
+        header: "custom-uuid-header-name"
+      - name: cis2-urid
+        header: "custom-urid-header-name"
+      - name: nhs-login-nhs-number
+        header: "custom-nhs-number-header"
     ```
 
-    The value of the included field must be a boolean and the header-name fields must be strings.
+    The `name` and `header` fields must be strings. `name` must be one of the following values: `id-token`, `cis2-uuid`, `cis2-urid`, `nhs-login-nhs-number`.
 
 
     ## Usage limits
@@ -2246,18 +2257,18 @@ components:
           default: attribute-{name}
     TargetIdentity:
       type: object
+      required:
+        - name
       properties:
-        cis2:
-          type: object
-          required:
-            - included
-          properties:
-            included:
-              type: boolean  
-            urid-header-name:
-              type: string
-            uuid-header-name:
-              type: string
+        name:
+          type: string
+          enum:
+            - id-token
+            - nhs-login-nhs-number
+            - cis2-uuid
+            - cis2-urid
+        header:
+          type: string
     instance:
       title: instance
       allOf:
