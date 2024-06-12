@@ -451,15 +451,6 @@ info:
     Example usage:
     ```
     target-identity:
-      cis2:
-        included: true
-        uuid-header-name: "custom-uuid-header-name"
-        urid-header-name: "custom-urid-header-name"
-      nhs-login:
-        included: true
-        nhs-number-header-name: "custom-nhs-number-header"
-
-    target-identity:
       - name: id-token
         header: "custom-id-token-heade-name"
       - name: cis2-uuid
