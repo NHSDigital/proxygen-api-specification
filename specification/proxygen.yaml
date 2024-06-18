@@ -459,9 +459,9 @@ info:
       - name: cis2-acr
         header: "custom-acr-header-name"
       - name: nhs-login-nhs-number
-        header: "custom-nhs-number-header"
+        header: "custom-nhs-number-header-name"
       - name: id-token
-        header: "custom-id-token-heade-name"
+        header: "custom-id-token-header-name"
     ```
 
     The `name` and `header` fields must be strings. `name` must be one of the following values: `cis2-uuid`, `cis2-urid`, `cis2-acr`, `nhs-login-nhs-number`, `id-token`.
