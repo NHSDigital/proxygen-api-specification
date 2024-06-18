@@ -439,6 +439,7 @@ info:
     The header name can be optionally specified using the `header` field. In their absence, the following defaults will be used: 
     - cis2-uuid: `NHSD-Session-UUID` 
     - cis2-urid: `NHSD-Session-URID`
+    - cis2-acr: `NHSD-ACR`
     - nhs-login-nhs-number: `NHSD-NHSlogin-NHS-Number`
     - id-token: `NHSD-ID-Token`
 
@@ -451,17 +452,19 @@ info:
     Example usage:
     ```
     target-identity:
-      - name: id-token
-        header: "custom-id-token-heade-name"
       - name: cis2-uuid
         header: "custom-uuid-header-name"
       - name: cis2-urid
         header: "custom-urid-header-name"
+      - name: cis2-acr
+        header: "custom-acr-header-name"
       - name: nhs-login-nhs-number
         header: "custom-nhs-number-header"
+      - name: id-token
+        header: "custom-id-token-heade-name"
     ```
 
-    The `name` and `header` fields must be strings. `name` must be one of the following values: `id-token`, `cis2-uuid`, `cis2-urid`, `nhs-login-nhs-number`.
+    The `name` and `header` fields must be strings. `name` must be one of the following values: `cis2-uuid`, `cis2-urid`, `cis2-acr`, `nhs-login-nhs-number`, `id-token`.
 
 
     ## Usage limits
@@ -2262,12 +2265,13 @@ components:
           enum:
             - cis2-uuid
             - cis2-urid
+            - cis2-acr
             - nhs-login-nhs-number
             - id-token
         header:
           description: Custom header name
           type: string
-          default: "NHSD-Session-UUID | NHSD-Session-URID | NHSD-NHSlogin-NHS-Number | NHSD-ID-Token"
+          default: "NHSD-Session-UUID | NHSD-Session-URID | NHSD-ACR | NHSD-NHSlogin-NHS-Number | NHSD-ID-Token"
     instance:
       title: instance
       allOf:
