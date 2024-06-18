@@ -440,6 +440,7 @@ info:
     - cis2-uuid: `NHSD-Session-UUID` 
     - cis2-urid: `NHSD-Session-URID`
     - nhs-login-nhs-number: `NHSD-NHSlogin-NHS-Number`
+    - nhs-login-identity-proofing-level: `NHSD-NHSlogin-Identity-Proofing-Level`
     - id-token: `NHSD-ID-Token`
 
     The headers will have their values populated using the auth token associated with the CIS2 or NHS login authentication.
@@ -459,9 +460,11 @@ info:
         header: "custom-urid-header-name"
       - name: nhs-login-nhs-number
         header: "custom-nhs-number-header"
+      - name: nhs-login-identity-proofing-level
+        header: "custom-identity-proofing-level-header"
     ```
 
-    The `name` and `header` fields must be strings. `name` must be one of the following values: `id-token`, `cis2-uuid`, `cis2-urid`, `nhs-login-nhs-number`.
+    The `name` and `header` fields must be strings. `name` must be one of the following values: `id-token`, `cis2-uuid`, `cis2-urid`, `nhs-login-nhs-number`, `nhs-login-identity-proofing-level`.
 
 
     ## Usage limits
@@ -2263,11 +2266,12 @@ components:
             - cis2-uuid
             - cis2-urid
             - nhs-login-nhs-number
+            - nhs-login-identity-proofing-level
             - id-token
         header:
           description: Custom header name
           type: string
-          default: "NHSD-Session-UUID | NHSD-Session-URID | NHSD-NHSlogin-NHS-Number | NHSD-ID-Token"
+          default: "NHSD-Session-UUID | NHSD-Session-URID | NHSD-NHSlogin-NHS-Number | NHSD-NHSlogin-Identity-Proofing-Level | NHSD-ID-Token"
     instance:
       title: instance
       allOf:
