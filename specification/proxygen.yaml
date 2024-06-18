@@ -439,6 +439,7 @@ info:
     The header name can be optionally specified using the `header` field. In their absence, the following defaults will be used: 
     - cis2-uuid: `NHSD-Session-UUID` 
     - cis2-urid: `NHSD-Session-URID`
+    - cis2-acr: `NHSD-Session-CIS2-ACR`
     - nhs-login-nhs-number: `NHSD-NHSlogin-NHS-Number`
     - nhs-login-identity-proofing-level: `NHSD-NHSlogin-Identity-Proofing-Level`
     - id-token: `NHSD-ID-Token`
@@ -452,19 +453,21 @@ info:
     Example usage:
     ```
     target-identity:
-      - name: id-token
-        header: "custom-id-token-heade-name"
       - name: cis2-uuid
         header: "custom-uuid-header-name"
       - name: cis2-urid
         header: "custom-urid-header-name"
+      - name: cis2-acr
+        header: "custom-acr-header-name"
       - name: nhs-login-nhs-number
-        header: "custom-nhs-number-header"
+        header: "custom-nhs-number-header-name"
       - name: nhs-login-identity-proofing-level
-        header: "custom-identity-proofing-level-header"
+        header: "custom-identity-proofing-level-header-name"
+      - name: id-token
+        header: "custom-id-token-header-name"
     ```
 
-    The `name` and `header` fields must be strings. `name` must be one of the following values: `id-token`, `cis2-uuid`, `cis2-urid`, `nhs-login-nhs-number`, `nhs-login-identity-proofing-level`.
+    The `name` and `header` fields must be strings. `name` must be one of the following values: `cis2-uuid`, `cis2-urid`, `cis2-acr`, `nhs-login-nhs-number`, `nhs-login-identity-proofing-level`, `id-token`.
 
 
     ## Usage limits
@@ -2265,13 +2268,14 @@ components:
           enum:
             - cis2-uuid
             - cis2-urid
+            - cis2-acr
             - nhs-login-nhs-number
             - nhs-login-identity-proofing-level
             - id-token
         header:
           description: Custom header name
           type: string
-          default: "NHSD-Session-UUID | NHSD-Session-URID | NHSD-NHSlogin-NHS-Number | NHSD-NHSlogin-Identity-Proofing-Level | NHSD-ID-Token"
+          default: "NHSD-Session-UUID | NHSD-Session-URID | NHSD-Session-CIS2-ACR | NHSD-NHSlogin-NHS-Number | NHSD-NHSlogin-Identity-Proofing-Level | NHSD-ID-Token"
     instance:
       title: instance
       allOf:
