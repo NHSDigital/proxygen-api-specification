@@ -441,6 +441,7 @@ info:
     - cis2-urid: `NHSD-Session-URID`
     - cis2-acr: `NHSD-Session-CIS2-ACR`
     - nhs-login-nhs-number: `NHSD-NHSlogin-NHS-Number`
+    - nhs-login-identity-proofing-level: `NHSD-NHSlogin-Identity-Proofing-Level`
     - id-token: `NHSD-ID-Token`
 
     The headers will have their values populated using the auth token associated with the CIS2 or NHS login authentication.
@@ -460,11 +461,13 @@ info:
         header: "custom-acr-header-name"
       - name: nhs-login-nhs-number
         header: "custom-nhs-number-header-name"
+      - name: nhs-login-identity-proofing-level
+        header: "custom-identity-proofing-level-header-name"
       - name: id-token
         header: "custom-id-token-header-name"
     ```
 
-    The `name` and `header` fields must be strings. `name` must be one of the following values: `cis2-uuid`, `cis2-urid`, `cis2-acr`, `nhs-login-nhs-number`, `id-token`.
+    The `name` and `header` fields must be strings. `name` must be one of the following values: `cis2-uuid`, `cis2-urid`, `cis2-acr`, `nhs-login-nhs-number`, `nhs-login-identity-proofing-level`, `id-token`.
 
 
     ## Usage limits
@@ -2168,7 +2171,7 @@ components:
           type: string
     ExternalTarget:
       type: object
-      description: The API back-end is hosted externally to the API Platform. Reqeusts will be sent sent out to the provided URL.
+      description: The API back-end is hosted externally to the API Platform. Requests will be sent sent out to the provided URL.
       required:
         - url
         - security
@@ -2267,11 +2270,12 @@ components:
             - cis2-urid
             - cis2-acr
             - nhs-login-nhs-number
+            - nhs-login-identity-proofing-level
             - id-token
         header:
           description: Custom header name
           type: string
-          default: "NHSD-Session-UUID | NHSD-Session-URID | NHSD-Session-CIS2-ACR | NHSD-NHSlogin-NHS-Number | NHSD-ID-Token"
+          default: "NHSD-Session-UUID | NHSD-Session-URID | NHSD-Session-CIS2-ACR | NHSD-NHSlogin-NHS-Number | NHSD-NHSlogin-Identity-Proofing-Level | NHSD-ID-Token"
     instance:
       title: instance
       allOf:
