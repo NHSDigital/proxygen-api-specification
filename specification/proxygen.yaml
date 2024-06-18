@@ -2171,7 +2171,7 @@ components:
           type: string
     ExternalTarget:
       type: object
-      description: The API back-end is hosted externally to the API Platform. Reqeusts will be sent sent out to the provided URL.
+      description: The API back-end is hosted externally to the API Platform. Requests will be sent sent out to the provided URL.
       required:
         - url
         - security
