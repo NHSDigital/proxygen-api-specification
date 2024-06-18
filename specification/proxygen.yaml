@@ -439,7 +439,7 @@ info:
     The header name can be optionally specified using the `header` field. In their absence, the following defaults will be used: 
     - cis2-uuid: `NHSD-Session-UUID` 
     - cis2-urid: `NHSD-Session-URID`
-    - cis2-acr: `NHSD-ACR`
+    - cis2-acr: `NHSD-Session-CSI2-ACR`
     - nhs-login-nhs-number: `NHSD-NHSlogin-NHS-Number`
     - id-token: `NHSD-ID-Token`
 
@@ -2271,7 +2271,7 @@ components:
         header:
           description: Custom header name
           type: string
-          default: "NHSD-Session-UUID | NHSD-Session-URID | NHSD-ACR | NHSD-NHSlogin-NHS-Number | NHSD-ID-Token"
+          default: "NHSD-Session-UUID | NHSD-Session-URID | NHSD-Session-CSI2-ACR | NHSD-NHSlogin-NHS-Number | NHSD-ID-Token"
     instance:
       title: instance
       allOf:
