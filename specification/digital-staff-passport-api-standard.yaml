@@ -17,7 +17,7 @@ info:
     | Get DBS check outcome                 | from      | Recruitment system         |
     | Send DBS check outcome                | to        | Recruitment system         |
     
-    For more context, see [Integrating with the Digital Staf Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
+    For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
     - [integration pattern 4](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-4-inbound-via-online-portal)
 
@@ -85,7 +85,7 @@ info:
     Hence this API standard supports Digital Staff Passport sending right to work check information to a recruitment system.
 
     ### DBS checks
-    NHS employers must consider carrying out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
+    In most cases, NHS employers must carry out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
 
     These checks are normally managed in a recruitment system.
 
@@ -142,10 +142,10 @@ info:
     ## Environments and testing
     You'll need to provide the following environments:
 
-    | Environment | Suggested base URL |
-    |---|---|
+    | Environment      | Suggested base URL                       |
+    | ---------------- | ---------------------------------------- |
     | Integration test | `integration-test.<your domain>/dsp-api` |
-    | Integration test | `<your domain>/dsp-api` |
+    | Production       | `<your domain>/dsp-api`                  |
 
     ### Single versus multiple instance systems
     If your system runs as a single instance supporting multiple employer organisations (sometimes called 'multiple tenant'), you should deploy it as per the suggested base URLs suggested above.
@@ -157,11 +157,16 @@ info:
     In this case, you should alter the URL for the individual operations to exclude the `organisations/{org-id}` part, so that it isn't repeated.
 
     ### Integration testing
-    Your integration test environment needs to include:
-    - at least two organisations, so we can test cross-organisation security
-    - sufficient test data to support a reasonable set of test scenarios - for example multiple people with the same surname or date of birth
+    For details, see [Digital Staff Passport integration testing](https://digital.nhs.uk/services/digital-staff-passport/integration/testing).
 
     ## Onboarding
+    Before your integration goes live, we’ll need to complete a number of assurance checks for both your organisation and your system. We call this onboarding.
+
+    This includes, for example, making sure we have processes in place to deal with live incidents.
+
+    For more details, see [Digital Staff Passport onboarding and assurance](https://digital.nhs.uk/services/digital-staff-passport/integration/onboarding-and-assurance).
+
+    
     We are currently running a pilot with one external system, so the API standard is not available for anyone else to onboard just yet. 
     
   contact:
