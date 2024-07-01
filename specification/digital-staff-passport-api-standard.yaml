@@ -8,14 +8,14 @@ info:
 
     The standard currently supports the following use cases:
 
-    | Use case                              | Direction | External system type       |
-    | ------------------------------------- | --------- | -------------------------- |
-    | Get core skills                       | from      | Learning management system |
-    | Send core skills                      | to        | Learning management system |
-    | Send right to work information        | to        | Recruitment system         |
-    | Send DBS check supporting information | to        | Recruitment system         |
-    | Get DBS check outcome                 | from      | Recruitment system         |
-    | Send DBS check outcome                | to        | Recruitment system         |
+    | Use case                              | Direction | External system type                     |
+    | ------------------------------------- | --------- | ---------------------------------------- |
+    | Get core skills                       | from      | Learning management system               |
+    | Send core skills                      | to        | Learning management system               |
+    | Send right to work information        | to        | Recruitment system                       |
+    | Send DBS check supporting information | to        | Recruitment system / DBS registered body |
+    | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
+    | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
     
     For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
@@ -87,7 +87,7 @@ info:
     ### DBS checks
     In most cases, NHS employers must carry out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
 
-    These checks are normally managed in a recruitment system.
+    These checks must be done by a [DBS registered body](https://www.gov.uk/guidance/dbs-check-requests-guidance-for-employers#registering-as-an-organisation-with-dbs) and are normally managed in a recruitment system.
 
     Digital Staff Passport can help with DBS checks in two ways.
 
