@@ -86,7 +86,6 @@ info:
 
     ### DBS checks
     In most cases, NHS employers must carry out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
-
     These checks must be done by a [DBS registered body](https://www.gov.uk/guidance/dbs-check-requests-guidance-for-employers#registering-as-an-organisation-with-dbs) and are normally managed in a recruitment system.
 
     Digital Staff Passport can help with DBS checks in two ways.
@@ -165,9 +164,6 @@ info:
     This includes, for example, making sure we have processes in place to deal with live incidents.
 
     For more details, see [Digital Staff Passport onboarding and assurance](https://digital.nhs.uk/services/digital-staff-passport/integration/onboarding-and-assurance).
-
-    
-    We are currently running a pilot with one external system, so the API standard is not available for anyone else to onboard just yet. 
     
   contact:
     name: API Management Support
