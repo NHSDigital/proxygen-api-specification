@@ -744,15 +744,6 @@ components:
         informationDisclosed:
           description: Whether or not any information was disclosed on the certificate. A value of `false` means the certificate is 'clean'.
           type: boolean
-        updateServiceWebsiteCheckDate:
-# do we want this - Farouk says exclude but we've asked ESR for it.
-          description: Date the DBS update service website was checked, in the format `YYYY-MM-DD`.
-          type: string
-        updateServiceWebsiteMatch:
-# do we want this - Farouk says exclude but we've asked ESR for it. Also, Robin says Trac doesn't actually send it to ESR!
-          description: Whether the DBS update service check resulted in a match.
-# TBC what does it mean to get a match?
-          type: boolean
     CoreSkillsTraining:
       type: object
       description: |
