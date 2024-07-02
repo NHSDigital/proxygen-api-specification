@@ -541,6 +541,7 @@ components:
         - $ref: '#/components/schemas/CoreSkillsTraining'
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
+        - $ref: '#/components/schemas/DBSCheckOutcome'
     RightToWork:
       type: object
       description: Identity information to support a right to work check, as obtained and verified by an Identity Service Provider.
