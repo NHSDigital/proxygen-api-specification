@@ -8,16 +8,16 @@ info:
 
     The standard currently supports the following use cases:
 
-    | Use case                              | Direction | External system type       |
-    | ------------------------------------- | --------- | -------------------------- |
-    | Get core skills                       | from      | Learning management system |
-    | Send core skills                      | to        | Learning management system |
-    | Send right to work information        | to        | Recruitment system         |
-    | Send DBS check supporting information | to        | Recruitment system         |
-    | Get DBS check outcome                 | from      | Recruitment system         |
-    | Send DBS check outcome                | to        | Recruitment system         |
+    | Use case                              | Direction | External system type                     |
+    | ------------------------------------- | --------- | ---------------------------------------- |
+    | Get core skills                       | from      | Learning management system               |
+    | Send core skills                      | to        | Learning management system               |
+    | Send right to work information        | to        | Recruitment system                       |
+    | Send DBS check supporting information | to        | Recruitment system / DBS registered body |
+    | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
+    | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
     
-    For more context, see [Integrating with the Digital Staf Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
+    For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
     - [integration pattern 4](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-4-inbound-via-online-portal)
 
@@ -85,9 +85,8 @@ info:
     Hence this API standard supports Digital Staff Passport sending right to work check information to a recruitment system.
 
     ### DBS checks
-    NHS employers must consider carrying out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
-
-    These checks are normally managed in a recruitment system.
+    In most cases, NHS employers must carry out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
+    These checks must be done by a [DBS registered body](https://www.gov.uk/guidance/dbs-check-requests-guidance-for-employers#registering-as-an-organisation-with-dbs) and are normally managed in a recruitment system.
 
     Digital Staff Passport can help with DBS checks in two ways.
 
@@ -142,10 +141,10 @@ info:
     ## Environments and testing
     You'll need to provide the following environments:
 
-    | Environment | Suggested base URL |
-    |---|---|
+    | Environment      | Suggested base URL                       |
+    | ---------------- | ---------------------------------------- |
     | Integration test | `integration-test.<your domain>/dsp-api` |
-    | Integration test | `<your domain>/dsp-api` |
+    | Production       | `<your domain>/dsp-api`                  |
 
     ### Single versus multiple instance systems
     If your system runs as a single instance supporting multiple employer organisations (sometimes called 'multiple tenant'), you should deploy it as per the suggested base URLs suggested above.
@@ -157,12 +156,14 @@ info:
     In this case, you should alter the URL for the individual operations to exclude the `organisations/{org-id}` part, so that it isn't repeated.
 
     ### Integration testing
-    Your integration test environment needs to include:
-    - at least two organisations, so we can test cross-organisation security
-    - sufficient test data to support a reasonable set of test scenarios - for example multiple people with the same surname or date of birth
+    For details, see [Digital Staff Passport integration testing](https://digital.nhs.uk/services/digital-staff-passport/integration/testing).
 
     ## Onboarding
-    We are currently running a pilot with one external system, so the API standard is not available for anyone else to onboard just yet. 
+    Before your integration goes live, we’ll need to complete a number of assurance checks for both your organisation and your system. We call this onboarding.
+
+    This includes, for example, making sure we have processes in place to deal with live incidents.
+
+    For more details, see [Digital Staff Passport onboarding and assurance](https://digital.nhs.uk/services/digital-staff-passport/integration/onboarding-and-assurance).
     
   contact:
     name: API Management Support
@@ -540,6 +541,7 @@ components:
         - $ref: '#/components/schemas/CoreSkillsTraining'
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
+        - $ref: '#/components/schemas/DBSCheckOutcome'
     RightToWork:
       type: object
       description: Identity information to support a right to work check, as obtained and verified by an Identity Service Provider.
@@ -742,15 +744,6 @@ components:
           type: string
         informationDisclosed:
           description: Whether or not any information was disclosed on the certificate. A value of `false` means the certificate is 'clean'.
-          type: boolean
-        updateServiceWebsiteCheckDate:
-# do we want this - Farouk says exclude but we've asked ESR for it.
-          description: Date the DBS update service website was checked, in the format `YYYY-MM-DD`.
-          type: string
-        updateServiceWebsiteMatch:
-# do we want this - Farouk says exclude but we've asked ESR for it. Also, Robin says Trac doesn't actually send it to ESR!
-          description: Whether the DBS update service check resulted in a match.
-# TBC what does it mean to get a match?
           type: boolean
     CoreSkillsTraining:
       type: object
