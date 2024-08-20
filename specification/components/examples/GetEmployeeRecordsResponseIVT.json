@@ -99,7 +99,7 @@
         "result": "TBC",
         "interpretation": "Not Detected"
       },
-      "MmrVaccine": [
+      "mmrVaccine": [
         {
           "date": "2018-06-01"
         },
@@ -107,7 +107,7 @@
           "date": "2018-06-01"
         }
       ],
-      "MeaslesVaccine": [
+      "measlesVaccine": [
         {
           "date": "2018-06-01"
         },
@@ -115,7 +115,7 @@
           "date": "2018-06-01"
         }
       ],
-      "MumpsVaccine": [
+      "mumpsVaccine": [
         {
           "date": "2018-06-01"
         },
@@ -123,7 +123,7 @@
           "date": "2018-06-01"
         }
       ],
-      "RubellaVaccine": [
+      "rubellaVaccine": [
         {
           "date": "2018-06-01"
         },
@@ -134,6 +134,79 @@
     },
     {
       "recordType": "IVT-DiptheriaTetanusPolio",
-      TBC
+      "dtpVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ],
+      "diptheriaAntibodyTest": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      }
+    },
+    {
+      "recordType": "IVT-HepatitisB",
+      "hepatitisBVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ]
+    },
+    {
+      "recordType": "IVT-Pertussis",
+      "pertussisVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ]
+    },
+    {
+      "recordType": "IVT-Varicella",
+      "historyOfChickenpox": {
+        "result": "No"
+      },
+      "varicellaVzvAntibodyTest": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "varicellaVzvVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ]
+    },
+    {
+      "recordType": "IVT-Seasonal",
+      "InfluenzaVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ],
+      "covid19Vaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ]
+    }
   ]
 }
