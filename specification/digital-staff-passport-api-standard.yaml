@@ -831,6 +831,26 @@ components:
           description: The date when the core skill expires, if appropriate, in the format `YYYY-MM-DD`.
           type: string
           example: '2024-10-31'
+    ExposureProneProcedureTests:
+      type: object
+      description: |
+        TBC
+      required:
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'ExposureProneProcedureTests'
+        TBC:
+          description: TBC
+          type: TBC
+          example: TBC
+        TBC:
+          description: TBC
+          type: TBC
+          example: TBC
     Error:
       type: object
       required:
