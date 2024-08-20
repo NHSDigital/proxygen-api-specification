@@ -61,7 +61,7 @@
       ]
     },
     {
-      "recordType": "IVT-ExposureProneProcedureTests",
+      "recordType": "IVT-Tuberculosis",
       "bcgScarEvident": {
           "result": "Yes"
       },
@@ -79,7 +79,61 @@
         "interpretation": "Not Detected"
       },
       "interferonGammaReleaseAssayTest": {
-        
-    }
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "chemoprophylaxisCompleted": {
+        "date": "2018-06-01"
+      }
+    },
+    {
+      "recordType": "IVT-MeaslesMumpsRubella",
+      "measlesAntibodiesTest": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "rubellaAntibodiesTest": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "MmrVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ],
+      "MeaslesVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ],
+      "MumpsVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ],
+      "RubellaVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ]
+    },
+    {
+      "recordType": "IVT-DiptheriaTetanusPolio",
+      TBC
   ]
 }
