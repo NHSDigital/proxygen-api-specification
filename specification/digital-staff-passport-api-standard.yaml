@@ -314,6 +314,10 @@ paths:
                   summary: DBS check outcome
                   value:
                     $ref: components/examples/GetEmployeeRecordsResponseDBSCheckOutcome.json
+                ivt:
+                  summary: Immunisations, vaccinations and tests
+                  value:
+                    $ref: components/examples/GetEmployeeRecordsResponseIVT.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -536,6 +540,14 @@ components:
       oneOf:
         - $ref: '#/components/schemas/CoreSkillsTraining'
         - $ref: '#/components/schemas/DBSCheckOutcome'
+        - $ref: '#/components/schemas/IVT-ExposureProneProcedureTests'
+        - $ref: '#/components/schemas/IVT-Tuberculosis'
+        - $ref: '#/components/schemas/IVT-MeaslesMumpsRubella'
+        - $ref: '#/components/schemas/IVT-DiptheriaTetanusPolio'
+        - $ref: '#/components/schemas/IVT-HepatitisB'
+        - $ref: '#/components/schemas/IVT-Pertussis'
+        - $ref: '#/components/schemas/IVT-Varicella'
+        - $ref: '#/components/schemas/IVT-Seasonal'
     EmployeeRecordPost:
       oneOf:
         - $ref: '#/components/schemas/CoreSkillsTraining'
@@ -831,26 +843,110 @@ components:
           description: The date when the core skill expires, if appropriate, in the format `YYYY-MM-DD`.
           type: string
           example: '2024-10-31'
-    ExposureProneProcedureTests:
+    IVT-ExposureProneProcedureTests:
       type: object
       description: |
         TBC
       required:
+        - recordType
 #TBC required fields
       properties:
         recordType:
           description: Type of record.
           type: string
           enum:
-            - 'ExposureProneProcedureTests'
-        TBC:
-          description: TBC
-          type: TBC
-          example: TBC
-        TBC:
-          description: TBC
-          type: TBC
-          example: TBC
+            - 'IVT-ExposureProneProcedureTests'
+    IVT-Tuberculosis:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Tuberculosis'
+    IVT-MeaslesMumpsRubella:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-MeaslesMumpsRubella'
+    IVT-DiptheriaTetanusPolio:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-DiptheriaTetanusPolio'
+    IVT-HepatitisB:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-HepatitisB'
+    IVT-Pertussis:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Pertussis'
+    IVT-Varicella:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Varicella'
+    IVT-Seasonal:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Seasonal'
     Error:
       type: object
       required:
