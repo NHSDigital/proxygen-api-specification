@@ -1,0 +1,59 @@
+{
+  "recordType": "IVT-ExposureProneProcedureTests",
+  "hepatitisBSurfaceAntigenTestIvs" : {
+    "date": "2018-06-01",
+    "result": "TBC",
+    "interpretation": "Not Detected"
+  },
+  "hepatitisBAntibodyLevelTestIvs": {
+    "date": "2018-06-01",
+    "result": "TBC",
+    "interpretation": "Not Detected"
+  },
+  "hepatitisBCoreAntibodyTestIvs": {
+    "date": "2018-06-01",
+    "result": "TBC",
+    "interpretation": "Not Detected"
+  },
+  "hepatitisBDnaLevelTestIvs": [
+    {
+      "date": "2018-06-01",
+      "result": "TBC",
+      "interpretation": "Not Detected"
+    },
+    {
+      "date": "2018-06-01",
+      "result": "TBC",
+      "interpretation": "Not Detected"
+    }
+  ],
+  "hepatitisCRnaLevelTestIvs": [
+    {
+      "date": "2018-06-01",
+      "result": "TBC",
+      "interpretation": "Not Detected"
+    },
+    {
+      "date": "2018-06-01",
+      "result": "TBC",
+      "interpretation": "Not Detected"
+    }
+  ],
+  "HivAntibodyTestIvs" : {
+    "date": "2018-06-01",
+    "result": "TBC",
+    "interpretation": "Not Detected"
+  },
+  "HivViralLoadTestIvs": [
+    {
+      "date": "2018-06-01",
+      "result": "TBC",
+      "interpretation": "Not Detected"
+    },
+    {
+      "date": "2018-06-01",
+      "result": "TBC",
+      "interpretation": "Not Detected"
+    }
+  ]
+}
