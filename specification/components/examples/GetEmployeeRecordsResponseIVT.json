@@ -59,6 +59,27 @@
           "interpretation": "Not Detected"
         }
       ]
+    },
+    {
+      "recordType": "IVT-ExposureProneProcedureTests",
+      "bcgScarEvident": {
+          "result": "Yes"
+      },
+      "bcgVaccination": {
+          "Date": "2018-06-01"
+      },
+      "mantouxTuberculinSkinTest": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "chestXRayForTb": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "interferonGammaReleaseAssayTest": {
+        
     }
   ]
 }
