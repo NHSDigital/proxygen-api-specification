@@ -8,17 +8,17 @@
         "result": "TBC",
         "interpretation": "Not Detected"
       },
-      "hepatitisBAntibodyLevelTestIvs" : {
+      "hepatitisBAntibodyLevelTestIvs": {
         "date": "2018-06-01",
         "result": "TBC",
         "interpretation": "Not Detected"
       },
-      "hepatitisBCoreAntibodyTestIvs" : {
+      "hepatitisBCoreAntibodyTestIvs": {
         "date": "2018-06-01",
         "result": "TBC",
         "interpretation": "Not Detected"
       },
-      "hepatitisBDnaLevelTestIvs" : [
+      "hepatitisBDnaLevelTestIvs": [
         {
           "date": "2018-06-01",
           "result": "TBC",
@@ -30,7 +30,7 @@
           "interpretation": "Not Detected"
         }
       ],
-      "hepatitisCRnaLevelTestIvs" [
+      "hepatitisCRnaLevelTestIvs": [
         {
           "date": "2018-06-01",
           "result": "TBC",
@@ -47,7 +47,7 @@
         "result": "TBC",
         "interpretation": "Not Detected"
       },
-      "HivViralLoadTestIvs" : [
+      "HivViralLoadTestIvs": [
         {
           "date": "2018-06-01",
           "result": "TBC",
