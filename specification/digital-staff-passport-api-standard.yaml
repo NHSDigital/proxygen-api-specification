@@ -374,6 +374,10 @@ paths:
                 summary: Add a DBS check outcome record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestDBSCheckOutcome.json
+              ivt-exposure-prone-procedure-tests:
+                summary: Add an IVT exposure prone procedure tests record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestIVTExposureProneProcedureTests.json
       responses:
         '201':
           description: Record created.
@@ -398,6 +402,10 @@ paths:
                   summary: DBS check outcome record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseDBSCheckOutcome.json
+                ivt-exposure-prone-procedure-tests:
+                  summary: IVT exposure prone procedure tests record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseIVTExposureProneProcedureTests.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -554,6 +562,14 @@ components:
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
         - $ref: '#/components/schemas/DBSCheckOutcome'
+        - $ref: '#/components/schemas/IVT-ExposureProveProcedureTests'
+        - $ref: '#/components/schemas/IVT-Tuberculosis'
+        - $ref: '#/components/schemas/IVT-MeaslesMumpsRubella'
+        - $ref: '#/components/schemas/IVT-DiptheriaTetanusPolio'
+        - $ref: '#/components/schemas/IVT-HepatitisB'
+        - $ref: '#/components/schemas/IVT-Pertussis'
+        - $ref: '#/components/schemas/IVT-Varicella'
+        - $ref: '#/components/schemas/IVT-Seasonal'
     RightToWork:
       type: object
       description: Identity information to support a right to work check, as obtained and verified by an Identity Service Provider.
