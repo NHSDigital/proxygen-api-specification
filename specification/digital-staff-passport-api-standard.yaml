@@ -562,7 +562,7 @@ components:
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
         - $ref: '#/components/schemas/DBSCheckOutcome'
-        - $ref: '#/components/schemas/IVT-ExposureProveProcedureTests'
+        - $ref: '#/components/schemas/IVT-ExposureProneProcedureTests'
         - $ref: '#/components/schemas/IVT-Tuberculosis'
         - $ref: '#/components/schemas/IVT-MeaslesMumpsRubella'
         - $ref: '#/components/schemas/IVT-DiptheriaTetanusPolio'
