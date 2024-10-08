@@ -807,19 +807,19 @@ components:
            - 'MAND'
         subjectName:
           description: |
-            Subject name as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
+            Subject name as defined in [Core Skills Training Framework naming conventions](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
             Specifically, this is the part of the subject name that appears before the level number. For example, if the subject name is `Resuscitation - Level 2 - Adult Basic Life Support - 1 Year`, this would be `Resuscitation`.
           type: string
           example: 'Resuscitation'
         competencyName:
           description: |
-            Subject name as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
+            Subject name as defined in [Core Skills Training Framework naming conventions](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
             Specifically, this is the part of the subject name that appears before the level number concatenated with the part that appears after the level number. For example, if the subject name is `Resuscitation - Level 2 - Adult Basic Life Support - 1 Year`, this would be `Resuscitation Adult Basic Life Support`.
           type: string
           example: 'Resuscitation Adult Basic Life Support'
         subjectLevel:
           description: |
-            Subject level as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
+            Subject level as defined in [Core Skills Training Framework naming conventions](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
             If the core skill has no subject level, it defaults to `1`.
           type: string
           example: '2'
