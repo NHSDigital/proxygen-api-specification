@@ -716,8 +716,8 @@ components:
           description: Driving licence type.
           type: string
           enum:
-            - Full
-            - Provisional
+            - Photocard
+            - Paper
         drivingLicenceValidFrom:
           description: Date the driving licence is valid from, in the format `YYYY-MM-DD`.
           type: string
