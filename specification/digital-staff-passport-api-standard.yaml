@@ -314,6 +314,10 @@ paths:
                   summary: DBS check outcome
                   value:
                     $ref: components/examples/GetEmployeeRecordsResponseDBSCheckOutcome.json
+                ivt:
+                  summary: Immunisations, vaccinations and tests
+                  value:
+                    $ref: components/examples/GetEmployeeRecordsResponseIVT.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -370,6 +374,10 @@ paths:
                 summary: Add a DBS check outcome record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestDBSCheckOutcome.json
+              ivt-exposure-prone-procedure-tests:
+                summary: Add an IVT exposure prone procedure tests record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestIVTExposureProneProcedureTests.json
       responses:
         '201':
           description: Record created.
@@ -394,6 +402,10 @@ paths:
                   summary: DBS check outcome record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseDBSCheckOutcome.json
+                ivt-exposure-prone-procedure-tests:
+                  summary: IVT exposure prone procedure tests record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseIVTExposureProneProcedureTests.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -505,15 +517,19 @@ components:
           type: string
           example: 'jane.smith@example.com'
         esrIdentifier:
-          description: The employee's unique identifier in the ESR system.
+          description: |
+            The employee's unique person identifier in the ESR system. This is the person ID not the assignment ID.
           type: string
           example: '87654321'
         furtherInformation:
           description: |
             Further information about the employee record that disambiguates it from other records.
             This can be anything and is likely to be system-specific.
-            For example, a recruitment system holding possibly multiple applications for the same person
-            could include a composite of the job description and contract type being applied for.
+            
+            For example:
+            - a recruitment system holding possibly multiple applications for the same person
+            could include a composite of the job description and contract type being applied for
+            - a learning management system could include the employee's speciality if they are a doctor
           type: string
           example: 'Orthapaedic Practitioner (XR05) - Permanent'
     EmployeeRecords:
@@ -536,12 +552,28 @@ components:
       oneOf:
         - $ref: '#/components/schemas/CoreSkillsTraining'
         - $ref: '#/components/schemas/DBSCheckOutcome'
+        - $ref: '#/components/schemas/IVT-ExposureProneProcedureTests'
+        - $ref: '#/components/schemas/IVT-Tuberculosis'
+        - $ref: '#/components/schemas/IVT-MeaslesMumpsRubella'
+        - $ref: '#/components/schemas/IVT-DiptheriaTetanusPolio'
+        - $ref: '#/components/schemas/IVT-HepatitisB'
+        - $ref: '#/components/schemas/IVT-Pertussis'
+        - $ref: '#/components/schemas/IVT-Varicella'
+        - $ref: '#/components/schemas/IVT-Seasonal'
     EmployeeRecordPost:
       oneOf:
         - $ref: '#/components/schemas/CoreSkillsTraining'
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
         - $ref: '#/components/schemas/DBSCheckOutcome'
+        - $ref: '#/components/schemas/IVT-ExposureProneProcedureTests'
+        - $ref: '#/components/schemas/IVT-Tuberculosis'
+        - $ref: '#/components/schemas/IVT-MeaslesMumpsRubella'
+        - $ref: '#/components/schemas/IVT-DiptheriaTetanusPolio'
+        - $ref: '#/components/schemas/IVT-HepatitisB'
+        - $ref: '#/components/schemas/IVT-Pertussis'
+        - $ref: '#/components/schemas/IVT-Varicella'
+        - $ref: '#/components/schemas/IVT-Seasonal'
     RightToWork:
       type: object
       description: Identity information to support a right to work check, as obtained and verified by an Identity Service Provider.
@@ -685,11 +717,11 @@ components:
           description: Employee's date of birth as it appears on their driving licence, in the format `YYYY-MM-DD`.
           type: string
         drivingLicenceType:
-          description: Driving licence type.
+          description: Driving licence type - photocard or paper.
           type: string
           enum:
-            - Full
-            - Provisional
+            - Photocard
+            - Paper
         drivingLicenceValidFrom:
           description: Date the driving licence is valid from, in the format `YYYY-MM-DD`.
           type: string
@@ -779,19 +811,19 @@ components:
            - 'MAND'
         subjectName:
           description: |
-            Subject name as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
+            Subject name as defined in [Core Skills Training Framework naming conventions](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
             Specifically, this is the part of the subject name that appears before the level number. For example, if the subject name is `Resuscitation - Level 2 - Adult Basic Life Support - 1 Year`, this would be `Resuscitation`.
           type: string
           example: 'Resuscitation'
         competencyName:
           description: |
-            Subject name as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
+            Subject name as defined in [Core Skills Training Framework naming conventions](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
             Specifically, this is the part of the subject name that appears before the level number concatenated with the part that appears after the level number. For example, if the subject name is `Resuscitation - Level 2 - Adult Basic Life Support - 1 Year`, this would be `Resuscitation Adult Basic Life Support`.
           type: string
           example: 'Resuscitation Adult Basic Life Support'
         subjectLevel:
           description: |
-            Subject level as defined in [Core Skills Training Framework naming conventions](www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
+            Subject level as defined in [Core Skills Training Framework naming conventions](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
             If the core skill has no subject level, it defaults to `1`.
           type: string
           example: '2'
@@ -831,6 +863,110 @@ components:
           description: The date when the core skill expires, if appropriate, in the format `YYYY-MM-DD`.
           type: string
           example: '2024-10-31'
+    IVT-ExposureProneProcedureTests:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-ExposureProneProcedureTests'
+    IVT-Tuberculosis:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Tuberculosis'
+    IVT-MeaslesMumpsRubella:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-MeaslesMumpsRubella'
+    IVT-DiptheriaTetanusPolio:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-DiptheriaTetanusPolio'
+    IVT-HepatitisB:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-HepatitisB'
+    IVT-Pertussis:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Pertussis'
+    IVT-Varicella:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Varicella'
+    IVT-Seasonal:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Seasonal'
     Error:
       type: object
       required:

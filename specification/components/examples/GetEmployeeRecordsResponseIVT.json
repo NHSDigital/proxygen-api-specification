@@ -1,0 +1,212 @@
+{
+  "id": "12345",
+  "records": [
+    {
+      "recordType": "IVT-ExposureProneProcedureTests",
+      "hepatitisBSurfaceAntigenTestIvs" : {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "hepatitisBAntibodyLevelTestIvs": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "hepatitisBCoreAntibodyTestIvs": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "hepatitisBDnaLevelTestIvs": [
+        {
+          "date": "2018-06-01",
+          "result": "TBC",
+          "interpretation": "Not Detected"
+        },
+        {
+          "date": "2018-06-01",
+          "result": "TBC",
+          "interpretation": "Not Detected"
+        }
+      ],
+      "hepatitisCRnaLevelTestIvs": [
+        {
+          "date": "2018-06-01",
+          "result": "TBC",
+          "interpretation": "Not Detected"
+        },
+        {
+          "date": "2018-06-01",
+          "result": "TBC",
+          "interpretation": "Not Detected"
+        }
+      ],
+      "HivAntibodyTestIvs" : {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "HivViralLoadTestIvs": [
+        {
+          "date": "2018-06-01",
+          "result": "TBC",
+          "interpretation": "Not Detected"
+        },
+        {
+          "date": "2018-06-01",
+          "result": "TBC",
+          "interpretation": "Not Detected"
+        }
+      ]
+    },
+    {
+      "recordType": "IVT-Tuberculosis",
+      "bcgScarEvident": {
+          "result": "Yes"
+      },
+      "bcgVaccination": {
+          "Date": "2018-06-01"
+      },
+      "mantouxTuberculinSkinTest": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "chestXRayForTb": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "interferonGammaReleaseAssayTest": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "chemoprophylaxisCompleted": {
+        "date": "2018-06-01"
+      }
+    },
+    {
+      "recordType": "IVT-MeaslesMumpsRubella",
+      "measlesAntibodiesTest": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "rubellaAntibodiesTest": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "mmrVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ],
+      "measlesVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ],
+      "mumpsVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ],
+      "rubellaVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ]
+    },
+    {
+      "recordType": "IVT-DiptheriaTetanusPolio",
+      "dtpVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ],
+      "diptheriaAntibodyTest": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      }
+    },
+    {
+      "recordType": "IVT-HepatitisB",
+      "hepatitisBVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ]
+    },
+    {
+      "recordType": "IVT-Pertussis",
+      "pertussisVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ]
+    },
+    {
+      "recordType": "IVT-Varicella",
+      "historyOfChickenpox": {
+        "result": "No"
+      },
+      "varicellaVzvAntibodyTest": {
+        "date": "2018-06-01",
+        "result": "TBC",
+        "interpretation": "Not Detected"
+      },
+      "varicellaVzvVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ]
+    },
+    {
+      "recordType": "IVT-Seasonal",
+      "InfluenzaVaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ],
+      "covid19Vaccine": [
+        {
+          "date": "2018-06-01"
+        },
+        {
+          "date": "2018-06-01"
+        }
+      ]
+    }
+  ]
+}
