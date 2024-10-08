@@ -517,7 +517,8 @@ components:
           type: string
           example: 'jane.smith@example.com'
         esrIdentifier:
-          description: The employee's unique identifier in the ESR system.
+          description: |
+            The employee's unique person identifier in the ESR system. This is the person ID not the assignment ID.
           type: string
           example: '87654321'
         furtherInformation:
