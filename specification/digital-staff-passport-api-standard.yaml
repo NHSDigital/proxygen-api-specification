@@ -525,8 +525,11 @@ components:
           description: |
             Further information about the employee record that disambiguates it from other records.
             This can be anything and is likely to be system-specific.
-            For example, a recruitment system holding possibly multiple applications for the same person
-            could include a composite of the job description and contract type being applied for.
+            
+            For example:
+            - a recruitment system holding possibly multiple applications for the same person
+            could include a composite of the job description and contract type being applied for
+            - a learning management system could include the employee's speciality if they are a doctor
           type: string
           example: 'Orthapaedic Practitioner (XR05) - Permanent'
     EmployeeRecords:
