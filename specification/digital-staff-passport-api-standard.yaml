@@ -713,7 +713,7 @@ components:
           description: Employee's date of birth as it appears on their driving licence, in the format `YYYY-MM-DD`.
           type: string
         drivingLicenceType:
-          description: Driving licence type.
+          description: Driving licence type - photocard or paper.
           type: string
           enum:
             - Photocard
