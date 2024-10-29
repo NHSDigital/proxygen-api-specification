@@ -7,7 +7,7 @@ info:
     ![Digital Staff Passport overview diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-api-standard-context-diagram-v2.svg)
     
     Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport)
-    can use to interact with your workforce system to send and receive employee information.
+    can use access employee information in your workforce system.
 
     The standard currently supports the following use cases:
 
@@ -20,7 +20,7 @@ info:
     | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
     | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
 
-    It is also possible for the workforce system to pro-actively notify DSP of new or amended employee information via our
+    Workforce systems can also pro-actively notify DSP of new or amended employee information via our
     [Multicast Notification Service (MNS)](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service).
     
     For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
@@ -308,7 +308,7 @@ paths:
         | Core skills       | Learning management system |
         | DBS check outcome | Recruitment system         |
 
-        To pro-actively let DSP know of new or amended employee records, use the
+        To pro-actively notify DSP of new or amended employee records in an external system, use the
         [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
         from our Multicast Notification Service (MNS).
         
