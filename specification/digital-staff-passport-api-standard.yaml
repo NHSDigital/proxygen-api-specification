@@ -19,6 +19,9 @@ info:
     | Send DBS check supporting information | to        | Recruitment system / DBS registered body |
     | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
     | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
+
+    It is also possible for the workforce system to pro-actively notify DSP of new or amended employee information via our
+    [Multicast Notification Service (MNS)](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service).
     
     For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
@@ -28,11 +31,11 @@ info:
     You can only use this API standard if you are integrating your system with Digital Staff Passport.
 
     ## How this API standard works
-    DSP needs to interact with a variety of external systems, to send and receive a variety of information.
+    DSP needs to interact with a variety of external workforce systems, to send and receive a variety of employee information.
     This API standard provides a common approach regardless of the type of external system, as explained below.
 
     ### Employee linking
-    Before DSP can exchange information with an external system, it needs to 'link' the employee record using the external systems's unique identifier for that employee.
+    Before DSP can exchange information with an external system, it needs to 'link' the employee record using the external system's unique identifier for that employee.
 
     There are two ways DSP can do this:
     - if the DSP user knows the employee's external system ID, DSP can use the [Get employee personal details](#get-/organisations/-org-id-/employees/-employee-id-) operation to allow the user to check it's the right ID
@@ -47,6 +50,14 @@ info:
     Given the employee's external system ID, DSP can send information to the external system using the [Add an employee record](#post-/organisations/-org-id-/employees/-employee-id-/records) operation.
 
     The type of information sent depends on the type of system. For example, DSP might send right to work information to a recruitment system in order to support varioius employment checks.
+
+    ### Pro-active notifications
+    If employee information is added or amended in the external system, the external system can notify DSP of this using the
+    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
+    from our Multicast Notification Service (MNS).
+    
+    If the event is for an employee of interest to DSP, MNS forwards the event to DSP and DSP then gets the latest updates from the external system using the
+    [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation as per usual.
 
     ## Employee record types
 
@@ -296,6 +307,10 @@ paths:
         | ----------------- | -------------------------- |
         | Core skills       | Learning management system |
         | DBS check outcome | Recruitment system         |
+
+        To pro-actively let DSP know of new or amended employee records, use the
+        [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
+        from our Multicast Notification Service (MNS).
         
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
