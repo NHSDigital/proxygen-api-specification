@@ -19,7 +19,7 @@ info:
     | Send DBS check supporting information | to        | Recruitment system / DBS registered body |
     | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
     | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
-    | Send professiona registration         | to        | Recruitment system                       |
+    | Send professional registration        | to        | Recruitment system                       |
 
     Workforce systems can also pro-actively notify DSP of new or amended employee information via our
     [Multicast Notification Service (MNS)](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service).
@@ -404,6 +404,10 @@ paths:
                 summary: Add a DBS check outcome record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestDBSCheckOutcome.json
+              professional-registration:
+                summary: Add a professional registration record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestProfessionalRegistration.json
               ivt-exposure-prone-procedure-tests:
                 summary: Add an IVT exposure prone procedure tests record
                 value:
@@ -432,6 +436,10 @@ paths:
                   summary: DBS check outcome record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseDBSCheckOutcome.json
+                professional-registration:
+                  summary: Professional registration record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseProfessionalRegistration.json
                 ivt-exposure-prone-procedure-tests:
                   summary: IVT exposure prone procedure tests record added
                   value:
@@ -596,6 +604,7 @@ components:
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
         - $ref: '#/components/schemas/DBSCheckOutcome'
+        - $ref: '#/components/schemas/ProfessionalRegistration'
         - $ref: '#/components/schemas/IVT-ExposureProneProcedureTests'
         - $ref: '#/components/schemas/IVT-Tuberculosis'
         - $ref: '#/components/schemas/IVT-MeaslesMumpsRubella'
@@ -893,6 +902,49 @@ components:
           description: The date when the core skill expires, if appropriate, in the format `YYYY-MM-DD`.
           type: string
           example: '2024-10-31'
+    ProfessionalRegistration:
+      type: object
+      description: Professional registration details.
+      required:
+        - recordType
+        - professionalBody
+        - registrationNumber
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'ProfessionalRegistration'
+        professionalBody:
+          description: Professional body with which the employee is registered.
+          type: string
+          enum:
+            - "General Medical Council"
+            - "General Dental Council"
+            - "General Pharmaceutical Council"
+            - "Health and Care Professionals Council"
+#TBC Is Nursing and Midwifery Council still disabled / out of scope?
+        registrationNumber:
+          description: Registration number allocated to the employee by the professional body
+          type: number
+          example: 1234567
+        registrationDate:
+          description: The date when the employee was registered with the professional body, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2023-11-01'
+        expiryDate:
+          description: The date when the registration expires, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2030-10-31'
+        revalidationDate:
+          description: The date by which the registration must be revalidated, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2026-10-31'
+        registrationCheckDate:
+          description: The date when this registration was checked, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2024-06-15'
     IVT-ExposureProneProcedureTests:
       type: object
       description: |
