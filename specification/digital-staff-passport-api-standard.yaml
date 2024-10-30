@@ -7,7 +7,7 @@ info:
     ![Digital Staff Passport overview diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-api-standard-context-diagram-v2.svg)
     
     Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport)
-    can use access employee information in your workforce system.
+    can use to access employee information in your workforce system.
 
     The standard currently supports the following use cases:
 
@@ -19,6 +19,7 @@ info:
     | Send DBS check supporting information | to        | Recruitment system / DBS registered body |
     | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
     | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
+    | Send professiona registration         | to        | Recruitment system                       |
 
     Workforce systems can also pro-actively notify DSP of new or amended employee information via our
     [Multicast Notification Service (MNS)](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service).
@@ -66,13 +67,13 @@ info:
     and are generally aligned with the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
 
     Core skills are not always part of the CSTF.
-    For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for Digital Staff Passport.
+    For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for DSP.
 
     Also, the Employee Staff Record (ESR) system includes a number of competencies which are flagged as 'CSTF' even though they are not part of the Core Skills Training Framework.
     They generally represent skills that have a [nationally-defined framework](https://www.skillsforhealth.org.uk/resources/category/capabilities-frameworks/)
     such as the [Dementia skills framework](https://www.skillsforhealth.org.uk/resources/dementia-2015-updated-2018/).
 
-    For the avoidance of doubt, a full list of the core skills in scope for Digital Staff Passport is provided in the
+    For the avoidance of doubt, a full list of the core skills in scope for DSP is provided in the
     [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
     
     Core skills records are typically held in a learning managements system (LMS).
@@ -94,28 +95,38 @@ info:
 
     These checks are normally managed in a recruitment system.
 
-    If the employee has completed digital identity verification via Digital Staff Passport, this information can be used to support the right to work check.
+    If the employee has completed digital identity verification via DSP, this information can be used to support the right to work check.
 
-    Hence this API standard supports Digital Staff Passport sending right to work check information to a recruitment system.
+    Hence this API standard supports DSP sending right to work check information to a recruitment system.
 
     ### DBS checks
     In most cases, NHS employers must carry out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
     These checks must be done by a [DBS registered body](https://www.gov.uk/guidance/dbs-check-requests-guidance-for-employers#registering-as-an-organisation-with-dbs) and are normally managed in a recruitment system.
 
-    Digital Staff Passport can help with DBS checks in two ways.
+    DSP can help with DBS checks in two ways.
 
     #### DBS check supporting information
-    If the employee has completed digital identity verification via Digital Staff Passport, this information can be used to support the DBS check.
+    If the employee has completed digital identity verification via DSP, this information can be used to support the DBS check.
 
-    Hence this API standard supports Digital Staff Passport sending DBS check supporting information to a recruitment system.
+    Hence this API standard supports DSP sending DBS check supporting information to a recruitment system.
 
     #### DBS check outcome
     In some cases, the employer can use a DBS check outcome from a previous NHS employer instead of a fresh DBS check.
     Specifically, this applies to [doctors in training if the DBS check is less than three years old](https://www.nhsemployers.org/publications/criminal-record-checks-standard).
 
     Hence this API standard supports:
-    - Digital Staff Passport receiving a DBS check outcome record from a recruitment system
-    - Digital Staff Passport sending a DBS check outcome record to a recruitment system
+    - DSP receiving a DBS check outcome record from a recruitment system
+    - DSP sending a DBS check outcome record to a recruitment system
+
+    ### Professional registrations
+    NHS employers must carry out [professional registration and qualification checks](https://www.nhsemployers.org/publications/professional-registration-and-qualification-checks-standard) for new employees.
+    This includes a check that the employee is registered with the relevant professional body, such as the General Medical Council.
+
+    These checks are normally recorded in a recruitment system.
+
+    DSP might have received an employee's professional registration details from ESR for a previous employer. And in the future we hope to integrated DSP directly with professional registers.
+
+    Hence this API standard supports DSP sending professional registration information to a recruitment system.
 
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
@@ -358,12 +369,13 @@ paths:
 
         It supports the following record and external system types:
         
-        | Record type                      | External system type       |
-        | -------------------------------- | -------------------------- |
-        | Core skills                      | Learning management system |
-        | Right to work check information  | Recruitment system         |
-        | DBS check supporting information | Recruitment system         |
-        | DBS check outcome                | Recruitment system         |
+        | Record type                      | External system type                     |
+        | -------------------------------- | ---------------------------------------- |
+        | Core skills                      | Learning management system               |
+        | Right to work check information  | Recruitment system                       |
+        | DBS check supporting information | Recruitment system / DBS registered body |
+        | DBS check outcome                | Recruitment system / DBS registered body |
+        | Professional registration        | Recruitment system                       |
 
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
