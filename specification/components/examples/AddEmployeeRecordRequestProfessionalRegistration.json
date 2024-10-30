@@ -1,3 +1,8 @@
 {
-  "TBC": "TBC"
+  "professionalBody": "General Medical Council",
+  "registrationNumber": 1234567,
+  "registrationDate": "2023-11-01",
+  "expiryDate": "2030-10-31",
+  "revalidationDate": "2026-10-31",
+  "registrationCheckDate": "2024-06-15"
 }
