@@ -122,9 +122,10 @@ info:
     NHS employers must carry out [professional registration and qualification checks](https://www.nhsemployers.org/publications/professional-registration-and-qualification-checks-standard) for new employees.
     This includes a check that the employee is registered with the relevant professional body, such as the General Medical Council.
 
-    These checks are normally recorded in a recruitment system.
+    These checks are often recorded in a recruitment system. They are not portable - each employer must check each employee - 
+    but information from a previous check can be used to speed up the check by pre-populating some of the necessary information.
 
-    DSP might have received an employee's professional registration details from ESR for a previous employer. And in the future we hope to integrated DSP directly with professional registers.
+    DSP may have received an employee's professional registration details from ESR for a previous employer, and in the future we hope to integrate DSP directly with professional registers.
 
     Hence this API standard supports DSP sending professional registration information to a recruitment system.
 
