@@ -21,8 +21,9 @@ info:
     | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
     | Send professional registration        | to        | Recruitment system                       |
 
-    Workforce systems can also pro-actively notify DSP of new or amended employee information via our
-    [Multicast Notification Service (MNS)](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service).
+    Workforce systems can also pro-actively notify DSP of new or amended employee information using the
+    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
+    from our Multicast Notification Service (MNS).
     
     For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
