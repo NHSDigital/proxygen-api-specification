@@ -4,7 +4,10 @@ info:
   version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
   description: |
     ## Overview
-    Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) can use to interact with your system.
+    ![Digital Staff Passport overview diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-api-standard-context-diagram-v2.svg)
+    
+    Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport)
+    can use to access employee information in your workforce system.
 
     The standard currently supports the following use cases:
 
@@ -16,6 +19,11 @@ info:
     | Send DBS check supporting information | to        | Recruitment system / DBS registered body |
     | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
     | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
+    | Send professional registration        | to        | Recruitment system                       |
+
+    Workforce systems can also pro-actively notify DSP of new or amended employee information using the
+    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
+    from our Multicast Notification Service (MNS).
     
     For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
@@ -25,11 +33,11 @@ info:
     You can only use this API standard if you are integrating your system with Digital Staff Passport.
 
     ## How this API standard works
-    DSP needs to interact with a variety of external systems, to send and receive a variety of information.
+    DSP needs to interact with a variety of external workforce systems, to send and receive a variety of employee information.
     This API standard provides a common approach regardless of the type of external system, as explained below.
 
     ### Employee linking
-    Before DSP can exchange information with an external system, it needs to 'link' the employee record using the external systems's unique identifier for that employee.
+    Before DSP can exchange information with an external system, it needs to 'link' the employee record using the external system's unique identifier for that employee.
 
     There are two ways DSP can do this:
     - if the DSP user knows the employee's external system ID, DSP can use the [Get employee personal details](#get-/organisations/-org-id-/employees/-employee-id-) operation to allow the user to check it's the right ID
@@ -45,6 +53,14 @@ info:
 
     The type of information sent depends on the type of system. For example, DSP might send right to work information to a recruitment system in order to support varioius employment checks.
 
+    ### Pro-active notifications
+    If employee information is added or amended in the external system, the external system can notify DSP of this using the
+    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
+    from our Multicast Notification Service (MNS).
+    
+    If the event is for an employee of interest to DSP, MNS forwards the event to DSP and DSP then gets the latest updates from the external system using the
+    [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation as per usual.
+
     ## Employee record types
 
     ### Core skills
@@ -52,13 +68,13 @@ info:
     and are generally aligned with the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
 
     Core skills are not always part of the CSTF.
-    For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for Digital Staff Passport.
+    For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for DSP.
 
     Also, the Employee Staff Record (ESR) system includes a number of competencies which are flagged as 'CSTF' even though they are not part of the Core Skills Training Framework.
     They generally represent skills that have a [nationally-defined framework](https://www.skillsforhealth.org.uk/resources/category/capabilities-frameworks/)
     such as the [Dementia skills framework](https://www.skillsforhealth.org.uk/resources/dementia-2015-updated-2018/).
 
-    For the avoidance of doubt, a full list of the core skills in scope for Digital Staff Passport is provided in the
+    For the avoidance of doubt, a full list of the core skills in scope for DSP is provided in the
     [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
     
     Core skills records are typically held in a learning managements system (LMS).
@@ -80,28 +96,39 @@ info:
 
     These checks are normally managed in a recruitment system.
 
-    If the employee has completed digital identity verification via Digital Staff Passport, this information can be used to support the right to work check.
+    If the employee has completed digital identity verification via DSP, this information can be used to support the right to work check.
 
-    Hence this API standard supports Digital Staff Passport sending right to work check information to a recruitment system.
+    Hence this API standard supports DSP sending right to work check information to a recruitment system.
 
     ### DBS checks
     In most cases, NHS employers must carry out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
     These checks must be done by a [DBS registered body](https://www.gov.uk/guidance/dbs-check-requests-guidance-for-employers#registering-as-an-organisation-with-dbs) and are normally managed in a recruitment system.
 
-    Digital Staff Passport can help with DBS checks in two ways.
+    DSP can help with DBS checks in two ways.
 
     #### DBS check supporting information
-    If the employee has completed digital identity verification via Digital Staff Passport, this information can be used to support the DBS check.
+    If the employee has completed digital identity verification via DSP, this information can be used to support the DBS check.
 
-    Hence this API standard supports Digital Staff Passport sending DBS check supporting information to a recruitment system.
+    Hence this API standard supports DSP sending DBS check supporting information to a recruitment system.
 
     #### DBS check outcome
     In some cases, the employer can use a DBS check outcome from a previous NHS employer instead of a fresh DBS check.
     Specifically, this applies to [doctors in training if the DBS check is less than three years old](https://www.nhsemployers.org/publications/criminal-record-checks-standard).
 
     Hence this API standard supports:
-    - Digital Staff Passport receiving a DBS check outcome record from a recruitment system
-    - Digital Staff Passport sending a DBS check outcome record to a recruitment system
+    - DSP receiving a DBS check outcome record from a recruitment system
+    - DSP sending a DBS check outcome record to a recruitment system
+
+    ### Professional registrations
+    NHS employers must carry out [professional registration and qualification checks](https://www.nhsemployers.org/publications/professional-registration-and-qualification-checks-standard) for new employees.
+    This includes a check that the employee is registered with the relevant professional body, such as the General Medical Council.
+
+    These checks are often recorded in a recruitment system. They are not portable - each employer must check each employee - 
+    but information from a previous check can be used to speed up the check by pre-populating some of the necessary information.
+
+    DSP may have received an employee's professional registration details from ESR for a previous employer, and in the future we hope to integrate DSP directly with professional registers.
+
+    Hence this API standard supports DSP sending professional registration information to a recruitment system.
 
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
@@ -293,6 +320,10 @@ paths:
         | ----------------- | -------------------------- |
         | Core skills       | Learning management system |
         | DBS check outcome | Recruitment system         |
+
+        To pro-actively notify DSP of new or amended employee records in an external system, use the
+        [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
+        from our Multicast Notification Service (MNS).
         
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
@@ -340,12 +371,13 @@ paths:
 
         It supports the following record and external system types:
         
-        | Record type                      | External system type       |
-        | -------------------------------- | -------------------------- |
-        | Core skills                      | Learning management system |
-        | Right to work check information  | Recruitment system         |
-        | DBS check supporting information | Recruitment system         |
-        | DBS check outcome                | Recruitment system         |
+        | Record type                      | External system type                     |
+        | -------------------------------- | ---------------------------------------- |
+        | Core skills                      | Learning management system               |
+        | Right to work check information  | Recruitment system                       |
+        | DBS check supporting information | Recruitment system / DBS registered body |
+        | DBS check outcome                | Recruitment system / DBS registered body |
+        | Professional registration        | Recruitment system                       |
 
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
@@ -374,6 +406,10 @@ paths:
                 summary: Add a DBS check outcome record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestDBSCheckOutcome.json
+              professional-registration:
+                summary: Add a professional registration record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestProfessionalRegistration.json
               ivt-exposure-prone-procedure-tests:
                 summary: Add an IVT exposure prone procedure tests record
                 value:
@@ -402,6 +438,10 @@ paths:
                   summary: DBS check outcome record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseDBSCheckOutcome.json
+                professional-registration:
+                  summary: Professional registration record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseProfessionalRegistration.json
                 ivt-exposure-prone-procedure-tests:
                   summary: IVT exposure prone procedure tests record added
                   value:
@@ -566,6 +606,7 @@ components:
         - $ref: '#/components/schemas/RightToWork'
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
         - $ref: '#/components/schemas/DBSCheckOutcome'
+        - $ref: '#/components/schemas/ProfessionalRegistration'
         - $ref: '#/components/schemas/IVT-ExposureProneProcedureTests'
         - $ref: '#/components/schemas/IVT-Tuberculosis'
         - $ref: '#/components/schemas/IVT-MeaslesMumpsRubella'
@@ -863,6 +904,49 @@ components:
           description: The date when the core skill expires, if appropriate, in the format `YYYY-MM-DD`.
           type: string
           example: '2024-10-31'
+    ProfessionalRegistration:
+      type: object
+      description: Professional registration details.
+      required:
+        - recordType
+        - professionalBody
+        - registrationNumber
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'ProfessionalRegistration'
+        professionalBody:
+          description: Professional body with which the employee is registered.
+          type: string
+          enum:
+            - "General Medical Council"
+            - "General Dental Council"
+            - "General Pharmaceutical Council"
+            - "Health and Care Professionals Council"
+#TBC Is Nursing and Midwifery Council still disabled / out of scope?
+        registrationNumber:
+          description: Registration number allocated to the employee by the professional body
+          type: number
+          example: 1234567
+        registrationDate:
+          description: The date when the employee was registered with the professional body, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2023-11-01'
+        expiryDate:
+          description: The date when the registration expires, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2030-10-31'
+        revalidationDate:
+          description: The date by which the registration must be revalidated, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2026-10-31'
+        registrationCheckDate:
+          description: The date when this registration was checked, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2024-06-15'
     IVT-ExposureProneProcedureTests:
       type: object
       description: |
