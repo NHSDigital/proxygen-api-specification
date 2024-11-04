@@ -625,7 +625,7 @@ components:
         - birthDate
         - biometricPageImage
         - photograph
-        - passportExpiryDate
+        - identityDocumentExpiryDate
         - identityVerified
         - evidenceCheckedBy
         - dateOfIdCheck
@@ -658,8 +658,8 @@ components:
             A photograph of the employee, as it appears on their identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
             Approximate image size: 450x300 Approximate data size (base64 encoded): 12-15KB.
           type: string
-        passportExpiryDate:
-          description: Passport expiry date, in the format `YYYY-MM-DD`.
+        identityDocumentExpiryDate:
+          description: Identity document expiry date, in the format `YYYY-MM-DD`.
           type: string
         identityVerified:
           description: Whether the employee's identity has been verified - always `true`.
