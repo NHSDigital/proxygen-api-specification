@@ -121,7 +121,7 @@ info:
 
     DSP only receives and sends 'real' DBS check outcomes, including:
     - a fresh DBS check resulting in a DBS certificate
-    - a status check via the [DBS Update Service](https://www.gov.uk/dbs-update-service)
+    - a [DBS Update Service](https://www.gov.uk/dbs-update-service) status check
 
     DSP does not receive and send 'ported' DBS check outcomes i.e. the result of an organisation re-using a previous DBS check outcome.
 
