@@ -261,11 +261,12 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code   | Description |
-            | ----------- | ------------ | - |
-            | 400         | invalid      | Invalid query parameter(s). |
-            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
-            | 404         | not-found    | Organisation not found for the given organisation ID. |
+            | HTTP status | Error code          | Description |
+            | ----------- | ------------------- | - |
+            | 400         | invalid             | Invalid query parameter(s). |
+            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
+            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
+            | 404         | not-found           | Organisation not found for the given organisation ID. |
           content:
             application/json:
               schema:
@@ -296,10 +297,11 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code   | Description |
-            | ----------- | ------------ | --------------------------------------------- |
-            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
-            | 404         | not-found    | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
+            | HTTP status | Error code          | Description |
+            | ----------- | ------------------- | --------------------------------------------- |
+            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
+            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
+            | 404         | not-found           | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
           content:
             application/json:
               schema:
@@ -353,10 +355,11 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code   | Description |
-            | ----------- | ------------ | - |
-            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
-            | 404         | not-found    | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
+            | HTTP status | Error code          | Description |
+            | ----------- | ------------------- | - |
+            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
+            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
+            | 404         | not-found           | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
           content:
             application/json:
               schema:
@@ -450,12 +453,14 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code   | Description |
-            | ----------- | ------------ | - |
-            | 400         | invalid      | Invalid data in request body, for example, missing mandatory field or invalid date format. |
-            | 401         | forbidden    | OAuth 2.0 bearer token missing, invalid or expired, or calling application not enabled for this operation within the specified organisation. |
-            | 404         | not-found    | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
-            | 409         | duplicate    | Attempted to add a record that already exists, for example a core skill with the same date last awarded. |
+            | HTTP status | Error code          | Description |
+            | ----------- | ------------------- | - |
+            | 400         | invalid             | Invalid data in request body, for example, missing mandatory field or invalid date format. |
+            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
+            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
+            | 404         | not-found           | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
+            | 409         | conflict            | System is not in a state where it is able or ready to accept the record. |
+            | 409         | duplicate           | Attempted to add a record that already exists, for example a core skill with the same date last awarded. |
           content:
             application/json:
               schema:
@@ -925,7 +930,7 @@ components:
             - "General Medical Council"
             - "General Dental Council"
             - "General Pharmaceutical Council"
-            - "Health and Care Professionals Council"
+            - "Health and Care Professions Council"
 #TBC Is Nursing and Midwifery Council still disabled / out of scope?
         registrationNumber:
           description: Registration number allocated to the employee by the professional body
