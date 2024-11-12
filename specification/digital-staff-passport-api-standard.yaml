@@ -112,12 +112,18 @@ info:
     Hence this API standard supports DSP sending DBS check supporting information to a recruitment system.
 
     #### DBS check outcome
-    In some cases, the employer can use a DBS check outcome from a previous NHS employer instead of a fresh DBS check.
-    Specifically, this applies to [doctors in training if the DBS check is less than three years old](https://www.nhsemployers.org/publications/criminal-record-checks-standard).
+    In some cases, the employer can use a DBS check outcome from a previous NHS employer instead of a fresh DBS check - sometimes called a 'portable' DBS check.
+    For example, this applies to [doctors in training if the DBS check is less than three years old](https://www.nhsemployers.org/publications/criminal-record-checks-standard).
 
     Hence this API standard supports:
     - DSP receiving a DBS check outcome record from a recruitment system
     - DSP sending a DBS check outcome record to a recruitment system
+
+    DSP only receives and sends 'real' DBS check outcomes, including:
+    - a fresh DBS check resulting in a DBS certificate
+    - a status check via the DBS Update Service
+
+    DSP does not receive and send 'ported' DBS check outcomes i.e. the result of an organisation re-using a previous DBS check outcome.
 
     ### Professional registrations
     NHS employers must carry out [professional registration and qualification checks](https://www.nhsemployers.org/publications/professional-registration-and-qualification-checks-standard) for new employees.
@@ -318,10 +324,10 @@ paths:
 
         It supports the following record and external system types:
         
-        | Record type       | External system type       |
-        | ----------------- | -------------------------- |
-        | Core skills       | Learning management system |
-        | DBS check outcome | Recruitment system         |
+        | Record type       | External system type       | Notes |
+        | ----------------- | -------------------------- | --- |
+        | Core skills       | Learning management system | |
+        | DBS check outcome | Recruitment system         | Only includes completed DBS checks - not in progress checks for example where the employer is awaiting a DBS certificate containing additional information. Only includes 'real' DBS check outcomes, including DBS Update Service status checks, not 'ported' DBS check outcomes that are the resuly of an organisation re-using a previous DBS check outcome. |
 
         To pro-actively notify DSP of new or amended employee records in an external system, use the
         [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
@@ -776,7 +782,10 @@ components:
           type: string
     DBSCheckOutcome:
       type: object
-      description: Outcome of a DBS check, as performed by an employer.
+      description: |
+        Outcome of a DBS check, as performed by an employer. This could be:
+        - a fresh DBS check
+        - a DBS Update Service status check
       required:
         - recordType
         - applicantName
@@ -819,6 +828,9 @@ components:
           type: string
         disclosureIssueDate:
           description: Date the DBS check certificate was issued, in the format `YYYY-MM-DD`.
+          type: string
+        dbsUpdateServiceStatusCheckDate:
+          description: If this was a DBS Update Service status check, date the status check was done, in the format `YYYY-MM-DD`.
           type: string
         informationDisclosed:
           description: Whether or not any information was disclosed on the certificate. A value of `false` means the certificate is 'clean'.
