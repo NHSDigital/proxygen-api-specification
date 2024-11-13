@@ -2,10 +2,11 @@
   "recordType": "DBSCheckOutcome",
   "applicantName": "Jane Smith",
   "applicantDateOfBirth": "1998-10-22",
-  "typeOfDBSCheck": "Enhanced with barred list(s) check",
+  "typeOfDbsCheck": "Enhanced with barred list(s) check",
   "adultsBarredListChecked": "true",
   "childrensBarredListChecked": "true",
   "certificateNumber": "123456789012",
   "disclosureIssueDate": "2024-06-03",
+  "dbsUpdateServiceStatusCheckDate": "2024-11-12",
   "informationDisclosed": "false"
 }
