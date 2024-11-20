@@ -85,5 +85,6 @@ The Github workflows use the Proxygen CLI to perform automated deployment and th
 | Workflow Variable | AWS SM Path |
 | ----------- | ----------- |
 | PROXYGEN_CLIENT_ID | prod/digital-staff-passport/client_id |
+| PROXYGEN_CLIENT_ID_2 | prod/digital-staff-passport/client_id_2 |
 | PROXYGEN_KID | prod/digital-staff-passport/key_id |
 | ENCODED_PROXYGEN_PRIVATE_KEY | prod/digital-staff-passport/keycloak_client_private_key |
