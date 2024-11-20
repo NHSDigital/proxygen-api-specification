@@ -11,14 +11,16 @@ jobs:
 
     - name: Set OAS info.version to ${{ github.ref_name}}-${{github.sha}}
       run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/digital-staff-passport-api-standard.yaml
+      run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/digital-staff-passport-api.yaml
 
     - name: Vacuum OpenAPI Spec linter
       uses: eduelias/gha-vacuum@v0.0.1
       with:
         cmd: |
           vacuum lint -d --base specification/ specification/digital-staff-passport-api-standard.yaml
+          vacuum lint -d --base specification/ specification/digital-staff-passport-api.yaml
 
-    - name: Setup proxygen-cli
+    - name: Setup proxygen-cli for publishing API standard spec
       env:
         PROXYGEN_PRIVATE_KEY: ${{ secrets.ENCODED_PROXYGEN_PRIVATE_KEY }}
         PROXYGEN_KID: ${{ secrets.PROXYGEN_KID }}
@@ -31,11 +33,18 @@ jobs:
         mkdir -p ${HOME}/.proxygen
         echo "$PROXYGEN_PRIVATE_KEY" | base64 --decode > ${HOME}/.proxygen/key
         envsubst < ./.github/proxygen-credentials-template.yaml > ${HOME}/.proxygen/credentials.yaml
-        envsubst < ./.github/proxygen-settings.yaml > ${HOME}/.proxygen/settings.yaml
+        envsubst < ./.github/proxygen-settings-for-api-standard.yaml > ${HOME}/.proxygen/settings.yaml
         proxygen status
 
-    - name: Publish spec
+    - name: Publish API standard spec
       run: proxygen spec publish specification/digital-staff-passport-api-standard.yaml --uat --no-confirm
+      run: |
+        envsubst < ./.github/proxygen-settings-for-api.yaml > ${HOME}/.proxygen/settings.yaml
+
+    - name: Setup proxygen-cli for publishing API spec
+
+    - name: Publish API spec
+      run: proxygen spec publish specification/digital-staff-passport-api.yaml --uat --no-confirm
 
     - name: Instructions for viewing UAT Specification
       run: |
