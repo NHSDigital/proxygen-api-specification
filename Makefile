@@ -3,3 +3,4 @@ install:
 
 lint:
 	vacuum lint -d specification/digital-staff-passport-api-standard.yaml
+	vacuum lint -d specification/digital-staff-passport-api.yaml
