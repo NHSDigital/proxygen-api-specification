@@ -38,15 +38,16 @@ jobs:
 
     - name: Publish API standard spec
       run: proxygen spec publish specification/digital-staff-passport-api-standard.yaml --uat --no-confirm
-      run: |
-        envsubst < ./.github/proxygen-settings-for-api.yaml > ${HOME}/.proxygen/settings.yaml
 
     - name: Setup proxygen-cli for publishing API spec
+      run: |
+        envsubst < ./.github/proxygen-settings-for-api.yaml > ${HOME}/.proxygen/settings.yaml
 
     - name: Publish API spec
       run: proxygen spec publish specification/digital-staff-passport-api.yaml --uat --no-confirm
 
     - name: Instructions for viewing UAT Specification
       run: |
-        echo "View uat spec changes at https://uat2.nhsd.io/developer/api-catalogue/digital-staff-passport-api-standard"
+        echo "View uat spec changes for the API standard at https://uat2.nhsd.io/developer/api-catalogue/digital-staff-passport-api-standard"
+        echo "View uat spec changes for the API spec at https://uat2.nhsd.io/developer/api-catalogue/digital-staff-passport-api"
         echo "Remember Bloomreach pulls UAT changes every 5-10 minutes so changes may not appear right away. You must be connected to the VPN."
