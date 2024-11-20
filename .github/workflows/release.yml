@@ -58,6 +58,7 @@ jobs:
       run: proxygen spec publish specification/digital-staff-passport-api-standard.yaml --no-confirm
 
     - name: Setup proxygen-cli for publishing API spec
+      run: |
         envsubst < ./.github/proxygen-settings-for-api.yaml > ${HOME}/.proxygen/settings.yaml
 
     - name: Publish API spec
