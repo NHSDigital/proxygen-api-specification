@@ -10,8 +10,9 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set OAS info.version to ${{ github.ref_name}}-${{github.sha}}
-      run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/digital-staff-passport-api-standard.yaml
-      run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/digital-staff-passport-api.yaml
+      run: |
+        sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/digital-staff-passport-api-standard.yaml
+        sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/digital-staff-passport-api.yaml
 
     - name: Vacuum OpenAPI Spec linter
       uses: eduelias/gha-vacuum@v0.0.1
