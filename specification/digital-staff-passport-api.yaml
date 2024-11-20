@@ -1,0 +1,1148 @@
+openapi: 3.0.3
+info:
+  title: Digital Staff Passport API
+  version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
+  description: |
+    ## Overview
+    ![Digital Staff Passport overview diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-api-standard-context-diagram-v2.svg)
+    
+    Use this API to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport)
+    can use to access employee information in your workforce system.
+
+    The standard currently supports the following use cases:
+
+    | Use case                              | Direction | External system type                     |
+    | ------------------------------------- | --------- | ---------------------------------------- |
+    | Get core skills                       | from      | Learning management system               |
+    | Send core skills                      | to        | Learning management system               |
+    | Send right to work information        | to        | Recruitment system                       |
+    | Send DBS check supporting information | to        | Recruitment system / DBS registered body |
+    | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
+    | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
+    | Send professional registration        | to        | Recruitment system                       |
+
+    Workforce systems can also pro-actively notify DSP of new or amended employee information using the
+    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
+    from our Multicast Notification Service (MNS).
+    
+    For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
+    - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
+    - [integration pattern 4](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-4-inbound-via-online-portal)
+
+    ## Who can use this API standard
+    You can only use this API standard if you are integrating your system with Digital Staff Passport.
+
+    ## How this API standard works
+    DSP needs to interact with a variety of external workforce systems, to send and receive a variety of employee information.
+    This API standard provides a common approach regardless of the type of external system, as explained below.
+
+    ### Employee linking
+    Before DSP can exchange information with an external system, it needs to 'link' the employee record using the external system's unique identifier for that employee.
+
+    There are two ways DSP can do this:
+    - if the DSP user knows the employee's external system ID, DSP can use the [Get employee personal details](#get-/organisations/-org-id-/employees/-employee-id-) operation to allow the user to check it's the right ID
+    - if the DSP user doesn't know the employee's external system ID, DSP can use the [Search for an employee](#get-/organisations/-org-id-/employees) operation to find the ID based on employee details such as name and date of birth
+
+    ### Getting employee information
+    Given the employee's external system ID, DSP can get information from the external system using the [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation.
+
+    The type of information returned depends on the type of system. For example, a learning management system would return core skills records.
+    
+    ### Sending employee information
+    Given the employee's external system ID, DSP can send information to the external system using the [Add an employee record](#post-/organisations/-org-id-/employees/-employee-id-/records) operation.
+
+    The type of information sent depends on the type of system. For example, DSP might send right to work information to a recruitment system in order to support varioius employment checks.
+
+    ### Pro-active notifications
+    If employee information is added or amended in the external system, the external system can notify DSP of this using the
+    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
+    from our Multicast Notification Service (MNS).
+    
+    If the event is for an employee of interest to DSP, MNS forwards the event to DSP and DSP then gets the latest updates from the external system using the
+    [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation as per usual.
+
+    ## Employee record types
+
+    ### Core skills
+    Core skills are a specific type of mandatory training that are common across all NHS organisations,
+    and are generally aligned with the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+
+    Core skills are not always part of the CSTF.
+    For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for DSP.
+
+    Also, the Employee Staff Record (ESR) system includes a number of competencies which are flagged as 'CSTF' even though they are not part of the Core Skills Training Framework.
+    They generally represent skills that have a [nationally-defined framework](https://www.skillsforhealth.org.uk/resources/category/capabilities-frameworks/)
+    such as the [Dementia skills framework](https://www.skillsforhealth.org.uk/resources/dementia-2015-updated-2018/).
+
+    For the avoidance of doubt, a full list of the core skills in scope for DSP is provided in the
+    [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
+    
+    Core skills records are typically held in a learning managements system (LMS).
+    This API standard supports:
+    - DSP getting core skills from an LMS
+    - DSP sending core skills to an LMS
+
+    When sending and receiving core skills records, LMSs must follow the
+    [standard naming conventions for CSTF core skills](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
+    To help with this, mappings for the various data fields are included in the
+    [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
+
+    When receiving a core skill, LMSs should:
+    - reject duplicates i.e. same competency name, same date last awarded
+    - ignore the renewal period and expiry date, instead applying the local renewal period and re-calculating the expiry date
+
+    ### Right to work information
+    [Right to work checks](https://www.nhsemployers.org/publications/right-work-checks-standard) must be performed by all NHS employers.
+
+    These checks are normally managed in a recruitment system.
+
+    If the employee has completed digital identity verification via DSP, this information can be used to support the right to work check.
+
+    Hence this API standard supports DSP sending right to work check information to a recruitment system.
+
+    ### DBS checks
+    In most cases, NHS employers must carry out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
+    These checks must be done by a [DBS registered body](https://www.gov.uk/guidance/dbs-check-requests-guidance-for-employers#registering-as-an-organisation-with-dbs) and are normally managed in a recruitment system.
+
+    DSP can help with DBS checks in two ways.
+
+    #### DBS check supporting information
+    If the employee has completed digital identity verification via DSP, this information can be used to support the DBS check.
+
+    Hence this API standard supports DSP sending DBS check supporting information to a recruitment system.
+
+    #### DBS check outcome
+    In some cases, the employer can use a DBS check outcome from a previous NHS employer instead of a fresh DBS check - sometimes called a 'portable' DBS check.
+    For example, this applies to [doctors in training if the DBS check is less than three years old](https://www.nhsemployers.org/publications/criminal-record-checks-standard).
+
+    Hence this API standard supports:
+    - DSP receiving a DBS check outcome record from a recruitment system
+    - DSP sending a DBS check outcome record to a recruitment system
+
+    DSP only receives and sends 'real' DBS check outcomes, including:
+    - a fresh DBS check resulting in a DBS certificate
+    - a [DBS Update Service](https://www.gov.uk/dbs-update-service) status check
+
+    DSP does not receive and send 'ported' DBS check outcomes i.e. the result of an organisation re-using a previous DBS check outcome.
+
+    ### Professional registrations
+    NHS employers must carry out [professional registration and qualification checks](https://www.nhsemployers.org/publications/professional-registration-and-qualification-checks-standard) for new employees.
+    This includes a check that the employee is registered with the relevant professional body, such as the General Medical Council.
+
+    These checks are often recorded in a recruitment system. They are not portable - each employer must check each employee - 
+    but information from a previous check can be used to speed up the check by pre-populating some of the necessary information.
+
+    DSP may have received an employee's professional registration details from ESR for a previous employer, and in the future we hope to integrate DSP directly with professional registers.
+
+    Hence this API standard supports DSP sending professional registration information to a recruitment system.
+
+    ## Status
+    This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
+    meaning it is under development and might be subject to breaking changes.
+
+    ## Service level
+    Your API must be a bronze service, meaning it is operational and supported during business hours.
+
+    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
+
+    ## Technology
+    This API standard is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
+
+    It does not conform to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir)
+    global standard for health care data exchance because it is not a clinical API, it relates to workforce.
+    This has been agreed with the [HL7 FHIR UK Board](https://www.hl7.org.uk/register/about-hl7-uk/management-board-members/).
+
+    ## Network access
+    Your API must be available on the internet.
+    
+    ## Security and authorisation
+    Your API must use OAuth 2.0 'private key JWT' to authenticate and authorise Digital Staff Passport as the calling system.
+    
+    For more details, see [Authorisation using OAuth 2.0 private key JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-private-key-jwt).
+    
+    ## Errors
+    We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
+
+    * 200 to 299 if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action
+    * 400 to 499 if it failed because of a client error by your application
+    * 500 to 599 if it failed because of an error on our server
+    
+    Although this is not a FHIR API, errors are returned as FHIR [OperationOutcome](https://hl7.org/fhir/R4/operationoutcome.html) resources, in line with our API design guidance.
+
+    For details of specific errors, see the 'Response' section for each operation. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
+
+    ## Environments and testing
+    You'll need to provide the following environments:
+
+    | Environment      | Suggested base URL                       |
+    | ---------------- | ---------------------------------------- |
+    | Integration test | `integration-test.<your domain>/dsp-api` |
+    | Production       | `<your domain>/dsp-api`                  |
+
+    ### Single versus multiple instance systems
+    If your system runs as a single instance supporting multiple employer organisations (sometimes called 'multiple tenant'), you should deploy it as per the suggested base URLs suggested above.
+
+    If you have a separate instance of your system per employer organisation, you should deploy each instance at the following base URL:
+
+    `<your domain>/dsp-api/organisations/<org ODS code>`
+
+    In this case, you should alter the URL for the individual operations to exclude the `organisations/{org-id}` part, so that it isn't repeated.
+
+    ### Integration testing
+    For details, see [Digital Staff Passport integration testing](https://digital.nhs.uk/services/digital-staff-passport/integration/testing).
+
+    ## Onboarding
+    Before your integration goes live, we’ll need to complete a number of assurance checks for both your organisation and your system. We call this onboarding.
+
+    This includes, for example, making sure we have processes in place to deal with live incidents.
+
+    For more details, see [Digital Staff Passport onboarding and assurance](https://digital.nhs.uk/services/digital-staff-passport/integration/onboarding-and-assurance).
+    
+  contact:
+    name: API Management Support
+    email: api.management@nhs.net
+    url: 'https://digital.nhs.uk/developer/help-and-support'
+x-spec-publication:
+  try-this-api:
+    disabled: true
+paths:
+  /organisations/{org-id}/employees:
+    get:
+      operationId: search-for-employee
+      summary: Search for an employee
+      description: |
+        This operation returns a list of employees that match the supplied search parameters.
+
+        The following search parameters are supported:
+        - first name
+        - surname
+        - date of birth
+
+        All search parameters are optional, but at least one must be provided.
+
+        If there are no matches, the operation returns an empty array, not an error.
+
+        If there are more than 50 matches, the operation only returns the first 50.
+        There is currently no way of knowing whether there are more than 50 matches.
+        In the future we might add pagination.
+
+      parameters:
+        - $ref: '#/components/parameters/OrganisationId'
+        - name: firstName
+          in: query
+          description: The employee's first name. Case insensitive.
+          required: false
+          example: 'Jane'
+          schema:
+            type: string
+        - name: surname
+          in: query
+          description: The employee's surname. Case insensitive.
+          required: false
+          example: 'Smith'
+          schema:
+            type: string
+        - name: birthDate
+          in: query
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
+          required: false
+          example: '1998-10-22'
+          schema:
+            type: string
+        - $ref: '#/components/parameters/BearerAuthorization'
+      responses:
+        '200':
+          description: A completed search. This might contain zero, one or many matching employees.
+          content:
+            application/json:
+              schema:
+                type: array
+                minItems: 0
+                maxItems: 50
+                items:
+                  $ref: '#/components/schemas/EmployeePersonalDetails'
+              example:
+                $ref: components/examples/SearchForAnEmployeeResponseSuccess.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code          | Description |
+            | ----------- | ------------------- | - |
+            | 400         | invalid             | Invalid query parameter(s). |
+            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
+            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
+            | 404         | not-found           | Organisation not found for the given organisation ID. |
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: components/examples/SearchForAnEmployeeResponseError.json              
+  /organisations/{org-id}/employees/{employee-id}:
+    get:
+      operationId: get-employee-personal-details
+      summary: Get employee personal details
+      description: |
+        This operation returns personal details for a given employee.
+        Use this operation if you already have the employee's ID but want to check it's the right ID.
+      parameters:
+        - $ref: '#/components/parameters/OrganisationId'
+        - $ref: '#/components/parameters/EmployeeId'
+        - $ref: '#/components/parameters/BearerAuthorization'
+      responses:
+        '200':
+          description: Employee exists for the given ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeePersonalDetails'
+              example:
+                $ref: components/examples/GetEmployeePersonalDetailsResponseSuccess.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code          | Description |
+            | ----------- | ------------------- | --------------------------------------------- |
+            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
+            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
+            | 404         | not-found           | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: components/examples/GetEmployeePersonalDetailsResponseError.json              
+  /organisations/{org-id}/employees/{employee-id}/records:
+    get:
+      operationId: get-employee-records
+      summary: Get employee records
+      description: |
+        ### Overview
+        This operation returns a list of all data records available for a given employee.
+
+        It supports the following record and external system types:
+        
+        | Record type       | External system type       | Notes |
+        | ----------------- | -------------------------- | --- |
+        | Core skills       | Learning management system | |
+        | DBS check outcome | Recruitment system         | - Only includes 'real' DBS check outcomes, including DBS Update Service status checks, not 'ported' DBS check outcomes that are the result of an organisation re-using a previous DBS check outcome.<br>- Only includes completed DBS checks - not in-progress checks for example where the employer is awaiting a DBS certificate containing additional information.|
+
+        To pro-actively notify DSP of new or amended employee records in an external system, use the
+        [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
+        from our Multicast Notification Service (MNS).
+        
+      parameters:
+        - $ref: '#/components/parameters/OrganisationId'
+        - $ref: '#/components/parameters/EmployeeId'
+        - $ref: '#/components/parameters/BearerAuthorization'
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeRecords'
+              examples:
+                core-skills:
+                  summary: Core skills
+                  value:
+                    $ref: components/examples/GetEmployeeRecordsResponseCoreSkills.json
+                dbs-check-outcome:
+                  summary: DBS check outcome
+                  value:
+                    $ref: components/examples/GetEmployeeRecordsResponseDBSCheckOutcome.json
+                ivt:
+                  summary: Immunisations, vaccinations and tests
+                  value:
+                    $ref: components/examples/GetEmployeeRecordsResponseIVT.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code          | Description |
+            | ----------- | ------------------- | - |
+            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
+            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
+            | 404         | not-found           | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: components/examples/GetEmployeeRecordsResponseError.json              
+    post:
+      operationId: add-employee-record
+      summary: Add an employee record
+      description: |
+        This operation adds a data record for a given employee.
+
+        It supports the following record and external system types:
+        
+        | Record type                      | External system type                     |
+        | -------------------------------- | ---------------------------------------- |
+        | Core skills                      | Learning management system               |
+        | Right to work check information  | Recruitment system                       |
+        | DBS check supporting information | Recruitment system / DBS registered body |
+        | DBS check outcome                | Recruitment system / DBS registered body |
+        | Professional registration        | Recruitment system                       |
+
+      parameters:
+        - $ref: '#/components/parameters/OrganisationId'
+        - $ref: '#/components/parameters/EmployeeId'
+        - $ref: '#/components/parameters/BearerAuthorization'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeRecordPost'
+            examples:
+              core-skills:
+                summary: Add a core skills record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestCoreSkillsTraining.json
+              right-to-work:
+                summary: Add a right to work record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestRightToWork.json
+              dbs-check-supporting-information:
+                summary: Add a DBS check supporting information record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestDBSCheckSupportingInformation.json
+              dbs-check-outcome:
+                summary: Add a DBS check outcome record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestDBSCheckOutcome.json
+              professional-registration:
+                summary: Add a professional registration record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestProfessionalRegistration.json
+              ivt-exposure-prone-procedure-tests:
+                summary: Add an IVT exposure prone procedure tests record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestIVTExposureProneProcedureTests.json
+      responses:
+        '201':
+          description: Record created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeRecordPost'
+              examples:
+                core-skills:
+                  summary: Core skills record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseCoreSkillsTraining.json
+                right-to-work:
+                  summary: Right to work record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseRightToWork.json
+                dbs-check-supporting-information:
+                  summary: DBS check supporting information record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseDBSCheckSupportingInformation.json
+                dbs-check-outcome:
+                  summary: DBS check outcome record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseDBSCheckOutcome.json
+                professional-registration:
+                  summary: Professional registration record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseProfessionalRegistration.json
+                ivt-exposure-prone-procedure-tests:
+                  summary: IVT exposure prone procedure tests record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseIVTExposureProneProcedureTests.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code          | Description |
+            | ----------- | ------------------- | - |
+            | 400         | invalid             | Invalid data in request body, for example, missing mandatory field or invalid date format. |
+            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
+            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
+            | 404         | not-found           | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
+            | 409         | conflict            | System is not in a state where it is able or ready to accept the record. |
+            | 409         | duplicate           | Attempted to add a record that already exists, for example a core skill with the same date last awarded. |
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: components/examples/AddEmployeeRecordResponseError.json
+  /organisations/{org-id}/_status:
+    get:
+      operationId: status
+      summary: Get API status
+      description: |
+        This operation allows our live service monitoring tools to check that the API is available and working.
+
+        The URL is `/organisations/{org-id}/_status` rather than just `/_status` so that it can be supported by systems that have separate instances deployed for each organisation.
+
+        It is based on the draft standard [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/draft-inadarei-api-health-check/).
+
+        It can be implemented as a 'shallow ping' or a 'deep ping':
+        - For a shallow ping, the operation returns a `status` of `pass` without checking any dependent resources. This is the easier approach.
+        - For a deep ping, the operation checks the status of dependent resources and returns a status that reflects the overall health of the service. The status of dependent resources is provided within the `checks` object. This approach is more work but allows us to react to live incidents more quickly.
+        
+        The operation always returns an HTTP status code of 200, even if one or more of the dependent resources is not healthy.
+        Therefore it is important for monitoring tools to check the `status` field in the body of the response.
+
+        All fields apart from `status` are optional, so the simplest possible implementation is a 'shallow ping' response that always returns a single field `status` with a value of `pass`.
+      parameters:
+        - $ref: '#/components/parameters/OrganisationId'
+      responses:
+        '200':
+          description: The status operation was executed and the result might have been a pass or a fail (for example due to an unhealthy dependent resource).
+          content:
+            application/health+json:
+              schema:
+                $ref: '#/components/schemas/Status'
+              examples:
+                shallow-ping-success:
+                  summary: Shallow ping
+                  value:
+                    $ref: components/examples/StatusShallowPingPass.json
+                deep-ping-fail:
+                  summary: Deep ping with a dependent resource failure
+                  value:
+                    $ref: components/examples/StatusDeepPingFail.json
+components:
+  parameters:
+    BearerAuthorization:
+      in: header
+      name: Authorization
+      description: |
+        The calling system's access token, which must be an OAuth 2.0 bearer token.
+        For details, see [Authorisation using OAuth 2.0 private key JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-private-key-jwt).
+      required: false
+      schema:
+        type: string
+        format: '^Bearer\ [[:ascii:]]+$'
+        example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
+    OrganisationId:
+      in: path
+      name: org-id
+      description: The ODS code for the employing organisation.
+      required: true
+      example: 'RHQ'
+      schema:
+        type: string
+    EmployeeId:
+      in: path
+      name: employee-id
+      description: The employee's primary unique identifier, as used by the external system.
+      required: true
+      example: '12345'
+      schema:
+        type: string
+  schemas:
+    EmployeePersonalDetails:
+      type: object
+      required:
+        - id
+        - firstName
+        - surname
+      properties:
+        id:
+          description: The employee's primary unique identifier, as used by the external system.
+          type: string
+          example: '12345'
+        firstName:
+          description: The employee's first name.
+          type: string
+          example: 'Jane'
+        surname:
+          description: The employee's surname.
+          type: string
+          example: 'Smith'
+        birthDate:
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
+          type: string
+          example: '1998-10-22'
+        email:
+          description: The employee's email address.
+          type: string
+          example: 'jane.smith@example.com'
+        esrIdentifier:
+          description: |
+            The employee's unique person identifier in the ESR system. This is the person ID not the assignment ID.
+          type: string
+          example: '87654321'
+        furtherInformation:
+          description: |
+            Further information about the employee record that disambiguates it from other records.
+            This can be anything and is likely to be system-specific.
+            
+            For example:
+            - a recruitment system holding possibly multiple applications for the same person
+            could include a composite of the job description and contract type being applied for
+            - a learning management system could include the employee's speciality if they are a doctor
+          type: string
+          example: 'Orthapaedic Practitioner (XR05) - Permanent'
+    EmployeeRecords:
+      type: object
+      required:
+        - id
+        - records
+      properties:
+        id:
+          description: The employee's primary unique identifier, as used by the external system.
+          type: string
+          example: '12345'
+        records:
+          description: The employee's records.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/EmployeeRecordGet'
+    EmployeeRecordGet:
+      oneOf:
+        - $ref: '#/components/schemas/CoreSkillsTraining'
+        - $ref: '#/components/schemas/DBSCheckOutcome'
+        - $ref: '#/components/schemas/IVT-ExposureProneProcedureTests'
+        - $ref: '#/components/schemas/IVT-Tuberculosis'
+        - $ref: '#/components/schemas/IVT-MeaslesMumpsRubella'
+        - $ref: '#/components/schemas/IVT-DiptheriaTetanusPolio'
+        - $ref: '#/components/schemas/IVT-HepatitisB'
+        - $ref: '#/components/schemas/IVT-Pertussis'
+        - $ref: '#/components/schemas/IVT-Varicella'
+        - $ref: '#/components/schemas/IVT-Seasonal'
+    EmployeeRecordPost:
+      oneOf:
+        - $ref: '#/components/schemas/CoreSkillsTraining'
+        - $ref: '#/components/schemas/RightToWork'
+        - $ref: '#/components/schemas/DBSCheckSupportingInformation'
+        - $ref: '#/components/schemas/DBSCheckOutcome'
+        - $ref: '#/components/schemas/ProfessionalRegistration'
+        - $ref: '#/components/schemas/IVT-ExposureProneProcedureTests'
+        - $ref: '#/components/schemas/IVT-Tuberculosis'
+        - $ref: '#/components/schemas/IVT-MeaslesMumpsRubella'
+        - $ref: '#/components/schemas/IVT-DiptheriaTetanusPolio'
+        - $ref: '#/components/schemas/IVT-HepatitisB'
+        - $ref: '#/components/schemas/IVT-Pertussis'
+        - $ref: '#/components/schemas/IVT-Varicella'
+        - $ref: '#/components/schemas/IVT-Seasonal'
+    RightToWork:
+      type: object
+      description: Identity information to support a right to work check, as obtained and verified by an Identity Service Provider.
+      required:
+        - recordType
+        - legalFirstName
+        - legalSurname
+        - birthDate
+        - biometricPageImage
+        - photograph
+        - identityDocumentExpiryDate
+        - identityVerified
+        - evidenceCheckedBy
+        - dateOfIdCheck
+        - GPG45profile
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'RightToWork'
+        legalFirstName:
+          description: The employee's legal first name, as it appears on their identity document.
+          type: string
+        middleNames:
+          description: The employee's middle names, as they appear on their identity document.
+          type: string
+        legalSurname:
+          description: The employee's legal surname, as it appears on their identity document.
+          type: string
+        birthDate:
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
+          type: string
+        biometricPageImage:
+          description: |
+            An image of the biometric page of the employee's identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
+            Approximate image size: 450x600 pixels. Approximate data size (base64 encoded): 105KB.
+          type: string
+        photograph:
+          description: |
+            A photograph of the employee, as it appears on their identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
+            Approximate image size: 450x300 Approximate data size (base64 encoded): 12-15KB.
+          type: string
+        identityDocumentExpiryDate:
+          description: Identity document expiry date, in the format `YYYY-MM-DD`.
+          type: string
+        identityVerified:
+          description: Whether the employee's identity has been verified - always `true`.
+          type: boolean
+        evidenceCheckedBy:
+          description: Organisation that performed the identity check.
+          type: string
+        dateOfIdCheck:
+          description: The date the ID check was performed, in the format `YYYY-MM-DD`.
+          type: string
+        GPG45profile:
+          description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
+          type: string
+    DBSCheckSupportingInformation:
+      type: object
+      description: Identity information to support a DBS check, as obtained and verified by an Identity Service Provider.
+      required:
+        - recordType
+        - legalFirstName
+        - legalSurname
+        - birthDate
+        - currentAddressVerified
+        - identityVerified
+        - evidenceCheckedBy
+        - dateOfIdCheck
+        - GPG45profile
+        - subjectId
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'DBSCheckSupportingInformation'
+        legalFirstName:
+          description: The employee's legal first name, as it appears on their identity document.
+          type: string
+        middleNames:
+          description: The employee's middle names, as they appear on their identity document.
+          type: string
+        legalSurname:
+          description: The employee's legal surname, as it appears on their identity document.
+          type: string
+        birthDate:
+          description: The employee's date of birth, in the format `YYYY-MM-DD`.
+          type: string
+        currentAddress:
+          description: The employee's current address, as it appears on their identity document. Only included if it has been verified.
+          type: string
+        currentAddressVerified:
+          description: Whether the employee's current address has been verified by the IDSP. With our current IDSP this is always `true` but we anticipate it could be `false` in the future.
+          type: boolean
+        dateOfAddressCheck:
+          description: Date the address check was done, if it was done, in the format `YYYY-MM-DD`.
+          type: string
+        identityVerified:
+          description: Whether the employee's identity has been verified - always `true`.
+          type: boolean
+        evidenceCheckedBy:
+          description: Organisation that performed the identity check.
+          type: string
+        dateOfIdCheck:
+          description: The date the ID check was performed, in the format `YYYY-MM-DD`.
+          type: string
+        GPG45profile:
+          description: Code for the [identity profile](https://www.gov.uk/government/publications/identity-proofing-and-verification-of-an-individual/identity-profiles) for the identity check, for example `H1A`.
+          type: string
+        GPG44level: 
+          description: |
+            The [level of protection](https://www.gov.uk/government/publications/authentication-credentials-for-online-government-services/giving-users-access-to-online-services#choosing-an-authenticator)
+            provided by the authenticator used by the digital identity check service.
+          type: string
+          enum:
+            - Low
+            - Medium
+            - High
+            - Very high
+        subjectId:
+          description: Unique identifier for the identity check as shared between DSP and the IDSP. Generally expressed as a GUID.
+          type: string
+        passportNumber:
+          description: Passport number.
+          type: string
+        passportBirthDate:
+          description: Employee's date of birth as it appears on their passport, in the format `YYYY-MM-DD`.
+          type: string
+        passportNationality:
+          description: Issuing country for the passport, as an [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) alpha-3 three-letter code.
+          type: string
+        passportIssueDate:
+          description: Passport issue date, in the format `YYYY-MM-DD`.
+          type: string
+        drivingLicenceNumber:
+          description: Driving licence number.
+          type: string
+        drivingLicenceBirthDate:
+          description: Employee's date of birth as it appears on their driving licence, in the format `YYYY-MM-DD`.
+          type: string
+        drivingLicenceType:
+          description: Driving licence type - photocard or paper.
+          type: string
+          enum:
+            - Photocard
+            - Paper
+        drivingLicenceValidFrom:
+          description: Date the driving licence is valid from, in the format `YYYY-MM-DD`.
+          type: string
+        drivingLicenceCountry:
+          description: Issuing country for the driving licence, as an [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) alpha-3 three-letter code.
+          type: string
+    DBSCheckOutcome:
+      type: object
+      description: |
+        Outcome of a DBS check, as performed by an employer. This could be:
+        - a fresh DBS check
+        - a DBS Update Service status check
+      required:
+        - recordType
+        - applicantName
+        - applicantDateOfBirth
+        - typeOfDbsCheck
+        - adultsBarredListChecked
+        - childrensBarredListChecked
+        - certificateNumber
+        - disclosureIssueDate
+        - informationDisclosed
+# TBC other required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'DBSCheckOutcome'
+        applicantName:
+          description: Employee's name as used in the DBS check.
+          type: string
+        applicantDateOfBirth:
+          description: Employee's date of birth as used in the DBS check.
+          type: string
+        typeOfDbsCheck:
+          description: The type, or level, of DBS check performed.
+          type: string
+          enum:
+            - 'Basic check'
+            - 'Standard check'
+            - 'Enhanced check'
+            - 'Enhanced with barred list(s) check'
+        adultsBarredListChecked:
+          description: Whether or not the adults' barred list was checked.
+          type: boolean
+        childrensBarredListChecked:
+          description: Whether or not the children's barred list was checked.
+          type: boolean
+        certificateNumber:
+          description: Unique identifier for the certificate issued for the DBS check. 12 digits.
+          type: string
+        disclosureIssueDate:
+          description: Date the DBS check certificate was issued, in the format `YYYY-MM-DD`.
+          type: string
+        dbsUpdateServiceStatusCheckDate:
+          description: If this was a DBS Update Service status check, date the status check was done, in the format `YYYY-MM-DD`.
+          type: string
+        informationDisclosed:
+          description: Whether or not any information was disclosed on the certificate. A value of `false` means the certificate is 'clean'.
+          type: boolean
+    CoreSkillsTraining:
+      type: object
+      description: |
+        A record of a core skill attained by the employee. In most cases this will be part of the [Core Skills Training Framework](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
+
+        When receiving a core skill, external systems should:
+        - reject duplicates i.e. same competency name, same date last awarded
+        - ignore the renewal period and expiry date, instead applying the local renewal period and re-calculating the expiry date
+      required:
+        - recordType
+        - competencyFramework
+        - subjectName
+        - competencyName
+        - subjectLevel
+        - attainmentStatus
+        - awardingOrganisation
+        - dateLastAwarded
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'CoreSkillsTraining'
+        competencyFramework:
+          description: |
+            Training framework. One of:
+            * `CSTF` - Core Skills Training Framework
+            * `MAND` - mandatory training outside of CSTF
+          type: string
+          enum:
+           - 'CSTF'
+           - 'MAND'
+        subjectName:
+          description: |
+            Subject name as defined in [Core Skills Training Framework naming conventions](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
+            Specifically, this is the part of the subject name that appears before the level number. For example, if the subject name is `Resuscitation - Level 2 - Adult Basic Life Support - 1 Year`, this would be `Resuscitation`.
+          type: string
+          example: 'Resuscitation'
+        competencyName:
+          description: |
+            Subject name as defined in [Core Skills Training Framework naming conventions](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
+            Specifically, this is the part of the subject name that appears before the level number concatenated with the part that appears after the level number. For example, if the subject name is `Resuscitation - Level 2 - Adult Basic Life Support - 1 Year`, this would be `Resuscitation Adult Basic Life Support`.
+          type: string
+          example: 'Resuscitation Adult Basic Life Support'
+        subjectLevel:
+          description: |
+            Subject level as defined in [Core Skills Training Framework naming conventions](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
+            If the core skill has no subject level, it defaults to `1`.
+          type: string
+          example: '2'
+        renewalPeriodNumber:
+          description: The number associated with the core skill's renewal period. For example if the core skill renewal period is `2 Years`, this will be `2`.
+          type: string
+          example: '2'
+        renewalPeriodUnits:
+          description: The unit of measure associated with the core skill's renewal period. For example if the core skill renewal period is `2 Years`, this will be `Years`. If the renewal period is `1 Year`, this will be `Year` (singular).
+          type: string
+          example: 'Years'
+        proficiencyLevel:
+          description: Whether the core skill was assessed by the awarding organisation.
+          type: string
+          enum:
+            - '0 - Not Assessed'
+            - '1 - Assessed'
+        attainmentStatus:
+          description: Attainment status.
+          type: string
+          enum:
+            - ACHIEVED
+          example: ACHIEVED
+        learningMethod:
+          description: The method by which the core skill was obtained.
+          type: string
+          example: 'Examination'
+        awardingOrganisation:
+          description: The ODS code for the NHS organisation that awarded the core skill.
+          type: string
+          example: RHQ
+        dateLastAwarded:
+          description: The date when the core skill was most recently awarded, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2023-11-01'
+        dateTo:
+          description: The date when the core skill expires, if appropriate, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2024-10-31'
+    ProfessionalRegistration:
+      type: object
+      description: Professional registration details.
+      required:
+        - recordType
+        - professionalBody
+        - registrationNumber
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'ProfessionalRegistration'
+        professionalBody:
+          description: Professional body with which the employee is registered.
+          type: string
+          enum:
+            - "General Medical Council"
+            - "General Dental Council"
+            - "General Pharmaceutical Council"
+            - "Health and Care Professions Council"
+#TBC Is Nursing and Midwifery Council still disabled / out of scope?
+        registrationNumber:
+          description: Registration number allocated to the employee by the professional body
+          type: number
+          example: 1234567
+        registrationDate:
+          description: The date when the employee was registered with the professional body, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2023-11-01'
+        expiryDate:
+          description: The date when the registration expires, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2030-10-31'
+        revalidationDate:
+          description: The date by which the registration must be revalidated, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2026-10-31'
+        registrationCheckDate:
+          description: The date when this registration was checked, in the format `YYYY-MM-DD`.
+          type: string
+          example: '2024-06-15'
+    IVT-ExposureProneProcedureTests:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-ExposureProneProcedureTests'
+    IVT-Tuberculosis:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Tuberculosis'
+    IVT-MeaslesMumpsRubella:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-MeaslesMumpsRubella'
+    IVT-DiptheriaTetanusPolio:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-DiptheriaTetanusPolio'
+    IVT-HepatitisB:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-HepatitisB'
+    IVT-Pertussis:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Pertussis'
+    IVT-Varicella:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Varicella'
+    IVT-Seasonal:
+      type: object
+      description: |
+        TBC
+      required:
+        - recordType
+#TBC required fields
+      properties:
+        recordType:
+          description: Type of record.
+          type: string
+          enum:
+            - 'IVT-Seasonal'
+    Error:
+      type: object
+      required:
+        - resourceType
+        - issue
+      properties:
+        resourceType:
+          description: The resource type.
+          type: string
+          enum:
+            - OperationOutcome
+        issue:
+          description: List of issues that have occurred. Usually there will be just one.
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - severity
+              - code
+            properties:
+              severity:
+                description: Issue severity, as per [https://hl7.org/fhir/R4/valueset-issue-severity.html](https://hl7.org/fhir/R4/valueset-issue-severity.html).
+                type: string
+                enum:
+                  - fatal
+                  - error
+                  - warning
+                  - information
+              code:
+                description: Error or warning code, as per [https://hl7.org/fhir/R4/valueset-issue-type.html](https://hl7.org/fhir/R4/valueset-issue-type.html).
+                type: string
+                example: 'invalid'
+              details:
+                description: Additional details about the error or warning.
+                type: object
+                required:
+                  - text
+                properties:
+                  text:
+                    description: A text description of the error or warning.
+                    type: string
+                    example: 'Invalid format for birthDate query parameter - must be YYYY-MM-DD.'
+    Status:
+      type: object
+      required:
+        - status
+      properties:
+        description:
+          description: Human-friendly description of the service
+        version:
+          description: Major version number for the service.
+          type: string
+        releaseId:
+          description: Minor version number and/or build or release number.
+          type: string
+        status:
+          description: |
+            Whether the service status is acceptable or not:
+            - `pass`: healthy
+            - `fail`: unhealthy
+            - `warn`: healthy, with some concerns
+          type: string
+          enum:
+            - pass
+            - fail
+            - warn
+        notes:
+          description: Array of notes relevant to current state of health
+          type: array
+        output:
+          description: raw error output, in case of `fail` or `warn` states.
+          type: string
+        checks:
+          description: |
+            Detailed health statuses of any dependent systems. Include one object per sub-component and choose suitable names and data attributes as explained in
+            [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/draft-inadarei-api-health-check/).
+          type: object
