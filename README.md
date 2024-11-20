@@ -1,11 +1,13 @@
-# Digital staff passport API specification
+# Digital staff passport API specifications
 
 [![Create Release and Publish to Live API Catalogue](https://github.com/NHSDigital/digital-staff-passport/actions/workflows/release.yml/badge.svg)](https://github.com/NHSDigital/digital-staff-passport/actions/workflows/release.yml)
 
 
-This is a RESTful API Specification for the FIXME in [OAS v3.0](https://swagger.io/specification/v3/) format. It is published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue).
+This repo contains RESTful API specifications for the [Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport) in [OAS v3.0](https://swagger.io/specification/v3/) format. It is published on the [API Catalogue](https://digital.nhs.uk/developer/api-catalogue).
 
-FIXME - WHAT IS THIS
+There are two specifications:
+- Digital Staff Passport API standard - a standard for external systems to use to build APIs for Digital Staff Passport to consume
+- Digital Staff Passport API - a specification for an API exposed by Digital Staff Passport for external systems to consume
 
 - `specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
 - `scripts/` Utilities helpful to developers of this specification.
