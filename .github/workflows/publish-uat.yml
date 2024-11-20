@@ -26,6 +26,7 @@ jobs:
         PROXYGEN_PRIVATE_KEY: ${{ secrets.ENCODED_PROXYGEN_PRIVATE_KEY }}
         PROXYGEN_KID: ${{ secrets.PROXYGEN_KID }}
         PROXYGEN_CLIENT_ID: ${{ secrets.PROXYGEN_CLIENT_ID }}
+        PROXYGEN_CLIENT_ID_2: ${{ secrets.PROXYGEN_CLIENT_ID_2 }}
       run: |
         pipx install proxygen-cli
         pipx upgrade proxygen-cli
@@ -33,7 +34,7 @@ jobs:
         # Setup proxygen auth and settings
         mkdir -p ${HOME}/.proxygen
         echo "$PROXYGEN_PRIVATE_KEY" | base64 --decode > ${HOME}/.proxygen/key
-        envsubst < ./.github/proxygen-credentials-template.yaml > ${HOME}/.proxygen/credentials.yaml
+        envsubst < ./.github/proxygen-credentials-template-api-standard.yaml > ${HOME}/.proxygen/credentials.yaml
         envsubst < ./.github/proxygen-settings-for-api-standard.yaml > ${HOME}/.proxygen/settings.yaml
         proxygen status
 
@@ -42,6 +43,7 @@ jobs:
 
     - name: Setup proxygen-cli for publishing API spec
       run: |
+        envsubst < ./.github/proxygen-credentials-template-api.yaml > ${HOME}/.proxygen/credentials.yaml
         envsubst < ./.github/proxygen-settings-for-api.yaml > ${HOME}/.proxygen/settings.yaml
 
     - name: Publish API spec
