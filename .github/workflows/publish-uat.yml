@@ -49,8 +49,15 @@ jobs:
         PROXYGEN_CLIENT_ID_2: ${{ secrets.PROXYGEN_CLIENT_ID_2 }}
 #        PROXYGEN_CLIENT_ID_2: prod/digital-staff-passport/client_id_2
       run: |
+        pipx install proxygen-cli
+        pipx upgrade proxygen-cli
+
+        # Setup proxygen auth and settings
+        mkdir -p ${HOME}/.proxygen
+        echo "$PROXYGEN_PRIVATE_KEY" | base64 --decode > ${HOME}/.proxygen/key
         envsubst < ./.github/proxygen-credentials-template-api.yaml > ${HOME}/.proxygen/credentials.yaml
         envsubst < ./.github/proxygen-settings-for-api.yaml > ${HOME}/.proxygen/settings.yaml
+        proxygen status
 
     - name: Publish API spec
       run: proxygen spec publish specification/digital-staff-passport-api.yaml --uat --no-confirm
