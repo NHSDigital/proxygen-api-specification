@@ -1,5 +1,5 @@
 {
-  "recordType": "Test",
+  "recordType": "ClinicalTest",
   "code": "DTP002",
   "description": "Diphtheria Antibody Test",
   "date": "2024-09-01",
