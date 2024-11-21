@@ -353,10 +353,6 @@ paths:
                   summary: DBS check outcome
                   value:
                     $ref: components/examples/GetEmployeeRecordsResponseDBSCheckOutcome.json
-                ivt:
-                  summary: Immunisations, vaccinations and tests
-                  value:
-                    $ref: components/examples/GetEmployeeRecordsResponseIVT.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -419,10 +415,6 @@ paths:
                 summary: Add a professional registration record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestProfessionalRegistration.json
-              ivt-exposure-prone-procedure-tests:
-                summary: Add an IVT exposure prone procedure tests record
-                value:
-                  $ref: components/examples/AddEmployeeRecordRequestIVTExposureProneProcedureTests.json
       responses:
         '201':
           description: Record created.
@@ -451,10 +443,6 @@ paths:
                   summary: Professional registration record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseProfessionalRegistration.json
-                ivt-exposure-prone-procedure-tests:
-                  summary: IVT exposure prone procedure tests record added
-                  value:
-                    $ref: components/examples/AddEmployeeRecordResponseIVTExposureProneProcedureTests.json
         '4XX':
           description: |
             An error occurred as follows:
