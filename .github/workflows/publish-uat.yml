@@ -29,6 +29,7 @@ jobs:
 #        PROXYGEN_CLIENT_ID_2: ${{ secrets.PROXYGEN_CLIENT_ID_2 }}
 #        PROXYGEN_CLIENT_ID_2: prod/digital-staff-passport/client_id_2
       run: |
+        pipx uninstall proxygen-cli
         pipx install proxygen-cli
         pipx upgrade proxygen-cli
 
