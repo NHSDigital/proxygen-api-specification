@@ -419,10 +419,18 @@ paths:
                 summary: Add a professional registration record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestProfessionalRegistration.json
-              ivt-exposure-prone-procedure-tests:
-                summary: Add an IVT exposure prone procedure tests record
+              immunisation:
+                summary: Add an immunisation record
                 value:
-                  $ref: components/examples/AddEmployeeRecordRequestIVTExposureProneProcedureTests.json
+                  $ref: components/examples/AddEmployeeRecordRequestImmunisation.json
+              clinical-test:
+                summary: Add a clinical test record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestClinicalTest.json
+              observation:
+                summary: Add an observation record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestObservation.json
       responses:
         '201':
           description: Record created.
@@ -451,10 +459,18 @@ paths:
                   summary: Professional registration record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseProfessionalRegistration.json
-                ivt-exposure-prone-procedure-tests:
-                  summary: IVT exposure prone procedure tests record added
+                immunisation:
+                  summary: Immunisation record added
                   value:
-                    $ref: components/examples/AddEmployeeRecordResponseIVTExposureProneProcedureTests.json
+                    $ref: components/examples/AddEmployeeRecordResponseImmunisation.json
+                immunisation:
+                  summary: Clinical test record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseClinicalTest.json
+                immunisation:
+                  summary: Observation record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseObservation.json
         '4XX':
           description: |
             An error occurred as follows:
