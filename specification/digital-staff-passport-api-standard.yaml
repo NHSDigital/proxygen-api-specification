@@ -987,7 +987,8 @@ components:
     Immunisation:
       type: object
       description: |
-        
+        A record of an immunisation administered to the employee that falls within the scope of the
+        [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
       required:
         - recordType
         - code
@@ -1011,7 +1012,8 @@ components:
     ClinicalTest:
       type: object
       description: |
-        TBC
+        A record of a clinical test performed on the employee that falls within the scope of the
+        [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
       required:
         - recordType
         - code
@@ -1034,7 +1036,7 @@ components:
           description: Date of clinical test, in the format `YYYY-MM-DD`.
           type: string
         result:
-          description: Result of the clinical test, for example the amount antigen present in a sample.
+          description: Result of the clinical test, for example the amount of antigen present in a sample.
           type: string
         interpretation:
           description: Interpretation of the result.
@@ -1046,7 +1048,8 @@ components:
     Observation:
       type: object
       description: |
-        TBC
+        A record of an observation performed on the employee that falls within the scope of the
+        [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
       required:
         - recordType
         - code
