@@ -20,6 +20,8 @@ info:
     | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
     | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
     | Send professional registration        | to        | Recruitment system                       |
+    | Get immunisations and tests           | from      | Occupational health system               |
+    | Send immunisations and tests          | to        | Occupational health system               |
 
     Workforce systems can also pro-actively notify DSP of new or amended employee information using the
     [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
@@ -135,6 +137,15 @@ info:
     DSP may have received an employee's professional registration details from ESR for a previous employer, and in the future we hope to integrate DSP directly with professional registers.
 
     Hence this API standard supports DSP sending professional registration information to a recruitment system.
+
+    ### Immunisations and tests
+    NHS employers must carry out [occupational health checks](https://www.nhsemployers.org/publications/work-health-assessments-standard) for new employees. This includes:
+    - ensuring the employee has the right immunisations for their role
+    - ensuring the employee has had the appropriate tests if they are to be involved in exposure-prone procedures
+
+    Records of previous immunisations and tests are portable between employers.
+
+    Hence this API supports DSP sending and receiving immunisations and tests to and from an occupational health system.
 
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
