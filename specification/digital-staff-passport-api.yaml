@@ -8,27 +8,37 @@ info:
     
     Use this API to notify [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) about changes to
     employee information in your workforce system.
+
+    We call these 'event notifications'. They do not include any actual employee information, they just let DSP know that something has changed.
+
+    To use this API, your system must also provide an API that conforms to the [Digital Staff Passport API standard](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard).
+
+    DSP will then use the [Get employee records](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard#get-/organisations/-org-id-/employees/-employee-id-/records) operation
+    on your API to retrieve the updated employee records.
+
+    The API currently supports the following event types:
+
+    | Event type          | Source                                   |
+    | ------------------- | ---------------------------------------- |
+    | DBS check completed | Recruitment system / DBS registered body |
+    | eLearning completed | Learning management system               |
  
     For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
     - [integration pattern 4](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-4-inbound-via-online-portal)
 
     ## Who can use this API
-    You can only use this API standard if you are integrating your system with Digital Staff Passport.
-
-    ## How this API works
-    TBC
-
-    ## Employee record types
-    TBC
+    You can only use this API if you are integrating your system with Digital Staff Passport.
 
     ## Status
     This API is [in development](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
     meaning it is under development and might be subject to breaking changes.
 
     ## Service level
-    TBC
+    This API is a silver service, meaning it is operational 24 hours a day, 365 days a year but only supported during business hours.
 
+    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
+    
     ## Technology
     TBC
 
@@ -57,10 +67,18 @@ x-spec-publication:
 paths:
   /tbc:
     get:
-      operationId: tbc
-      summary: To be confirmed
+      operationId: publish-event
+      summary: Publish an event.
       description: |
-        TBC
+        Use this operation to notify DSP about a change to employee information in your workforce system.
+
+        The following event types are supported:
+
+        | Event type | Event type ID | Source |
+        | ---------- | ------------- | ------ |
+        | DBS check completed | `employee-dbs-check-completed` | Recruitment system / DBS registered body |
+        | eLearning course completed | `employee-elearning-completed` | Learning management system |
+        
       parameters:
         - name: tbc
           in: query
