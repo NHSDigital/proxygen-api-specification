@@ -26,8 +26,6 @@ jobs:
         PROXYGEN_PRIVATE_KEY: ${{ secrets.ENCODED_PROXYGEN_PRIVATE_KEY }}
         PROXYGEN_KID: ${{ secrets.PROXYGEN_KID }}
         PROXYGEN_CLIENT_ID: ${{ secrets.PROXYGEN_CLIENT_ID }}
-#        PROXYGEN_CLIENT_ID_2: ${{ secrets.PROXYGEN_CLIENT_ID_2 }}
-#        PROXYGEN_CLIENT_ID_2: prod/digital-staff-passport/client_id_2
       run: |
         pipx install proxygen-cli
         pipx upgrade proxygen-cli
@@ -47,7 +45,6 @@ jobs:
         PROXYGEN_PRIVATE_KEY: ${{ secrets.ENCODED_PROXYGEN_PRIVATE_KEY }}
         PROXYGEN_KID: ${{ secrets.PROXYGEN_KID }}
         PROXYGEN_CLIENT_ID_2: ${{ secrets.PROXYGEN_CLIENT_ID_2 }}
-#        PROXYGEN_CLIENT_ID_2: prod/digital-staff-passport/client_id_2
       run: |
         pipx uninstall proxygen-cli
         pipx install proxygen-cli
