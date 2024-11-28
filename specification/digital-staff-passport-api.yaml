@@ -6,197 +6,46 @@ info:
     ## Overview
     ![Digital Staff Passport overview diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-api-standard-context-diagram-v2.svg)
     
-    Use this API to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport)
-    can use to access employee information in your workforce system.
-
-    The standard currently supports the following use cases:
-
-    | Use case                              | Direction | External system type                     |
-    | ------------------------------------- | --------- | ---------------------------------------- |
-    | Get core skills                       | from      | Learning management system               |
-    | Send core skills                      | to        | Learning management system               |
-    | Send right to work information        | to        | Recruitment system                       |
-    | Send DBS check supporting information | to        | Recruitment system / DBS registered body |
-    | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
-    | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
-    | Send professional registration        | to        | Recruitment system                       |
-
-    Workforce systems can also pro-actively notify DSP of new or amended employee information using the
-    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
-    from our Multicast Notification Service (MNS).
-    
+    Use this API to notify [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) about changes to
+    employee information in your workforce system.
+ 
     For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
     - [integration pattern 4](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-4-inbound-via-online-portal)
 
-    ## Who can use this API standard
+    ## Who can use this API
     You can only use this API standard if you are integrating your system with Digital Staff Passport.
 
-    ## How this API standard works
-    DSP needs to interact with a variety of external workforce systems, to send and receive a variety of employee information.
-    This API standard provides a common approach regardless of the type of external system, as explained below.
-
-    ### Employee linking
-    Before DSP can exchange information with an external system, it needs to 'link' the employee record using the external system's unique identifier for that employee.
-
-    There are two ways DSP can do this:
-    - if the DSP user knows the employee's external system ID, DSP can use the [Get employee personal details](#get-/organisations/-org-id-/employees/-employee-id-) operation to allow the user to check it's the right ID
-    - if the DSP user doesn't know the employee's external system ID, DSP can use the [Search for an employee](#get-/organisations/-org-id-/employees) operation to find the ID based on employee details such as name and date of birth
-
-    ### Getting employee information
-    Given the employee's external system ID, DSP can get information from the external system using the [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation.
-
-    The type of information returned depends on the type of system. For example, a learning management system would return core skills records.
-    
-    ### Sending employee information
-    Given the employee's external system ID, DSP can send information to the external system using the [Add an employee record](#post-/organisations/-org-id-/employees/-employee-id-/records) operation.
-
-    The type of information sent depends on the type of system. For example, DSP might send right to work information to a recruitment system in order to support varioius employment checks.
-
-    ### Pro-active notifications
-    If employee information is added or amended in the external system, the external system can notify DSP of this using the
-    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
-    from our Multicast Notification Service (MNS).
-    
-    If the event is for an employee of interest to DSP, MNS forwards the event to DSP and DSP then gets the latest updates from the external system using the
-    [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation as per usual.
+    ## How this API works
+    TBC
 
     ## Employee record types
-
-    ### Core skills
-    Core skills are a specific type of mandatory training that are common across all NHS organisations,
-    and are generally aligned with the [Core Skills Training Framework (CSTF)](https://www.skillsforhealth.org.uk/core-skills-training-framework/).
-
-    Core skills are not always part of the CSTF.
-    For example, at the time of writing, Oliver McGowan Mandatory Training on Learning Disability and Autism is not part of the CSTF but is in scope for DSP.
-
-    Also, the Employee Staff Record (ESR) system includes a number of competencies which are flagged as 'CSTF' even though they are not part of the Core Skills Training Framework.
-    They generally represent skills that have a [nationally-defined framework](https://www.skillsforhealth.org.uk/resources/category/capabilities-frameworks/)
-    such as the [Dementia skills framework](https://www.skillsforhealth.org.uk/resources/dementia-2015-updated-2018/).
-
-    For the avoidance of doubt, a full list of the core skills in scope for DSP is provided in the
-    [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
-    
-    Core skills records are typically held in a learning managements system (LMS).
-    This API standard supports:
-    - DSP getting core skills from an LMS
-    - DSP sending core skills to an LMS
-
-    When sending and receiving core skills records, LMSs must follow the
-    [standard naming conventions for CSTF core skills](https://www.skillsforhealth.org.uk/images/services/cstf/CSTF%20Naming%20Conventions%20%20Competencies%20on%20ESR%20June%202019.pdf).
-    To help with this, mappings for the various data fields are included in the
-    [Digital Staff Passport core skills scope and mappings spreadsheet](https://digital.nhs.uk/binaries/content/assets/website-assets/developer/digital-staff-passport-api-standard/digital-staff-passport---core-skills-scope-and-mappings.xlsx).
-
-    When receiving a core skill, LMSs should:
-    - reject duplicates i.e. same competency name, same date last awarded
-    - ignore the renewal period and expiry date, instead applying the local renewal period and re-calculating the expiry date
-
-    ### Right to work information
-    [Right to work checks](https://www.nhsemployers.org/publications/right-work-checks-standard) must be performed by all NHS employers.
-
-    These checks are normally managed in a recruitment system.
-
-    If the employee has completed digital identity verification via DSP, this information can be used to support the right to work check.
-
-    Hence this API standard supports DSP sending right to work check information to a recruitment system.
-
-    ### DBS checks
-    In most cases, NHS employers must carry out a [Criminal record (DBS) check](https://www.nhsemployers.org/publications/criminal-record-checks-standard) for new employees.
-    These checks must be done by a [DBS registered body](https://www.gov.uk/guidance/dbs-check-requests-guidance-for-employers#registering-as-an-organisation-with-dbs) and are normally managed in a recruitment system.
-
-    DSP can help with DBS checks in two ways.
-
-    #### DBS check supporting information
-    If the employee has completed digital identity verification via DSP, this information can be used to support the DBS check.
-
-    Hence this API standard supports DSP sending DBS check supporting information to a recruitment system.
-
-    #### DBS check outcome
-    In some cases, the employer can use a DBS check outcome from a previous NHS employer instead of a fresh DBS check - sometimes called a 'portable' DBS check.
-    For example, this applies to [doctors in training if the DBS check is less than three years old](https://www.nhsemployers.org/publications/criminal-record-checks-standard).
-
-    Hence this API standard supports:
-    - DSP receiving a DBS check outcome record from a recruitment system
-    - DSP sending a DBS check outcome record to a recruitment system
-
-    DSP only receives and sends 'real' DBS check outcomes, including:
-    - a fresh DBS check resulting in a DBS certificate
-    - a [DBS Update Service](https://www.gov.uk/dbs-update-service) status check
-
-    DSP does not receive and send 'ported' DBS check outcomes i.e. the result of an organisation re-using a previous DBS check outcome.
-
-    ### Professional registrations
-    NHS employers must carry out [professional registration and qualification checks](https://www.nhsemployers.org/publications/professional-registration-and-qualification-checks-standard) for new employees.
-    This includes a check that the employee is registered with the relevant professional body, such as the General Medical Council.
-
-    These checks are often recorded in a recruitment system. They are not portable - each employer must check each employee - 
-    but information from a previous check can be used to speed up the check by pre-populating some of the necessary information.
-
-    DSP may have received an employee's professional registration details from ESR for a previous employer, and in the future we hope to integrate DSP directly with professional registers.
-
-    Hence this API standard supports DSP sending professional registration information to a recruitment system.
+    TBC
 
     ## Status
-    This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
+    This API is [in development](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
     meaning it is under development and might be subject to breaking changes.
 
     ## Service level
-    Your API must be a bronze service, meaning it is operational and supported during business hours.
-
-    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
+    TBC
 
     ## Technology
-    This API standard is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
-
-    It does not conform to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir)
-    global standard for health care data exchance because it is not a clinical API, it relates to workforce.
-    This has been agreed with the [HL7 FHIR UK Board](https://www.hl7.org.uk/register/about-hl7-uk/management-board-members/).
+    TBC
 
     ## Network access
-    Your API must be available on the internet.
+    TBC
     
     ## Security and authorisation
-    Your API must use OAuth 2.0 'private key JWT' to authenticate and authorise Digital Staff Passport as the calling system.
-    
-    For more details, see [Authorisation using OAuth 2.0 private key JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-private-key-jwt).
+    TBC
     
     ## Errors
-    We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
-
-    * 200 to 299 if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action
-    * 400 to 499 if it failed because of a client error by your application
-    * 500 to 599 if it failed because of an error on our server
-    
-    Although this is not a FHIR API, errors are returned as FHIR [OperationOutcome](https://hl7.org/fhir/R4/operationoutcome.html) resources, in line with our API design guidance.
-
-    For details of specific errors, see the 'Response' section for each operation. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
+    TBC
 
     ## Environments and testing
-    You'll need to provide the following environments:
-
-    | Environment      | Suggested base URL                       |
-    | ---------------- | ---------------------------------------- |
-    | Integration test | `integration-test.<your domain>/dsp-api` |
-    | Production       | `<your domain>/dsp-api`                  |
-
-    ### Single versus multiple instance systems
-    If your system runs as a single instance supporting multiple employer organisations (sometimes called 'multiple tenant'), you should deploy it as per the suggested base URLs suggested above.
-
-    If you have a separate instance of your system per employer organisation, you should deploy each instance at the following base URL:
-
-    `<your domain>/dsp-api/organisations/<org ODS code>`
-
-    In this case, you should alter the URL for the individual operations to exclude the `organisations/{org-id}` part, so that it isn't repeated.
-
-    ### Integration testing
-    For details, see [Digital Staff Passport integration testing](https://digital.nhs.uk/services/digital-staff-passport/integration/testing).
+    TBC
 
     ## Onboarding
-    Before your integration goes live, we’ll need to complete a number of assurance checks for both your organisation and your system. We call this onboarding.
-
-    This includes, for example, making sure we have processes in place to deal with live incidents.
-
-    For more details, see [Digital Staff Passport onboarding and assurance](https://digital.nhs.uk/services/digital-staff-passport/integration/onboarding-and-assurance).
+    TBC
     
   contact:
     name: API Management Support
@@ -206,53 +55,25 @@ x-spec-publication:
   try-this-api:
     disabled: true
 paths:
-  /organisations/{org-id}/employees:
+  /tbc:
     get:
-      operationId: search-for-employee
-      summary: Search for an employee
+      operationId: tbc
+      summary: To be confirmed
       description: |
-        This operation returns a list of employees that match the supplied search parameters.
-
-        The following search parameters are supported:
-        - first name
-        - surname
-        - date of birth
-
-        All search parameters are optional, but at least one must be provided.
-
-        If there are no matches, the operation returns an empty array, not an error.
-
-        If there are more than 50 matches, the operation only returns the first 50.
-        There is currently no way of knowing whether there are more than 50 matches.
-        In the future we might add pagination.
-
+        TBC
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
-        - name: firstName
+        - name: tbc
           in: query
-          description: The employee's first name. Case insensitive.
+          description: To be confirmed.
           required: false
-          example: 'Jane'
-          schema:
-            type: string
-        - name: surname
-          in: query
-          description: The employee's surname. Case insensitive.
-          required: false
-          example: 'Smith'
-          schema:
-            type: string
-        - name: birthDate
-          in: query
-          description: The employee's date of birth, in the format `YYYY-MM-DD`.
-          required: false
-          example: '1998-10-22'
+          example: 'TBC'
           schema:
             type: string
         - $ref: '#/components/parameters/BearerAuthorization'
       responses:
         '200':
-          description: A completed search. This might contain zero, one or many matching employees.
+          description: To be confirmed.
           content:
             application/json:
               schema:
@@ -267,237 +88,14 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code          | Description |
-            | ----------- | ------------------- | - |
-            | 400         | invalid             | Invalid query parameter(s). |
-            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
-            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
-            | 404         | not-found           | Organisation not found for the given organisation ID. |
+            TBC table
+
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
                 $ref: components/examples/SearchForAnEmployeeResponseError.json              
-  /organisations/{org-id}/employees/{employee-id}:
-    get:
-      operationId: get-employee-personal-details
-      summary: Get employee personal details
-      description: |
-        This operation returns personal details for a given employee.
-        Use this operation if you already have the employee's ID but want to check it's the right ID.
-      parameters:
-        - $ref: '#/components/parameters/OrganisationId'
-        - $ref: '#/components/parameters/EmployeeId'
-        - $ref: '#/components/parameters/BearerAuthorization'
-      responses:
-        '200':
-          description: Employee exists for the given ID.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmployeePersonalDetails'
-              example:
-                $ref: components/examples/GetEmployeePersonalDetailsResponseSuccess.json
-        '4XX':
-          description: |
-            An error occurred as follows:
-
-            | HTTP status | Error code          | Description |
-            | ----------- | ------------------- | --------------------------------------------- |
-            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
-            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
-            | 404         | not-found           | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                $ref: components/examples/GetEmployeePersonalDetailsResponseError.json              
-  /organisations/{org-id}/employees/{employee-id}/records:
-    get:
-      operationId: get-employee-records
-      summary: Get employee records
-      description: |
-        ### Overview
-        This operation returns a list of all data records available for a given employee.
-
-        It supports the following record and external system types:
-        
-        | Record type       | External system type       | Notes |
-        | ----------------- | -------------------------- | --- |
-        | Core skills       | Learning management system | |
-        | DBS check outcome | Recruitment system         | - Only includes 'real' DBS check outcomes, including DBS Update Service status checks, not 'ported' DBS check outcomes that are the result of an organisation re-using a previous DBS check outcome.<br>- Only includes completed DBS checks - not in-progress checks for example where the employer is awaiting a DBS certificate containing additional information.|
-
-        To pro-actively notify DSP of new or amended employee records in an external system, use the
-        [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
-        from our Multicast Notification Service (MNS).
-        
-      parameters:
-        - $ref: '#/components/parameters/OrganisationId'
-        - $ref: '#/components/parameters/EmployeeId'
-        - $ref: '#/components/parameters/BearerAuthorization'
-      responses:
-        '200':
-          description: Successful operation.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmployeeRecords'
-              examples:
-                core-skills:
-                  summary: Core skills
-                  value:
-                    $ref: components/examples/GetEmployeeRecordsResponseCoreSkills.json
-                dbs-check-outcome:
-                  summary: DBS check outcome
-                  value:
-                    $ref: components/examples/GetEmployeeRecordsResponseDBSCheckOutcome.json
-        '4XX':
-          description: |
-            An error occurred as follows:
-
-            | HTTP status | Error code          | Description |
-            | ----------- | ------------------- | - |
-            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
-            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
-            | 404         | not-found           | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                $ref: components/examples/GetEmployeeRecordsResponseError.json              
-    post:
-      operationId: add-employee-record
-      summary: Add an employee record
-      description: |
-        This operation adds a data record for a given employee.
-
-        It supports the following record and external system types:
-        
-        | Record type                      | External system type                     |
-        | -------------------------------- | ---------------------------------------- |
-        | Core skills                      | Learning management system               |
-        | Right to work check information  | Recruitment system                       |
-        | DBS check supporting information | Recruitment system / DBS registered body |
-        | DBS check outcome                | Recruitment system / DBS registered body |
-        | Professional registration        | Recruitment system                       |
-
-      parameters:
-        - $ref: '#/components/parameters/OrganisationId'
-        - $ref: '#/components/parameters/EmployeeId'
-        - $ref: '#/components/parameters/BearerAuthorization'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmployeeRecordPost'
-            examples:
-              core-skills:
-                summary: Add a core skills record
-                value:
-                  $ref: components/examples/AddEmployeeRecordRequestCoreSkillsTraining.json
-              right-to-work:
-                summary: Add a right to work record
-                value:
-                  $ref: components/examples/AddEmployeeRecordRequestRightToWork.json
-              dbs-check-supporting-information:
-                summary: Add a DBS check supporting information record
-                value:
-                  $ref: components/examples/AddEmployeeRecordRequestDBSCheckSupportingInformation.json
-              dbs-check-outcome:
-                summary: Add a DBS check outcome record
-                value:
-                  $ref: components/examples/AddEmployeeRecordRequestDBSCheckOutcome.json
-              professional-registration:
-                summary: Add a professional registration record
-                value:
-                  $ref: components/examples/AddEmployeeRecordRequestProfessionalRegistration.json
-      responses:
-        '201':
-          description: Record created.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmployeeRecordPost'
-              examples:
-                core-skills:
-                  summary: Core skills record added
-                  value:
-                    $ref: components/examples/AddEmployeeRecordResponseCoreSkillsTraining.json
-                right-to-work:
-                  summary: Right to work record added
-                  value:
-                    $ref: components/examples/AddEmployeeRecordResponseRightToWork.json
-                dbs-check-supporting-information:
-                  summary: DBS check supporting information record added
-                  value:
-                    $ref: components/examples/AddEmployeeRecordResponseDBSCheckSupportingInformation.json
-                dbs-check-outcome:
-                  summary: DBS check outcome record added
-                  value:
-                    $ref: components/examples/AddEmployeeRecordResponseDBSCheckOutcome.json
-                professional-registration:
-                  summary: Professional registration record added
-                  value:
-                    $ref: components/examples/AddEmployeeRecordResponseProfessionalRegistration.json
-        '4XX':
-          description: |
-            An error occurred as follows:
-
-            | HTTP status | Error code          | Description |
-            | ----------- | ------------------- | - |
-            | 400         | invalid             | Invalid data in request body, for example, missing mandatory field or invalid date format. |
-            | 401         | invalid-credentials | OAuth 2.0 bearer token missing, invalid or expired. |
-            | 403         | forbidden           | Calling application not enabled for this operation with the specified organisation. |
-            | 404         | not-found           | Organisation not found for the given organisation ID or employee not found for the given employee ID. |
-            | 409         | conflict            | System is not in a state where it is able or ready to accept the record. |
-            | 409         | duplicate           | Attempted to add a record that already exists, for example a core skill with the same date last awarded. |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                $ref: components/examples/AddEmployeeRecordResponseError.json
-  /organisations/{org-id}/_status:
-    get:
-      operationId: status
-      summary: Get API status
-      description: |
-        This operation allows our live service monitoring tools to check that the API is available and working.
-
-        The URL is `/organisations/{org-id}/_status` rather than just `/_status` so that it can be supported by systems that have separate instances deployed for each organisation.
-
-        It is based on the draft standard [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/draft-inadarei-api-health-check/).
-
-        It can be implemented as a 'shallow ping' or a 'deep ping':
-        - For a shallow ping, the operation returns a `status` of `pass` without checking any dependent resources. This is the easier approach.
-        - For a deep ping, the operation checks the status of dependent resources and returns a status that reflects the overall health of the service. The status of dependent resources is provided within the `checks` object. This approach is more work but allows us to react to live incidents more quickly.
-        
-        The operation always returns an HTTP status code of 200, even if one or more of the dependent resources is not healthy.
-        Therefore it is important for monitoring tools to check the `status` field in the body of the response.
-
-        All fields apart from `status` are optional, so the simplest possible implementation is a 'shallow ping' response that always returns a single field `status` with a value of `pass`.
-      parameters:
-        - $ref: '#/components/parameters/OrganisationId'
-      responses:
-        '200':
-          description: The status operation was executed and the result might have been a pass or a fail (for example due to an unhealthy dependent resource).
-          content:
-            application/health+json:
-              schema:
-                $ref: '#/components/schemas/Status'
-              examples:
-                shallow-ping-success:
-                  summary: Shallow ping
-                  value:
-                    $ref: components/examples/StatusShallowPingPass.json
-                deep-ping-fail:
-                  summary: Deep ping with a dependent resource failure
-                  value:
-                    $ref: components/examples/StatusDeepPingFail.json
 components:
   parameters:
     BearerAuthorization:
