@@ -62,7 +62,6 @@ paths:
       description: |
         TBC
       parameters:
-        - $ref: '#/components/parameters/OrganisationId'
         - name: tbc
           in: query
           description: To be confirmed.
