@@ -10,15 +10,18 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set OAS info.version to ${{ github.ref_name}}-${{github.sha}}
-      run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/digital-staff-passport-api-standard.yaml
+      run: |
+        sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/digital-staff-passport-api-standard.yaml
+        sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/digital-staff-passport-api.yaml
 
     - name: Vacuum OpenAPI Spec linter
       uses: eduelias/gha-vacuum@v0.0.1
       with:
         cmd: |
           vacuum lint -d --base specification/ specification/digital-staff-passport-api-standard.yaml
+          vacuum lint -d --base specification/ specification/digital-staff-passport-api.yaml
 
-    - name: Setup proxygen-cli
+    - name: Setup proxygen-cli for publishing API standard spec
       env:
         PROXYGEN_PRIVATE_KEY: ${{ secrets.ENCODED_PROXYGEN_PRIVATE_KEY }}
         PROXYGEN_KID: ${{ secrets.PROXYGEN_KID }}
@@ -30,14 +33,35 @@ jobs:
         # Setup proxygen auth and settings
         mkdir -p ${HOME}/.proxygen
         echo "$PROXYGEN_PRIVATE_KEY" | base64 --decode > ${HOME}/.proxygen/key
-        envsubst < ./.github/proxygen-credentials-template.yaml > ${HOME}/.proxygen/credentials.yaml
-        envsubst < ./.github/proxygen-settings.yaml > ${HOME}/.proxygen/settings.yaml
+        envsubst < ./.github/proxygen-credentials-template-api-standard.yaml > ${HOME}/.proxygen/credentials.yaml
+        envsubst < ./.github/proxygen-settings-for-api-standard.yaml > ${HOME}/.proxygen/settings.yaml
         proxygen status
 
-    - name: Publish spec
+    - name: Publish API standard spec
       run: proxygen spec publish specification/digital-staff-passport-api-standard.yaml --uat --no-confirm
+
+    - name: Setup proxygen-cli for publishing API spec
+      env:
+        PROXYGEN_PRIVATE_KEY: ${{ secrets.ENCODED_PROXYGEN_PRIVATE_KEY }}
+        PROXYGEN_KID: ${{ secrets.PROXYGEN_KID }}
+        PROXYGEN_CLIENT_ID_2: ${{ secrets.PROXYGEN_CLIENT_ID_2 }}
+      run: |
+        pipx uninstall proxygen-cli
+        pipx install proxygen-cli
+        pipx upgrade proxygen-cli
+
+        # Setup proxygen auth and settings
+        mkdir -p ${HOME}/.proxygen
+        echo "$PROXYGEN_PRIVATE_KEY" | base64 --decode > ${HOME}/.proxygen/key
+        envsubst < ./.github/proxygen-credentials-template-api.yaml > ${HOME}/.proxygen/credentials.yaml
+        envsubst < ./.github/proxygen-settings-for-api.yaml > ${HOME}/.proxygen/settings.yaml
+        proxygen status
+
+    - name: Publish API spec
+      run: proxygen spec publish specification/digital-staff-passport-api.yaml --uat --no-confirm
 
     - name: Instructions for viewing UAT Specification
       run: |
-        echo "View uat spec changes at https://uat2.nhsd.io/developer/api-catalogue/digital-staff-passport-api-standard"
+        echo "View uat spec changes for the API standard at https://uat2.nhsd.io/developer/api-catalogue/digital-staff-passport-api-standard"
+        echo "View uat spec changes for the API spec at https://uat2.nhsd.io/developer/api-catalogue/digital-staff-passport-api"
         echo "Remember Bloomreach pulls UAT changes every 5-10 minutes so changes may not appear right away. You must be connected to the VPN."

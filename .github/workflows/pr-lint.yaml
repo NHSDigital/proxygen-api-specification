@@ -28,7 +28,7 @@ jobs:
       uses: thollander/actions-comment-pull-request@v2
       with:
         message: |
-          Manually run the [Publish Spec to Bloomreach UAT Portal](https://github.com/NHSDigital/digital-staff-passport/actions/workflows/publish-uat.yml) to preview specification on the [UAT Portal](https://uat2.nhsd.io/developer/api-catalogue/digital-staff-passport-api-standard) (requires VPN).
+          Manually run the [Publish Spec to Bloomreach UAT Portal](https://github.com/NHSDigital/digital-staff-passport/actions/workflows/publish-uat.yml) to preview specification on the UAT Portal: [API standard](https://uat2.nhsd.io/developer/api-catalogue/digital-staff-passport-api-standard) [API](https://uat2.nhsd.io/developer/api-catalogue/digital-staff-passport-api) (requires VPN).
         comment_tag: uat-deploy
         
     - name: Checkout
@@ -39,4 +39,5 @@ jobs:
       with:
         cmd: |
           vacuum lint -d --base specification/ specification/digital-staff-passport-api-standard.yaml
+          vacuum lint -d --base specification/ specification/digital-staff-passport-api.yaml
   

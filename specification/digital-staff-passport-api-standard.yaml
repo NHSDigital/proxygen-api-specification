@@ -20,6 +20,8 @@ info:
     | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
     | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
     | Send professional registration        | to        | Recruitment system                       |
+    | Get immunisations and tests           | from      | Occupational health system               |
+    | Send immunisations and tests          | to        | Occupational health system               |
 
     Workforce systems can also pro-actively notify DSP of new or amended employee information using the
     [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
@@ -135,6 +137,15 @@ info:
     DSP may have received an employee's professional registration details from ESR for a previous employer, and in the future we hope to integrate DSP directly with professional registers.
 
     Hence this API standard supports DSP sending professional registration information to a recruitment system.
+
+    ### Immunisations and tests
+    NHS employers must carry out [occupational health checks](https://www.nhsemployers.org/publications/work-health-assessments-standard) for new employees. This includes:
+    - ensuring the employee has the right immunisations for their role
+    - ensuring the employee has had the appropriate tests if they are to be involved in exposure-prone procedures
+
+    Records of previous immunisations and tests are portable between employers.
+
+    Hence this API supports DSP sending and receiving immunisations and tests to and from an occupational health system.
 
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
@@ -328,6 +339,9 @@ paths:
         | ----------------- | -------------------------- | --- |
         | Core skills       | Learning management system | |
         | DBS check outcome | Recruitment system         | - Only includes 'real' DBS check outcomes, including DBS Update Service status checks, not 'ported' DBS check outcomes that are the result of an organisation re-using a previous DBS check outcome.<br>- Only includes completed DBS checks - not in-progress checks for example where the employer is awaiting a DBS certificate containing additional information.|
+        | Immunisation      | Occupational health system | |
+        | Clinical test     | Occupational health system | |
+        | Observation       | Occupational health system | |
 
         To pro-actively notify DSP of new or amended employee records in an external system, use the
         [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
@@ -419,10 +433,18 @@ paths:
                 summary: Add a professional registration record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestProfessionalRegistration.json
-              ivt-exposure-prone-procedure-tests:
-                summary: Add an IVT exposure prone procedure tests record
+              immunisation:
+                summary: Add an immunisation record
                 value:
-                  $ref: components/examples/AddEmployeeRecordRequestIVTExposureProneProcedureTests.json
+                  $ref: components/examples/AddEmployeeRecordRequestImmunisation.json
+              clinical-test:
+                summary: Add a clinical test record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestClinicalTest.json
+              observation:
+                summary: Add an observation record
+                value:
+                  $ref: components/examples/AddEmployeeRecordRequestObservation.json
       responses:
         '201':
           description: Record created.
@@ -451,10 +473,18 @@ paths:
                   summary: Professional registration record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseProfessionalRegistration.json
-                ivt-exposure-prone-procedure-tests:
-                  summary: IVT exposure prone procedure tests record added
+                immunisation:
+                  summary: Immunisation record added
                   value:
-                    $ref: components/examples/AddEmployeeRecordResponseIVTExposureProneProcedureTests.json
+                    $ref: components/examples/AddEmployeeRecordResponseImmunisation.json
+                clinical-test:
+                  summary: Clinical test record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseClinicalTest.json
+                observation:
+                  summary: Observation record added
+                  value:
+                    $ref: components/examples/AddEmployeeRecordResponseObservation.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -603,14 +633,9 @@ components:
       oneOf:
         - $ref: '#/components/schemas/CoreSkillsTraining'
         - $ref: '#/components/schemas/DBSCheckOutcome'
-        - $ref: '#/components/schemas/IVT-ExposureProneProcedureTests'
-        - $ref: '#/components/schemas/IVT-Tuberculosis'
-        - $ref: '#/components/schemas/IVT-MeaslesMumpsRubella'
-        - $ref: '#/components/schemas/IVT-DiptheriaTetanusPolio'
-        - $ref: '#/components/schemas/IVT-HepatitisB'
-        - $ref: '#/components/schemas/IVT-Pertussis'
-        - $ref: '#/components/schemas/IVT-Varicella'
-        - $ref: '#/components/schemas/IVT-Seasonal'
+        - $ref: '#/components/schemas/Immunisation'
+        - $ref: '#/components/schemas/ClinicalTest'
+        - $ref: '#/components/schemas/Observation'
     EmployeeRecordPost:
       oneOf:
         - $ref: '#/components/schemas/CoreSkillsTraining'
@@ -618,14 +643,9 @@ components:
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
         - $ref: '#/components/schemas/DBSCheckOutcome'
         - $ref: '#/components/schemas/ProfessionalRegistration'
-        - $ref: '#/components/schemas/IVT-ExposureProneProcedureTests'
-        - $ref: '#/components/schemas/IVT-Tuberculosis'
-        - $ref: '#/components/schemas/IVT-MeaslesMumpsRubella'
-        - $ref: '#/components/schemas/IVT-DiptheriaTetanusPolio'
-        - $ref: '#/components/schemas/IVT-HepatitisB'
-        - $ref: '#/components/schemas/IVT-Pertussis'
-        - $ref: '#/components/schemas/IVT-Varicella'
-        - $ref: '#/components/schemas/IVT-Seasonal'
+        - $ref: '#/components/schemas/Immunisation'
+        - $ref: '#/components/schemas/ClinicalTest'
+        - $ref: '#/components/schemas/Observation'
     RightToWork:
       type: object
       description: Identity information to support a right to work check, as obtained and verified by an Identity Service Provider.
@@ -964,110 +984,97 @@ components:
           description: The date when this registration was checked, in the format `YYYY-MM-DD`.
           type: string
           example: '2024-06-15'
-    IVT-ExposureProneProcedureTests:
+    Immunisation:
       type: object
       description: |
-        TBC
+        A record of an immunisation administered to the employee that falls within the scope of the
+        [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
       required:
         - recordType
-#TBC required fields
+        - code
+        - description
+        - date
       properties:
         recordType:
           description: Type of record.
           type: string
           enum:
-            - 'IVT-ExposureProneProcedureTests'
-    IVT-Tuberculosis:
+            - 'Immunisation'
+        code:
+          description: A code identifying the type of immunisation, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          type: string
+        description:
+          description: The type of immunisation, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          type: string
+        date:
+          description: Date of immunisation, in the format `YYYY-MM-DD`.
+          type: string
+    ClinicalTest:
       type: object
       description: |
-        TBC
+        A record of a clinical test performed on the employee that falls within the scope of the
+        [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
       required:
         - recordType
-#TBC required fields
+        - code
+        - description
+        - date
+        - interpretation
       properties:
         recordType:
           description: Type of record.
           type: string
           enum:
-            - 'IVT-Tuberculosis'
-    IVT-MeaslesMumpsRubella:
+            - 'ClinicalTest'
+        code:
+          description: A code identifying the type of clinical test, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          type: string
+        description:
+          description: The type of clinical test, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          type: string
+        date:
+          description: Date of clinical test, in the format `YYYY-MM-DD`.
+          type: string
+        result:
+          description: Result of the clinical test, for example the amount of antigen present in a sample.
+          type: string
+        interpretation:
+          description: Interpretation of the result.
+          type: string
+          enum:
+            - 'Detected'
+            - 'Not detected'
+            - 'Equivocal'
+    Observation:
       type: object
       description: |
-        TBC
+        A record of an observation performed on the employee that falls within the scope of the
+        [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
       required:
         - recordType
-#TBC required fields
+        - code
+        - description
+        - result
       properties:
         recordType:
           description: Type of record.
           type: string
           enum:
-            - 'IVT-MeaslesMumpsRubella'
-    IVT-DiptheriaTetanusPolio:
-      type: object
-      description: |
-        TBC
-      required:
-        - recordType
-#TBC required fields
-      properties:
-        recordType:
-          description: Type of record.
+            - 'Observation'
+        code:
+          description: A code identifying the type of observation, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          type: string
+        description:
+          description: The type of observation, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          type: string
+        result:
+          description: Result of the observation - whether or not the thing was observed.
           type: string
           enum:
-            - 'IVT-DiptheriaTetanusPolio'
-    IVT-HepatitisB:
-      type: object
-      description: |
-        TBC
-      required:
-        - recordType
-#TBC required fields
-      properties:
-        recordType:
-          description: Type of record.
-          type: string
-          enum:
-            - 'IVT-HepatitisB'
-    IVT-Pertussis:
-      type: object
-      description: |
-        TBC
-      required:
-        - recordType
-#TBC required fields
-      properties:
-        recordType:
-          description: Type of record.
-          type: string
-          enum:
-            - 'IVT-Pertussis'
-    IVT-Varicella:
-      type: object
-      description: |
-        TBC
-      required:
-        - recordType
-#TBC required fields
-      properties:
-        recordType:
-          description: Type of record.
-          type: string
-          enum:
-            - 'IVT-Varicella'
-    IVT-Seasonal:
-      type: object
-      description: |
-        TBC
-      required:
-        - recordType
-#TBC required fields
-      properties:
-        recordType:
-          description: Type of record.
-          type: string
-          enum:
-            - 'IVT-Seasonal'
+            - Yes
+            - No
+#TBC are yes/no the right options?
+#TBC should there be a date of observation?          
     Error:
       type: object
       required:
