@@ -23,8 +23,9 @@ jobs:
       run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
 
     - name: Set OAS info.version to ${{ env.SPEC_VERSION }}
-      run: sed -i 's/__VERSION__/${{ env.SPEC_VERSION }}/g' specification/digital-staff-passport-api-standard.yaml
-      run: sed -i 's/__VERSION__/${{ env.SPEC_VERSION }}/g' specification/digital-staff-passport-api.yaml
+      run: |
+        sed -i 's/__VERSION__/${{ env.SPEC_VERSION }}/g' specification/digital-staff-passport-api-standard.yaml
+        sed -i 's/__VERSION__/${{ env.SPEC_VERSION }}/g' specification/digital-staff-passport-api.yaml
 
     - name: Vacuum OpenAPI Spec linter
       uses: eduelias/gha-vacuum@v0.0.1
