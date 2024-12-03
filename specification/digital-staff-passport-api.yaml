@@ -40,13 +40,23 @@ info:
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
     
     ## Technology
-    TBC
+    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
+
+    It does not conform to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir)
+    global standard for health care data exchance because it is not a clinical API, it relates to workforce.
+    This has been agreed with the [HL7 FHIR UK Board](https://www.hl7.org.uk/register/about-hl7-uk/management-board-members/).
 
     ## Network access
-    TBC
+    This API is available on the internet and also indirectly via HSCN.
+
+    For more details, see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
     
     ## Security and authorisation
-    TBC
+    This API is [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis),
+    meaning we authenticate the calling application but not the end user.
+
+    To use this access mode, use the following security pattern:
+    - [application-restricted RESTful API - API key authentication]()
     
     ## Errors
     TBC
