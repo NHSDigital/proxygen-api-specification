@@ -107,8 +107,8 @@ x-spec-publication:
   try-this-api:
     disabled: true
 paths:
-  /tbc:
-    get:
+  /events:
+    post:
       operationId: publish-event
       summary: Publish an event
       description: |
@@ -130,6 +130,14 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/BearerAuthorization'
+      requestBody:
+        required: true
+        content:
+          application/cloudevents+json:
+            schema:
+              $ref: '#/components/schemas/Event'
+            example:
+              $ref: 'components/examples/api/PublishEvent.json'
       responses:
         '200':
           description: To be confirmed.
@@ -185,6 +193,34 @@ components:
       schema:
         type: string
   schemas:
+    Event:
+      type: object
+      required:
+        - specversion
+        - id
+        - source
+        - type
+        - time
+        - subject
+        - filtering
+        - dataref
+      properties:
+        specversion:
+          TBC
+        id:
+          TBC
+        source:
+          TBC
+        type:
+          TBC
+        time:
+          TBC
+        subject:
+          TBC
+        filtering:
+          TBC
+        dataref:
+          TBC
     EmployeePersonalDetails:
       type: object
       required:
