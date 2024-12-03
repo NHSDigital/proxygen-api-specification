@@ -4,12 +4,12 @@ info:
   version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
   description: |
     ## Overview
-    ![Digital Staff Passport overview diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-api-standard-context-diagram-v2.svg)
+    ![Digital Staff Passport API overview diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/digital-staff-passport-api/digital-staff-passport-api-context-diagram-v2.svg)
     
     Use this API to notify [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport) about changes to
     employee information in your workforce system.
 
-    We call these 'event notifications'. They do not include any actual employee information, they just let DSP know that something has changed.
+    These 'event notifications' do not include any actual employee information, they just let DSP know that something has changed.
 
     To use this API, your system must also provide an API that conforms to the [Digital Staff Passport API standard](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard).
 
@@ -18,7 +18,7 @@ info:
 
     The API currently supports the following event types:
 
-    | Event type          | Source                                   |
+    | Event type          | External system type                     |
     | ------------------- | ---------------------------------------- |
     | DBS check completed | Recruitment system / DBS registered body |
     | eLearning completed | Learning management system               |
@@ -32,10 +32,10 @@ info:
 
     ## Status
     This API is [in development](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
-    meaning it is under development and might be subject to breaking changes.
+    meaning it is not yet available for production use, and might be subject to breaking changes.
 
     ## Service level
-    This API is a silver service, meaning it is operational 24 hours a day, 365 days a year but only supported during business hours.
+    This API is a bronze service, meaning it is operational 24 hours a day, 365 days a year but only supported during business hours.
 
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
     
@@ -56,16 +56,48 @@ info:
     meaning we authenticate the calling application but not the end user.
 
     To use this access mode, use the following security pattern:
-    - [application-restricted RESTful API - API key authentication]()
+    - [application-restricted RESTful API - API key authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-api-key-authentication)
     
     ## Errors
-    TBC
+    We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
+
+    * 200 to 299 if it succeeded
+    * 400 to 499 if it failed because of a client error by your application
+    * 500 to 599 if it failed because of an error on our server
+    
+    For details of specific errors, see the 'Response' section for each operation. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
+
+    Your API-calling application should have a mechanism to automatically try again, for example by giving status information to your end user, before giving up. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#error-handling) for more information about error handling.
 
     ## Environments and testing
-    TBC
+
+    | Environment       | Base URL                                                               |
+    | ----------------- | ---------------------------------------------------------------------- |
+    | Sandbox           | Not yet available    |
+    | Integration test  | Not yet available    |
+    | Production        | Not yet available    |
+
+    ### Sandbox testing
+    Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
+    * is for early developer testing
+    * only covers a limited set of scenarios
+    * is stateless, so does not actually persist any updates
+    * is open access, so does not allow you to test authorisation
+
+    ### Integration testing
+    Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
+    * is for formal integration testing
+    * is stateful, so persists updates
+    * includes authorisation
+
+    For more details, see [Digital Staff Passport integration testing](https://digital.nhs.uk/services/digital-staff-passport/integration/testing).
 
     ## Onboarding
-    TBC
+    Before your integration goes live, we’ll need to complete a number of assurance checks for both your organisation and your system. We call this onboarding.
+
+    This includes, for example, making sure we have processes in place to deal with live incidents.
+
+    For more details, see [Digital Staff Passport onboarding and assurance](https://digital.nhs.uk/services/digital-staff-passport/integration/onboarding-and-assurance).
     
   contact:
     name: API Management Support
@@ -78,16 +110,16 @@ paths:
   /tbc:
     get:
       operationId: publish-event
-      summary: Publish an event.
+      summary: Publish an event
       description: |
         Use this operation to notify DSP about a change to employee information in your workforce system.
 
         The following event types are supported:
 
-        | Event type | Event type ID | Source |
-        | ---------- | ------------- | ------ |
-        | DBS check completed | `employee-dbs-check-completed` | Recruitment system / DBS registered body |
-        | eLearning course completed | `employee-elearning-completed` | Learning management system |
+        | Event type                 | Event type ID                  | Source                                   |
+        | -------------------------- | ------------------------------ | ---------------------------------------- |
+        | DBS check completed        | `employee-dbs-check-completed` | Recruitment system / DBS registered body |
+        | eLearning course completed | `employee-elearning-completed` | Learning management system               |
         
       parameters:
         - name: tbc
