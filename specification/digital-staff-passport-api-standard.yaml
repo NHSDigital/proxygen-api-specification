@@ -147,6 +147,9 @@ info:
 
     Hence this API supports DSP sending and receiving immunisations and tests to and from an occupational health system.
 
+    For details of which immunisations DSP can send and receive, including standard naming conventions and unique codes,
+    see [Immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
     meaning it is under development and might be subject to breaking changes.
@@ -682,12 +685,12 @@ components:
         biometricPageImage:
           description: |
             An image of the biometric page of the employee's identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
-            Approximate image size: 450x600 pixels. Approximate data size (base64 encoded): 105KB.
+            Approximate image size: 450x600 pixels. Approximate data size (base64 encoded): 105KB. Maxumum data size: 5MB.
           type: string
         photograph:
           description: |
             A photograph of the employee, as it appears on their identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
-            Approximate image size: 450x300 Approximate data size (base64 encoded): 12-15KB.
+            Approximate image size: 450x300 pixels. Approximate data size (base64 encoded): 12-15KB. Maxumum data size: 5MB.
           type: string
         identityDocumentExpiryDate:
           description: Identity document expiry date, in the format `YYYY-MM-DD`.
