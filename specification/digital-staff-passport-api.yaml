@@ -259,16 +259,52 @@ components:
     Event:
       type: object
       required:
-        - specversion
         - id
-        - source
-        - type
-        - time
-        - subject
-        - filtering
-        - dataref
       properties:
         id:
           description: A unique identifier for the event – a GUID.
           type: string
           example: 236a1d4a-5d69-4fa9-9c7f-e72bf505aa5b
+    Error:
+      type: object
+      required:
+        - resourceType
+        - issue
+      properties:
+        resourceType:
+          description: The resource type.
+          type: string
+          enum:
+            - OperationOutcome
+        issue:
+          description: List of issues that have occurred. Usually there will be just one.
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - severity
+              - code
+            properties:
+              severity:
+                description: Issue severity, as per [https://hl7.org/fhir/R4/valueset-issue-severity.html](https://hl7.org/fhir/R4/valueset-issue-severity.html).
+                type: string
+                enum:
+                  - fatal
+                  - error
+                  - warning
+                  - information
+              code:
+                description: Error or warning code, as per [https://hl7.org/fhir/R4/valueset-issue-type.html](https://hl7.org/fhir/R4/valueset-issue-type.html).
+                type: string
+                example: 'invalid'
+              details:
+                description: Additional details about the error or warning.
+                type: object
+                required:
+                  - text
+                properties:
+                  text:
+                    description: A text description of the error or warning.
+                    type: string
+                    example: 'Invalid format for birthDate query parameter - must be YYYY-MM-DD.'
