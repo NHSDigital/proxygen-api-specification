@@ -143,14 +143,17 @@ paths:
           description: |
             An error occurred as follows:
 
-            TBC table
+            | HTTP status | Error code          | Description |
+            | ----------- | ------------------- | - |
+            | 400         | invalid             | Invalid data in request body, for example, missing mandatory field or invalid date/time format. |
+            | 401         | invalid-credentials | Missing or invalid API key. |
 
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                $ref: components/examples/SearchForAnEmployeeResponseError.json              
+                $ref: components/examples/api/PublishEventResponseError.json              
 components:
   parameters:
     ApiKey:
@@ -310,4 +313,4 @@ components:
                   text:
                     description: A text description of the error or warning.
                     type: string
-                    example: 'Invalid format for birthDate query parameter - must be YYYY-MM-DD.'
+                    example: 'Invalid format for time query parameter - must be as per RFC 3339.'
