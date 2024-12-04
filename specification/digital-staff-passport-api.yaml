@@ -155,6 +155,7 @@ components:
   parameters:
     ApiKey:
       in: header
+      name: apikey
       description: |
         The calling system's API key.
         For details, see [Application-restricted RESTful API - API key authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-api-key-authentication).
