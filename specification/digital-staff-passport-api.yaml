@@ -256,7 +256,7 @@ components:
           type: string
           format: uri
           example: https://api.example-workforce-system.example-organisation.com/dsp-api/organisations/RHQ/employees/12345/records
-    Event:
+    EventId:
       type: object
       required:
         - id
