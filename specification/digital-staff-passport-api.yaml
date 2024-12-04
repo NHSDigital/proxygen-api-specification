@@ -158,13 +158,17 @@ components:
       description: |
         The calling system's API key.
         For details, see [Application-restricted RESTful API - API key authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-api-key-authentication).
+      required: true
+      schema:
+        type: string
+        example: '9Y8Y1CcNxFlsZjGSBdJmExfZcjGkGOac'
     BearerAuthorization:
       in: header
       name: Authorization
       description: |
         The calling system's access token, which must be an OAuth 2.0 bearer token.
         For details, see [Authorisation using OAuth 2.0 private key JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-private-key-jwt).
-      required: false
+      required: true
       schema:
         type: string
         format: '^Bearer\ [[:ascii:]]+$'
