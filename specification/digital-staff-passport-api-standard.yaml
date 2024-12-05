@@ -338,13 +338,13 @@ paths:
 
         It supports the following record and external system types:
         
-        | Record type       | External system type       | Notes |
-        | ----------------- | -------------------------- | --- |
-        | Core skills       | Learning management system | |
-        | DBS check outcome | Recruitment system         | - Only includes 'real' DBS check outcomes, including DBS Update Service status checks, not 'ported' DBS check outcomes that are the result of an organisation re-using a previous DBS check outcome.<br>- Only includes completed DBS checks - not in-progress checks for example where the employer is awaiting a DBS certificate containing additional information.|
-        | Vaccination       | Occupational health system | |
-        | Clinical test     | Occupational health system | |
-        | Observation       | Occupational health system | |
+        | Record type       | External system type       |
+        | ----------------- | -------------------------- |
+        | Core skills       | Learning management system |
+        | DBS check outcome | Recruitment system         |
+        | Vaccination       | Occupational health system |
+        | Clinical test     | Occupational health system |
+        | Observation       | Occupational health system |
 
         To pro-actively notify DSP of new or amended employee records in an external system, use the
         [Digital Staff Passport API](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api).
