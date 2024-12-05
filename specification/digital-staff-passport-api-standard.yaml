@@ -4,7 +4,7 @@ info:
   version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
   description: |
     ## Overview
-    ![Digital Staff Passport overview diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-api-standard-context-diagram-v2.svg)
+    ![Digital Staff Passport overview diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-api-standard-context-diagram-v3.svg)
     
     Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport)
     can use to access employee information in your workforce system.
@@ -24,8 +24,7 @@ info:
     | Send immunisations and tests          | to        | Occupational health system               |
 
     Workforce systems can also pro-actively notify DSP of new or amended employee information using the
-    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
-    from our Multicast Notification Service (MNS).
+    [Digital Staff Passport API](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api).
     
     For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
@@ -57,10 +56,9 @@ info:
 
     ### Pro-active notifications
     If employee information is added or amended in the external system, the external system can notify DSP of this using the
-    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
-    from our Multicast Notification Service (MNS).
+    [Digital Staff Passport API](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api).
     
-    If the event is for an employee of interest to DSP, MNS forwards the event to DSP and DSP then gets the latest updates from the external system using the
+    If the event is for an employee of interest, DSP then gets the latest updates from the external system using the
     [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation as per usual.
 
     ## Employee record types
@@ -347,8 +345,7 @@ paths:
         | Observation       | Occupational health system | |
 
         To pro-actively notify DSP of new or amended employee records in an external system, use the
-        [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
-        from our Multicast Notification Service (MNS).
+        [Digital Staff Passport API](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api).
         
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
