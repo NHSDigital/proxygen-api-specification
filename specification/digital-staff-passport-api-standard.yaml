@@ -140,7 +140,7 @@ info:
     NHS employers must carry out [occupational health checks](https://www.nhsemployers.org/publications/work-health-assessments-standard) for new employees.
     This includes ensuring the employee has complied with screening and immunisation requirements.
 
-    Records of previous screening and immunisation events are portable between employers, including:
+    Records of previous screening and immunisation activities are portable between employers, including:
     - vaccinations
     - clinical tests
     - observations
@@ -370,7 +370,7 @@ paths:
                   value:
                     $ref: components/examples/GetEmployeeRecordsResponseDBSCheckOutcome.json
                 screening-and-immunisation-information:
-                  summary: Screening and immunisation events
+                  summary: Screening and immunisation activities
                   value:
                     $ref: components/examples/GetEmployeeRecordsResponseScreeningAndImmunisation.json
         '4XX':
