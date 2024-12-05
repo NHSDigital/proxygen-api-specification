@@ -1,5 +1,5 @@
 {
-  "recordType": "Immunisation",
+  "recordType": "Vaccination",
   "code": "HEPB001",
   "description": "Hepatitis B Vaccine",
   "date": "2024-10-01"
