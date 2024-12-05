@@ -1,0 +1,12 @@
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "invalid",
+      "details": {
+        "text": "Invalid format for time query parameter - must be as per RFC 3339."
+      }
+    }
+  ]
+}

@@ -2,13 +2,13 @@
   "id": "12345",
   "records": [
     {
-      "recordType": "Immunisation",
+      "recordType": "Vaccination",
       "code": "HEPB001",
       "description": "Hepatitis B Vaccine",
       "date": "2024-10-01"
     },
     {
-      "recordType": "Test",
+      "recordType": "ClinicalTest",
       "code": "DTP002",
       "description": "Diphtheria Antibody Test",
       "date": "2024-09-01",

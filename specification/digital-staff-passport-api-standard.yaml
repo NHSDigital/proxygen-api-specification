@@ -4,28 +4,27 @@ info:
   version: __VERSION__  # Automatically populated by `scripts/calculate_version.py` at release-time
   description: |
     ## Overview
-    ![Digital Staff Passport overview diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-api-standard-context-diagram-v2.svg)
+    ![Digital Staff Passport overview diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-api-standard-context-diagram-v3.svg)
     
     Use this API standard to build an API that [Digital Staff Passport (DSP)](https://digital.nhs.uk/services/digital-staff-passport)
     can use to access employee information in your workforce system.
 
     The standard currently supports the following use cases:
 
-    | Use case                              | Direction | External system type                     |
-    | ------------------------------------- | --------- | ---------------------------------------- |
-    | Get core skills                       | from      | Learning management system               |
-    | Send core skills                      | to        | Learning management system               |
-    | Send right to work information        | to        | Recruitment system                       |
-    | Send DBS check supporting information | to        | Recruitment system / DBS registered body |
-    | Get DBS check outcome                 | from      | Recruitment system / DBS registered body |
-    | Send DBS check outcome                | to        | Recruitment system / DBS registered body |
-    | Send professional registration        | to        | Recruitment system                       |
-    | Get immunisations and tests           | from      | Occupational health system               |
-    | Send immunisations and tests          | to        | Occupational health system               |
+    | Use case                                    | Direction | External system type                     |
+    | ------------------------------------------- | --------- | ---------------------------------------- |
+    | Get core skills                             | from      | Learning management system               |
+    | Send core skills                            | to        | Learning management system               |
+    | Send right to work information              | to        | Recruitment system                       |
+    | Send DBS check supporting information       | to        | Recruitment system / DBS registered body |
+    | Get DBS check outcome                       | from      | Recruitment system / DBS registered body |
+    | Send DBS check outcome                      | to        | Recruitment system / DBS registered body |
+    | Send professional registration              | to        | Recruitment system                       |
+    | Get screening and immunisation information  | from      | Occupational health system               |
+    | Send screening and immunisation information | to        | Occupational health system               |
 
     Workforce systems can also pro-actively notify DSP of new or amended employee information using the
-    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
-    from our Multicast Notification Service (MNS).
+    [Digital Staff Passport API](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api).
     
     For more context, see [Integrating with the Digital Staff Passport](https://digital.nhs.uk/services/digital-staff-passport/integration), specifically:
     - [integration pattern 2](https://digital.nhs.uk/services/digital-staff-passport/integration#pattern-2-outbound-via-online-portal)
@@ -57,10 +56,9 @@ info:
 
     ### Pro-active notifications
     If employee information is added or amended in the external system, the external system can notify DSP of this using the
-    [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
-    from our Multicast Notification Service (MNS).
+    [Digital Staff Passport API](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api).
     
-    If the event is for an employee of interest to DSP, MNS forwards the event to DSP and DSP then gets the latest updates from the external system using the
+    If the event is for an employee of interest, DSP then gets the latest updates from the external system using the
     [Get employee records](#get-/organisations/-org-id-/employees/-employee-id-/records) operation as per usual.
 
     ## Employee record types
@@ -138,14 +136,19 @@ info:
 
     Hence this API standard supports DSP sending professional registration information to a recruitment system.
 
-    ### Immunisations and tests
-    NHS employers must carry out [occupational health checks](https://www.nhsemployers.org/publications/work-health-assessments-standard) for new employees. This includes:
-    - ensuring the employee has the right immunisations for their role
-    - ensuring the employee has had the appropriate tests if they are to be involved in exposure-prone procedures
+    ### Screening and immunisation information
+    NHS employers must carry out [occupational health checks](https://www.nhsemployers.org/publications/work-health-assessments-standard) for new employees.
+    This includes ensuring the employee has complied with screening and immunisation requirements.
 
-    Records of previous immunisations and tests are portable between employers.
+    Records of previous screening and immunisation activities are portable between employers, including:
+    - vaccinations
+    - clinical tests
+    - observations
 
-    Hence this API supports DSP sending and receiving immunisations and tests to and from an occupational health system.
+    Hence this API supports DSP sending and receiving vaccinations, clinical tests and observations to and from an occupational health system.
+
+    For details of what information DSP can send and receive, including standard naming conventions and unique codes,
+    see [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
 
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
@@ -335,17 +338,16 @@ paths:
 
         It supports the following record and external system types:
         
-        | Record type       | External system type       | Notes |
-        | ----------------- | -------------------------- | --- |
-        | Core skills       | Learning management system | |
-        | DBS check outcome | Recruitment system         | - Only includes 'real' DBS check outcomes, including DBS Update Service status checks, not 'ported' DBS check outcomes that are the result of an organisation re-using a previous DBS check outcome.<br>- Only includes completed DBS checks - not in-progress checks for example where the employer is awaiting a DBS certificate containing additional information.|
-        | Immunisation      | Occupational health system | |
-        | Clinical test     | Occupational health system | |
-        | Observation       | Occupational health system | |
+        | Record type       | External system type       |
+        | ----------------- | -------------------------- |
+        | Core skills       | Learning management system |
+        | DBS check outcome | Recruitment system         |
+        | Vaccination       | Occupational health system |
+        | Clinical test     | Occupational health system |
+        | Observation       | Occupational health system |
 
         To pro-actively notify DSP of new or amended employee records in an external system, use the
-        [Digital Staff Passport event](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/digital-staff-passport-event)
-        from our Multicast Notification Service (MNS).
+        [Digital Staff Passport API](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api).
         
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
@@ -367,10 +369,10 @@ paths:
                   summary: DBS check outcome
                   value:
                     $ref: components/examples/GetEmployeeRecordsResponseDBSCheckOutcome.json
-                ivt:
-                  summary: Immunisations, vaccinations and tests
+                screening-and-immunisation-information:
+                  summary: Screening and immunisation activities
                   value:
-                    $ref: components/examples/GetEmployeeRecordsResponseIVT.json
+                    $ref: components/examples/GetEmployeeRecordsResponseScreeningAndImmunisation.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -433,10 +435,10 @@ paths:
                 summary: Add a professional registration record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestProfessionalRegistration.json
-              immunisation:
-                summary: Add an immunisation record
+              vaccination:
+                summary: Add a vaccination record
                 value:
-                  $ref: components/examples/AddEmployeeRecordRequestImmunisation.json
+                  $ref: components/examples/AddEmployeeRecordRequestVaccination.json
               clinical-test:
                 summary: Add a clinical test record
                 value:
@@ -473,10 +475,10 @@ paths:
                   summary: Professional registration record added
                   value:
                     $ref: components/examples/AddEmployeeRecordResponseProfessionalRegistration.json
-                immunisation:
-                  summary: Immunisation record added
+                vaccination:
+                  summary: Vaccination record added
                   value:
-                    $ref: components/examples/AddEmployeeRecordResponseImmunisation.json
+                    $ref: components/examples/AddEmployeeRecordResponseVaccination.json
                 clinical-test:
                   summary: Clinical test record added
                   value:
@@ -633,7 +635,7 @@ components:
       oneOf:
         - $ref: '#/components/schemas/CoreSkillsTraining'
         - $ref: '#/components/schemas/DBSCheckOutcome'
-        - $ref: '#/components/schemas/Immunisation'
+        - $ref: '#/components/schemas/Vaccination'
         - $ref: '#/components/schemas/ClinicalTest'
         - $ref: '#/components/schemas/Observation'
     EmployeeRecordPost:
@@ -643,7 +645,7 @@ components:
         - $ref: '#/components/schemas/DBSCheckSupportingInformation'
         - $ref: '#/components/schemas/DBSCheckOutcome'
         - $ref: '#/components/schemas/ProfessionalRegistration'
-        - $ref: '#/components/schemas/Immunisation'
+        - $ref: '#/components/schemas/Vaccination'
         - $ref: '#/components/schemas/ClinicalTest'
         - $ref: '#/components/schemas/Observation'
     RightToWork:
@@ -682,12 +684,12 @@ components:
         biometricPageImage:
           description: |
             An image of the biometric page of the employee's identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
-            Approximate image size: 450x600 pixels. Approximate data size (base64 encoded): 105KB.
+            Approximate image size: 450x600 pixels. Approximate data size (base64 encoded): 105KB. Maxumum data size: 5MB.
           type: string
         photograph:
           description: |
             A photograph of the employee, as it appears on their identity document - JPEG format and [base64 encoded](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
-            Approximate image size: 450x300 Approximate data size (base64 encoded): 12-15KB.
+            Approximate image size: 450x300 pixels. Approximate data size (base64 encoded): 12-15KB. Maxumum data size: 5MB.
           type: string
         identityDocumentExpiryDate:
           description: Identity document expiry date, in the format `YYYY-MM-DD`.
@@ -984,11 +986,11 @@ components:
           description: The date when this registration was checked, in the format `YYYY-MM-DD`.
           type: string
           example: '2024-06-15'
-    Immunisation:
+    Vaccination:
       type: object
       description: |
-        A record of an immunisation administered to the employee that falls within the scope of the
-        [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+        A record of a vaccine administered to the employee that falls within the scope of the
+        [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
       required:
         - recordType
         - code
@@ -999,21 +1001,21 @@ components:
           description: Type of record.
           type: string
           enum:
-            - 'Immunisation'
+            - 'Vaccination'
         code:
-          description: A code identifying the type of immunisation, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          description: A code identifying the type of vaccination, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
           type: string
         description:
-          description: The type of immunisation, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          description: The type of vaccination, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
           type: string
         date:
-          description: Date of immunisation, in the format `YYYY-MM-DD`.
+          description: Date of vaccination, in the format `YYYY-MM-DD`, `YYYY-MM` or `YYYY`.
           type: string
     ClinicalTest:
       type: object
       description: |
         A record of a clinical test performed on the employee that falls within the scope of the
-        [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+        [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
       required:
         - recordType
         - code
@@ -1027,13 +1029,13 @@ components:
           enum:
             - 'ClinicalTest'
         code:
-          description: A code identifying the type of clinical test, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          description: A code identifying the type of clinical test, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
           type: string
         description:
-          description: The type of clinical test, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          description: The type of clinical test, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
           type: string
         date:
-          description: Date of clinical test, in the format `YYYY-MM-DD`.
+          description: Date of clinical test, in the format `YYYY-MM-DD`, `YYYY-MM` or `YYYY`.
           type: string
         result:
           description: Result of the clinical test, for example the amount of antigen present in a sample.
@@ -1049,7 +1051,7 @@ components:
       type: object
       description: |
         A record of an observation performed on the employee that falls within the scope of the
-        [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+        [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
       required:
         - recordType
         - code
@@ -1062,10 +1064,10 @@ components:
           enum:
             - 'Observation'
         code:
-          description: A code identifying the type of observation, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          description: A code identifying the type of observation, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
           type: string
         description:
-          description: The type of observation, as per the [immunisation and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/immunisation-and-vaccination-information-model).
+          description: The type of observation, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
           type: string
         result:
           description: Result of the observation - whether or not the thing was observed.
