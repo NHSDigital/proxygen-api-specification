@@ -436,7 +436,7 @@ paths:
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestProfessionalRegistration.json
               vaccination:
-                summary: Add an vaccination record
+                summary: Add a vaccination record
                 value:
                   $ref: components/examples/AddEmployeeRecordRequestVaccination.json
               clinical-test:
@@ -989,7 +989,7 @@ components:
     Vaccination:
       type: object
       description: |
-        A record of an vaccine administered to the employee that falls within the scope of the
+        A record of a vaccine administered to the employee that falls within the scope of the
         [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
       required:
         - recordType
