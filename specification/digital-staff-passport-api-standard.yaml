@@ -818,7 +818,8 @@ components:
         - certificateNumber
         - disclosureIssueDate
         - informationDisclosed
-# TBC other required fields
+        - registeredtBodyNumber
+        - registeredBodyName
       properties:
         recordType:
           description: Type of record.
@@ -857,6 +858,21 @@ components:
         informationDisclosed:
           description: Whether or not any information was disclosed on the certificate. A value of `false` means the certificate is 'clean'.
           type: boolean
+        workforceType:
+          description: |
+            Type of workforce the applicant is expected to work in.
+            This is only ever 'Child', 'Adult' or 'Child and Adult' - DSP does not cater for DBS checks where the workforce type is 'Other'.
+          type: string
+          enum:
+            - Child
+            - Adult
+            - Child and Adult
+        registeredBodyNumber:
+          description: Unique identifier for the DBS Registered Body that made the DBS check, as issued by the DBS. An 11 digit number.
+          type: number
+        registeredBodyName:
+          description: Name of the DBS Registered Body that made the DBS check.
+          type: string
     CoreSkillsTraining:
       type: object
       description: |
