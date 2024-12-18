@@ -119,11 +119,11 @@ info:
     - DSP receiving a DBS check outcome record from a recruitment system
     - DSP sending a DBS check outcome record to a recruitment system
 
-    DSP only receives and sends 'real' DBS check outcomes, including:
+    DSP only handles 'real' DBS check outcomes, including:
     - a fresh DBS check resulting in a DBS certificate
     - a [DBS Update Service](https://www.gov.uk/dbs-update-service) status check
 
-    DSP does not receive and send 'ported' DBS check outcomes i.e. the result of an organisation re-using a previous DBS check outcome.
+    DSP does not handle 'ported' DBS check outcomes i.e. the result of an organisation re-using a previous DBS check outcome.
 
     ### Professional registrations
     NHS employers must carry out [professional registration and qualification checks](https://www.nhsemployers.org/publications/professional-registration-and-qualification-checks-standard) for new employees.
@@ -861,7 +861,7 @@ components:
         workforceType:
           description: |
             Type of workforce the applicant is expected to work in.
-            This is only ever 'Child', 'Adult' or 'Child and Adult' - DSP does not cater for DBS checks where the workforce type is 'Other'.
+            This is only ever 'Child', 'Adult' or 'Child and Adult' - DSP does not handle DBS checks where the workforce type is 'Other'.
           type: string
           enum:
             - Child
