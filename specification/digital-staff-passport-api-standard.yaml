@@ -119,11 +119,9 @@ info:
     - DSP receiving a DBS check outcome record from a recruitment system
     - DSP sending a DBS check outcome record to a recruitment system
 
-    DSP only handles 'real' DBS check outcomes, including:
-    - a fresh DBS check resulting in a DBS certificate
-    - a [DBS Update Service](https://www.gov.uk/dbs-update-service) status check
-
-    DSP does not handle 'ported' DBS check outcomes i.e. the result of an organisation re-using a previous DBS check outcome.
+    DSP only handles fresh DBS checks resulting in a DBS certificate. It does not handle:
+    - [DBS Update Service](https://www.gov.uk/dbs-update-service) status checks
+    - 'ported' DBS check outcomes i.e. the result of an organisation re-using a previous DBS check outcome
 
     ### Professional registrations
     NHS employers must carry out [professional registration and qualification checks](https://www.nhsemployers.org/publications/professional-registration-and-qualification-checks-standard) for new employees.
@@ -805,9 +803,7 @@ components:
     DBSCheckOutcome:
       type: object
       description: |
-        Outcome of a DBS check, as performed by an employer. This could be:
-        - a fresh DBS check
-        - a DBS Update Service status check
+        Outcome of a DBS check, as performed by an employer.
       required:
         - recordType
         - applicantName
@@ -851,9 +847,6 @@ components:
           type: string
         disclosureIssueDate:
           description: Date the DBS check certificate was issued, in the format `YYYY-MM-DD`.
-          type: string
-        dbsUpdateServiceStatusCheckDate:
-          description: If this was a DBS Update Service status check, date the status check was done, in the format `YYYY-MM-DD`.
           type: string
         informationDisclosed:
           description: Whether or not any information was disclosed on the certificate. A value of `false` means the certificate is 'clean'.
