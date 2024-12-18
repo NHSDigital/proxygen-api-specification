@@ -818,7 +818,7 @@ components:
         - certificateNumber
         - disclosureIssueDate
         - informationDisclosed
-        - registeredtBodyNumber
+        - registeredBodyNumber
         - registeredBodyName
       properties:
         recordType:
