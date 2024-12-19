@@ -862,7 +862,8 @@ components:
             - Child and Adult
         registeredBodyNumber:
           description: Unique identifier for the DBS Registered Body that made the DBS check, as issued by the DBS. An 11 digit number.
-          type: number
+          type: string
+          pattern: '^\d{11}$' # Ensures it is exactly 11 digits
         registeredBodyName:
           description: Name of the DBS Registered Body that made the DBS check.
           type: string
