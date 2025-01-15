@@ -806,7 +806,9 @@ components:
         Outcome of a DBS check, as performed by an employer.
       required:
         - recordType
-        - applicantName
+        - applicantFirstName
+        - applicantMiddleNames
+        - applicantSurname
         - applicantDateOfBirth
         - typeOfDbsCheck
         - adultsBarredListChecked
@@ -822,8 +824,14 @@ components:
           type: string
           enum:
             - 'DBSCheckOutcome'
-        applicantName:
-          description: Employee's name as used in the DBS check.
+        applicantFirstName:
+          description: Employee's first name as used in the DBS check.
+          type: string
+        applicantMiddleNames:
+          description: Employee's middle names as used in the DBS check.
+          type: string
+        applicantSurname:
+          description: Employee's surname as used in the DBS check.
           type: string
         applicantDateOfBirth:
           description: Employee's date of birth as used in the DBS check.
