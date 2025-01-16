@@ -17,7 +17,7 @@ jobs:
     - name: Setup Python environment and dependencies
       run: |
         pipx install poetry
-        poetry install
+        poetry install --no-root
 
     - name: Calculate version
       run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
