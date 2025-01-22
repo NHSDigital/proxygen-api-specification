@@ -20,8 +20,8 @@ info:
     | Get DBS check outcome                       | from      | Recruitment system / DBS registered body |
     | Send DBS check outcome                      | to        | Recruitment system / DBS registered body |
     | Send professional registration              | to        | Recruitment system                       |
-    | Get screening and immunisation information  | from      | Occupational health system               |
-    | Send screening and immunisation information | to        | Occupational health system               |
+    | Get screening and vaccination information  | from      | Occupational health system               |
+    | Send screening and vaccination information | to        | Occupational health system               |
 
     Workforce systems can also pro-actively notify DSP of new or amended employee information using the
     [Digital Staff Passport API](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api).
@@ -134,11 +134,11 @@ info:
 
     Hence this API standard supports DSP sending professional registration information to a recruitment system.
 
-    ### Screening and immunisation information
+    ### Screening and vaccination information
     NHS employers must carry out [occupational health checks](https://www.nhsemployers.org/publications/work-health-assessments-standard) for new employees.
-    This includes ensuring the employee has complied with screening and immunisation requirements.
+    This includes ensuring the employee has complied with screening and vaccination requirements.
 
-    Records of previous screening and immunisation activities are portable between employers, including:
+    Records of previous screening and vaccination activities are portable between employers, including:
     - vaccinations
     - clinical tests
     - observations
@@ -146,7 +146,7 @@ info:
     Hence this API supports DSP sending and receiving vaccinations, clinical tests and observations to and from an occupational health system.
 
     For details of what information DSP can send and receive, including standard naming conventions and unique codes,
-    see [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
+    see [Workforce screening and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-vaccination-information-model).
 
     ## Status
     This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
@@ -367,10 +367,10 @@ paths:
                   summary: DBS check outcome
                   value:
                     $ref: components/examples/GetEmployeeRecordsResponseDBSCheckOutcome.json
-                screening-and-immunisation-information:
-                  summary: Screening and immunisation activities
+                screening-and-vaccination-information:
+                  summary: Screening and vaccination activities
                   value:
-                    $ref: components/examples/GetEmployeeRecordsResponseScreeningAndImmunisation.json
+                    $ref: components/examples/GetEmployeeRecordsResponseScreeningAndVaccination.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -1008,7 +1008,7 @@ components:
       type: object
       description: |
         A record of a vaccine administered to the employee that falls within the scope of the
-        [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
+        [Workforce screening and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-vaccination-information-model).
       required:
         - recordType
         - code
@@ -1021,10 +1021,10 @@ components:
           enum:
             - 'Vaccination'
         code:
-          description: A code identifying the type of vaccination, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
+          description: A code identifying the type of vaccination, as per the [Workforce screening and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-vaccination-information-model).
           type: string
         description:
-          description: The type of vaccination, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
+          description: The type of vaccination, as per the [Workforce screening and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-vaccination-information-model).
           type: string
         date:
           description: Date of vaccination, in the format `YYYY-MM-DD`, `YYYY-MM` or `YYYY`.
@@ -1033,7 +1033,7 @@ components:
       type: object
       description: |
         A record of a clinical test performed on the employee that falls within the scope of the
-        [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
+        [Workforce screening and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-vaccination-information-model).
       required:
         - recordType
         - code
@@ -1047,10 +1047,10 @@ components:
           enum:
             - 'ClinicalTest'
         code:
-          description: A code identifying the type of clinical test, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
+          description: A code identifying the type of clinical test, as per the [Workforce screening and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-vaccination-information-model).
           type: string
         description:
-          description: The type of clinical test, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
+          description: The type of clinical test, as per the [Workforce screening and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-vaccination-information-model).
           type: string
         date:
           description: Date of clinical test, in the format `YYYY-MM-DD`, `YYYY-MM` or `YYYY`.
@@ -1069,7 +1069,7 @@ components:
       type: object
       description: |
         A record of an observation performed on the employee that falls within the scope of the
-        [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
+        [Workforce screening and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-vaccination-information-model).
       required:
         - recordType
         - code
@@ -1082,10 +1082,10 @@ components:
           enum:
             - 'Observation'
         code:
-          description: A code identifying the type of observation, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
+          description: A code identifying the type of observation, as per the [Workforce screening and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-vaccination-information-model).
           type: string
         description:
-          description: The type of observation, as per the [Workforce screening and immunisation information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-immunisation-information-model).
+          description: The type of observation, as per the [Workforce screening and vaccination information model](https://digital.nhs.uk/services/digital-staff-passport/workforce-screening-and-vaccination-information-model).
           type: string
         result:
           description: Result of the observation - whether or not the thing was observed.
