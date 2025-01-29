@@ -777,7 +777,15 @@ components:
           description: Employee's date of birth as it appears on their passport, in the format `YYYY-MM-DD`.
           type: string
         passportNationality:
-          description: Issuing country for the passport, as an [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) alpha-3 three-letter code.
+          description: |
+            Employee's nationality as it appears on their passport, encoded as a three-letter code as per the
+            [list provided by the Home Office](https://design.homeoffice.gov.uk/patterns/enter-passport-details/manually-enter-details).
+            Note in particular that the nationality on a British passport can be one of six possible values: `GBR`, `GBD`, `GBN`, `GBO`, `GPB` or `GBS`.
+          type: string
+        passportIssuingCountry:
+          description: |
+            Issuing country for the passport, as an [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) alpha-3 three-letter code.
+            For British passports this is always `GBR`.
           type: string
         passportIssueDate:
           description: Passport issue date, in the format `YYYY-MM-DD`.
