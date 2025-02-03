@@ -528,7 +528,8 @@ paths:
         Therefore it is important for monitoring tools to check the `status` field in the body of the response.
 
         All fields apart from `status` are optional, so the simplest possible implementation is a 'shallow ping' response that always returns a single field `status` with a value of `pass`.
-        Although simple, this is stull useful - if our system monitoring tools can't reach such a simple endpoint, we know there is an issue with your API.
+        
+        Although simple, a shallow ping is still very useful - if our system monitoring tools can't reach such a simple endpoint, we know there is an issue with your API.
 
         For a deep ping, dependent resources are any resources that your API operations might need to use to complete an API request, such as a database.
 
