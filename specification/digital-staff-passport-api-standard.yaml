@@ -169,6 +169,8 @@ info:
     
     ## Security and authorisation
     Your API must use OAuth 2.0 'private key JWT' to authenticate and authorise Digital Staff Passport as the calling system.
+
+    This applies to all operations apart from [Get API status](#get-/organisations/-org-id-/_status).
     
     For more details, see [Authorisation using OAuth 2.0 private key JWT](https://digital.nhs.uk/developer/api-catalogue/digital-staff-passport-api-standard/authorisation-using-oauth-2.0-private-key-jwt).
     
@@ -508,7 +510,11 @@ paths:
       operationId: status
       summary: Get API status
       description: |
-        This operation allows our live service monitoring tools to check that the API is available and working.
+        This operation allows our live service monitoring tools to
+        [check that the API is available and working](https://digital.nhs.uk/services/digital-staff-passport/integration/onboarding-and-assurance#live-service-monitoring).
+
+        We would expect to 'ping' it about once per minute. If it indicates an issue, we'd raise an incident via our
+        [mutually agreed process](https://digital.nhs.uk/services/digital-staff-passport/integration/onboarding-and-assurance#incident-management).
 
         The URL is `/organisations/{org-id}/_status` rather than just `/_status` so that it can be supported by systems that have separate instances deployed for each organisation.
 
@@ -522,6 +528,12 @@ paths:
         Therefore it is important for monitoring tools to check the `status` field in the body of the response.
 
         All fields apart from `status` are optional, so the simplest possible implementation is a 'shallow ping' response that always returns a single field `status` with a value of `pass`.
+        
+        Although simple, a shallow ping is still very useful - if our system monitoring tools can't reach such a simple endpoint, we know there is an issue with your API.
+
+        For a deep ping, dependent resources are any resources that your API operations might need to use to complete an API request, such as a database.
+
+        This operation must be open access i.e. it does not require the calling system to be [authorised](#overview--security-and-authorisation).
       parameters:
         - $ref: '#/components/parameters/OrganisationId'
       responses:
