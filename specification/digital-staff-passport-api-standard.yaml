@@ -710,6 +710,9 @@ components:
         evidenceCheckedBy:
           description: Organisation that performed the identity check.
           type: string
+          enum:
+            - 'Yoti Ltd'
+            - 'Digidentity B.V.'
         dateOfIdCheck:
           description: The date the ID check was performed, in the format `YYYY-MM-DD`.
           type: string
@@ -763,6 +766,9 @@ components:
         evidenceCheckedBy:
           description: Organisation that performed the identity check.
           type: string
+          enum:
+            - 'Yoti Ltd'
+            - 'Digidentity B.V.'
         dateOfIdCheck:
           description: The date the ID check was performed, in the format `YYYY-MM-DD`.
           type: string
