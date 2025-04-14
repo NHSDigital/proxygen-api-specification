@@ -1195,7 +1195,7 @@ definitions:
       access:
         type: array
         items:
-        $ref: '#/definitions/Access'
+          $ref: '#/definitions/Access'
       ratelimiting:
         $ref: '#/definitions/RateLimiting'
       monitoring:
