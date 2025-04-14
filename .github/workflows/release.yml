@@ -26,7 +26,7 @@ jobs:
       run: sed -i 's/__VERSION__/${{ env.SPEC_VERSION }}/g' specification/proxygen.yaml
 
     - name: Vacuum OpenAPI Spec linter
-      uses: eduelias/gha-vacuum@v0.0.1
+      uses: daveshanley/vacuum@v0.16.5
       with:
         cmd: vacuum lint -d --base specification/ specification/proxygen.yaml
 
