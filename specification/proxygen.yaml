@@ -1978,7 +1978,7 @@ components:
                   $ref: '#/components/schemas/Operation'
         components:
           type: object
-        XNhsdApim:
+        x-nhsd-apim:
           $ref: '#/components/schemas/XNhsdApim'
     Operation:
       type: object
