@@ -25,10 +25,16 @@ jobs:
     - name: Set OAS info.version to ${{ env.SPEC_VERSION }}
       run: sed -i 's/__VERSION__/${{ env.SPEC_VERSION }}/g' specification/proxygen.yaml
 
+
+    - name: Install repo
+      run: make install
+
     - name: Vacuum OpenAPI Spec linter
-      uses: daveshanley/vacuum@0.16.1
-      with:
-        cmd: vacuum lint -d --base specification/ specification/proxygen.yaml
+      with: make lint
+#    - name: Vacuum OpenAPI Spec linter
+#      uses: eduelias/gha-vacuum@v0.0.1
+#      with:
+#        cmd: vacuum lint -d --base specification/ specification/proxygen.yaml
 
     - name: Create Release ${{ env.SPEC_VERSION }}
       uses: softprops/action-gh-release@v1
