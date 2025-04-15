@@ -13,7 +13,7 @@ jobs:
       run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/proxygen.yaml
 
     - name: Vacuum OpenAPI Spec linter
-      uses: quobix/vacuum@0.16.1
+      uses: daveshanley/vacuum@0.16.1
       with:
         cmd: vacuum lint -d --base specification/ specification/proxygen.yaml
 
