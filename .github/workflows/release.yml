@@ -25,6 +25,11 @@ jobs:
     - name: Set OAS info.version to ${{ env.SPEC_VERSION }}
       run: sed -i 's/__VERSION__/${{ env.SPEC_VERSION }}/g' specification/proxygen.yaml
 
+    - name: Cache node modules
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-cache-npm-packages-${{ hashFiles('**/package-lock.json') }}
 
     - name: Install repo
       run: make install

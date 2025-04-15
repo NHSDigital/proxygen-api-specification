@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@quobix/vacuum": "^0.16.1"
+  }
+}
