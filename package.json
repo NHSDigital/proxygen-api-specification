@@ -1,7 +1,7 @@
 {
-  "name": "splunk-monitor",
+  "name": "proxygen-api-specification",
   "version": "0.0.1",
-  "description": "OAS (Swagger v3) API Definition for Template API",
+  "description": "Proxygen API Specification",
   "dependencies": {
     "@quobix/vacuum": "^0.16.1"
   }

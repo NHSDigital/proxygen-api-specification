@@ -36,10 +36,6 @@ jobs:
 
     - name: Vacuum OpenAPI Spec linter
       run: make lint
-#    - name: Vacuum OpenAPI Spec linter
-#      uses: eduelias/gha-vacuum@v0.0.1
-#      with:
-#        cmd: vacuum lint -d --base specification/ specification/proxygen.yaml
 
     - name: Create Release ${{ env.SPEC_VERSION }}
       uses: softprops/action-gh-release@v1
