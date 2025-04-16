@@ -45,3 +45,4 @@ jobs:
 
     - name: Vacuum OpenAPI Spec linter
       run: make lint
+
