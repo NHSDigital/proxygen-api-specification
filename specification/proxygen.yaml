@@ -26,7 +26,7 @@ info:
     * register new API definitions
     * publish API specifications
     * manage containers and secrets
-    * use your OAS specification to manage API proxies, products and security patterns
+    * use your OAS specification to manage API proxies, access modes and security patterns
 
     ## Who can use this API
     This API is only for use by teams publishing APIs on our API platform. These are predominantly internal NHS England teams.
@@ -208,7 +208,7 @@ info:
 
     An API instance may:
 
-    - have one or more **API products** for API consumers to subscribe to
+    - have one or more **API Access Modes** for API consumers to subscribe to
     - implement **rate limiting**
     - send traffic to a **back-end service** or a **hosted container**
     - implement one or more **security patterns** controlling how API clients can authenticate
@@ -315,7 +315,7 @@ info:
     ```
     target:
       type: external
-      healthcheck: /_status
+      healthcheck: /_mybackendhealthcheck
       url: https://example.external.mtls.secured.backend.com
       security:
         type: mtls
@@ -334,7 +334,7 @@ info:
     ```
     target:
       type: external
-      healthcheck: /_status
+      healthcheck: /_mybackendhealthcheck
       url: https://example.external.apikey.secured.backend.com
       security:
         type: apikey
@@ -353,7 +353,7 @@ info:
     ```
     target:
       type: hosted
-      healthcheck: /_status
+      healthcheck: /_mybackendhealthcheck
       containers:
         - name: hello-world
           image:
@@ -385,9 +385,9 @@ info:
         timeunit: minute
     ```
     
-    #### API products
+    #### API access modes
 
-    Each object in the `x-nhsd-apim.access` array defines an API Product. API consumers subscribe their Applications to these in the developer portal.
+    Each object in the `x-nhsd-apim.access` array defines an Access Mode. API consumers subscribe their Applications to these in the developer portal.
 
     For example:
     ```
@@ -1587,7 +1587,7 @@ paths:
                       last_modified: '2022-10-12T11:39:45+00:00'
       operationId: get-apis-api_name-environments-environment-instances
       description: |
-        Get a list of the deployed instances (API Proxies and associated API Products) for a given API and environment.
+        Get a list of the deployed instances (API Proxies and associated API Access Modes) for a given API and environment.
 
         > This operations requires the read permission for the specific API
     post:
@@ -2069,7 +2069,7 @@ components:
           $ref: '#/components/schemas/Target'
         access:
           type: array
-          description: Defines a list of API Products to be deployed within the API Platform.
+          description: Defines a list of API Access Modes to be deployed within the API Platform.
           items:
             $ref: '#/components/schemas/Access'
         ratelimiting:
@@ -2102,7 +2102,7 @@ components:
       type: object
       properties:
         healthcheck:
-          description: The path of the healthcheck endpoint on the back-end.
+          description: The path of the healthcheck endpoint on the back-end. When the /_status endpoint of your proxy is called, it then calls out to this healthcheck endpoint and if this returns a status of 200 then /_status will return a status of `pass`
           type: string
           pattern: ^/
     Access:
@@ -2379,7 +2379,7 @@ components:
                 app-level0: []
           target:
             type: hosted
-            healthcheck: /_status
+            healthcheck: /_mybackendhealthcheck
             containers:
               - name: hello-world
                 image:
