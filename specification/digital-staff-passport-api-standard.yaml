@@ -164,9 +164,6 @@ info:
 
     ## Status
     This API standard is [retired](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses) and not available for use.
-     
-    This API standard is a [draft](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
-    meaning it is under development and might be subject to breaking changes.
 
     ## Service level
     Your API must be a bronze service, meaning it is operational and supported during business hours.
