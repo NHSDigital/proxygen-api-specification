@@ -3,6 +3,6 @@
   "version": "0.0.1",
   "description": "Proxygen API Specification",
   "dependencies": {
-    "@quobix/vacuum": "^0.16.1"
+    "@quobix/vacuum": "^0.23.2"
   }
 }
