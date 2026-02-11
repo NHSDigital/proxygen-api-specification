@@ -12,3 +12,4 @@ install: install-node
 
 lint:
 	vacuum lint -d --base specification/ specification/proxygen.yaml
+

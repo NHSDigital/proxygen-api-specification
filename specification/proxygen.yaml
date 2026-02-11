@@ -1926,7 +1926,7 @@ components:
           type: object
         servers:
           type: array
-          minLength: 1
+          minItems: 1
           items:
             type: object
             required:
