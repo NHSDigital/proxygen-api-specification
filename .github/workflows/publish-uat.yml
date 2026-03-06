@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v6
 
     - name: Set OAS info.version to ${{ github.ref_name}}-${{github.sha}}
       run: sed -i 's/__VERSION__/${{ github.ref_name}}-${{github.sha}}/g' specification/proxygen.yaml
